@@ -1,0 +1,154 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-noto-nepali: 'Noto Sans Devanagari', 'Inter', system-ui, sans-serif;
+  
+  --color-primary: #0F3A66;
+  --color-primary-dark: #082442;
+  --color-primary-light: #1A508B;
+  --color-accent: #DC2626;
+  --color-accent-dark: #B91C1C;
+  --color-bg: #FFFFFF;
+  --color-surface: #F8FAFC;
+  --color-surface-card: #FFFFFF;
+  --color-text-main: #0F172A;
+  --color-text-muted: #475569;
+  --color-border: #E2E8F0;
+
+  --base-font-size: 16px;
+}
+
+/* Accessibility: Font Size Adjustments */
+html[data-font-size="normal"] {
+  --base-font-size: 16px;
+}
+html[data-font-size="large"] {
+  --base-font-size: 18px;
+}
+html[data-font-size="xlarge"] {
+  --base-font-size: 20px;
+}
+
+html {
+  font-size: var(--base-font-size);
+  scroll-behavior: smooth;
+}
+
+/* Accessibility: Dyslexic Font */
+html[data-dyslexic="true"] {
+  font-family: 'Comic Sans MS', 'OpenDyslexic', cursive, sans-serif !important;
+}
+
+/* Accessibility: High Contrast Mode */
+html[data-contrast="high"] {
+  --color-primary: #000000;
+  --color-primary-dark: #000000;
+  --color-primary-light: #000000;
+  --color-accent: #FF0000;
+  --color-bg: #FFFFFF;
+  --color-surface: #F0F0F0;
+  --color-surface-card: #FFFFFF;
+  --color-text-main: #000000;
+  --color-text-muted: #111111;
+  --color-border: #000000;
+}
+
+html[data-contrast="high"] * {
+  border-color: #000000 !important;
+}
+
+html[data-contrast="high"] a, 
+html[data-contrast="high"] button {
+  outline: 2px solid transparent;
+}
+
+html[data-contrast="high"] a:focus, 
+html[data-contrast="high"] button:focus {
+  outline: 3px solid #FFCC00 !important;
+  outline-offset: 2px;
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-reduced-motion="true"] * {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Focus Visible for Keyboard Accessibility */
+:focus-visible {
+  outline: 2px solid #0F3A66;
+  outline-offset: 2px;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Print Styles for Receipts and Certificates */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+/* Pulse Animation for Emergency Badges */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(220, 38, 38, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+}
+
+.emergency-pulse {
+  animation: pulse-ring 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+}
+
+/* Gradient Utilities */
+.bg-gradient-medical {
+  background: linear-gradient(135deg, #082442 0%, #0F3A66 60%, #1A508B 100%);
+}
+
+.bg-gradient-crimson {
+  background: linear-gradient(135deg, #991B1B 0%, #DC2626 100%);
+}
