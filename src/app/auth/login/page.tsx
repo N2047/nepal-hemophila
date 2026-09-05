@@ -99,11 +99,11 @@ export default function LoginPage() {
     }
   ];
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
 
-    const res = loginWithCredentials(email, password);
+    const res = await loginWithCredentials(email, password);
     if (!res.success) {
       setErrorMessage(res.message || "Invalid login credentials.");
       return;

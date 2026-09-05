@@ -212,22 +212,25 @@ export async function getCommitteeData(): Promise<CommitteeData> {
     if (!data.officers || !data.members) {
       throw new Error("Invalid structure");
     }
-    // Sort officers by display_order
     data.officers.sort((a, b) => a.display_order - b.display_order);
-    // Sort members by display_order
     data.members.sort((a, b) => a.display_order - b.display_order);
     return data;
   } catch (error) {
-    // If not found, write default and return
-    await saveCommitteeData(defaultCommitteeData);
+    try {
+      await saveCommitteeData(defaultCommitteeData);
+    } catch (e) {}
     return defaultCommitteeData;
   }
 }
 
 export async function saveCommitteeData(data: CommitteeData): Promise<void> {
   data.last_updated = new Date().toISOString();
-  await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
-  await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
+    await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (fsErr) {
+    console.warn("Local filesystem write skipped (serverless environment):", fsErr);
+  }
 }
 
 export async function updateOfficer(id: string, input: OfficerUpdateInput): Promise<Officer | null> {

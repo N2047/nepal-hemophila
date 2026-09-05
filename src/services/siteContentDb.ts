@@ -12,30 +12,49 @@ import {
   NoticeInput, 
   NoticeUpdateInput 
 } from "@/types/site-content";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { noticesService } from "@/services/supabase/noticesService";
 
 const DB_PATH = path.join(process.cwd(), "src", "data", "site-content-db.json");
 
 export async function getSiteContent(): Promise<SiteContentData> {
+  let content: SiteContentData;
   try {
     const raw = await fs.readFile(DB_PATH, "utf-8");
-    const data = JSON.parse(raw) as SiteContentData;
-    if (!data.features || !data.visionMission || !data.hero || !data.notices) {
+    content = JSON.parse(raw) as SiteContentData;
+    if (!content.features || !content.visionMission || !content.hero || !content.notices) {
       throw new Error("Invalid structure");
     }
-    return data;
   } catch (error) {
-    console.error("Error reading site-content-db.json, using defaults", error);
-    // If not found, recreate from default
-    const defaultData = getDefaultSiteContent();
-    await saveSiteContent(defaultData);
-    return defaultData;
+    content = getDefaultSiteContent();
+    try {
+      await saveSiteContent(content);
+    } catch (e) {}
   }
+
+  // If Supabase is configured, pull live notices from Supabase
+  if (isSupabaseConfigured()) {
+    try {
+      const supaNotices = await noticesService.getAllAdmin();
+      if (supaNotices && supaNotices.length > 0) {
+        content.notices = supaNotices;
+      }
+    } catch (err) {
+      console.warn("Supabase notices load fallback:", err);
+    }
+  }
+
+  return content;
 }
 
 export async function saveSiteContent(data: SiteContentData): Promise<void> {
   data.last_updated = new Date().toISOString();
-  await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
-  await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
+    await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (fsErr) {
+    console.warn("Local filesystem write skipped (serverless environment):", fsErr);
+  }
 }
 
 export async function updateFeatures(features: Partial<FeatureToggles>): Promise<FeatureToggles> {
@@ -82,6 +101,15 @@ export async function updateOrgDetails(orgDetails: Partial<OrgDetails>): Promise
 
 // Notices CRUD
 export async function addNotice(input: NoticeInput): Promise<NoticeItem> {
+  if (isSupabaseConfigured()) {
+    try {
+      const supaItem = await noticesService.create(input);
+      if (supaItem) return supaItem;
+    } catch (e) {
+      console.warn("Supabase addNotice fallback to local:", e);
+    }
+  }
+
   const data = await getSiteContent();
   const newNotice: NoticeItem = {
     ...input,
@@ -96,6 +124,14 @@ export async function addNotice(input: NoticeInput): Promise<NoticeItem> {
 }
 
 export async function updateNotice(id: string, input: NoticeUpdateInput): Promise<NoticeItem | null> {
+  if (isSupabaseConfigured()) {
+    try {
+      await noticesService.update(id, input);
+    } catch (e) {
+      console.warn("Supabase updateNotice fallback to local:", e);
+    }
+  }
+
   const data = await getSiteContent();
   const idx = data.notices.findIndex((n) => n.id === id);
   if (idx === -1) return null;
@@ -111,6 +147,14 @@ export async function updateNotice(id: string, input: NoticeUpdateInput): Promis
 }
 
 export async function deleteNotice(id: string): Promise<boolean> {
+  if (isSupabaseConfigured()) {
+    try {
+      await noticesService.delete(id);
+    } catch (e) {
+      console.warn("Supabase deleteNotice fallback to local:", e);
+    }
+  }
+
   const data = await getSiteContent();
   const initLen = data.notices.length;
   data.notices = data.notices.filter((n) => n.id !== id);

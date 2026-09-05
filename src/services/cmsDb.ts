@@ -16,6 +16,14 @@ import {
   eventsData, 
   resourcesData 
 } from "@/data/mockData";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { 
+  treatmentCentresService, 
+  postsService, 
+  eventsService, 
+  resourcesService, 
+  chaptersService 
+} from "@/services/supabase";
 
 const DB_PATH = path.join(process.cwd(), "src", "data", "cms-db.json");
 
@@ -341,6 +349,43 @@ export function getDefaultCmsDatabase(): CmsDatabase {
 }
 
 export async function getCmsDatabase(): Promise<CmsDatabase> {
+  // If Supabase is configured, fetch live PostgreSQL data
+  if (isSupabaseConfigured()) {
+    try {
+      const [centres, news, events, resources, chapters] = await Promise.all([
+        treatmentCentresService.getAll().catch(() => []),
+        postsService.getAllAdmin().catch(() => []),
+        eventsService.getAllAdmin().catch(() => []),
+        resourcesService.getAllAdmin().catch(() => []),
+        chaptersService.getAll().catch(() => [])
+      ]);
+
+      if (centres.length > 0 || news.length > 0 || events.length > 0) {
+        let localData: CmsDatabase | null = null;
+        try {
+          const raw = await fs.readFile(DB_PATH, "utf-8");
+          localData = JSON.parse(raw);
+        } catch {
+          localData = getDefaultCmsDatabase();
+        }
+
+        return {
+          centres: centres.length > 0 ? centres : (localData?.centres || []),
+          news: news.length > 0 ? news : (localData?.news || []),
+          events: events.length > 0 ? events : (localData?.events || []),
+          resources: resources.length > 0 ? resources : (localData?.resources || []),
+          chapters: chapters.length > 0 ? chapters : (localData?.chapters || defaultChapters),
+          advisors: localData?.advisors || defaultAdvisors,
+          settings: localData?.settings || defaultSettings,
+          last_updated: new Date().toISOString()
+        };
+      }
+    } catch (err) {
+      console.warn("Supabase fetch failed in getCmsDatabase, using file fallback:", err);
+    }
+  }
+
+  // File fallback
   try {
     const raw = await fs.readFile(DB_PATH, "utf-8");
     const data = JSON.parse(raw) as CmsDatabase;
@@ -351,15 +396,22 @@ export async function getCmsDatabase(): Promise<CmsDatabase> {
   } catch (error) {
     console.warn("CMS DB not found or invalid, initializing default cms-db.json", error);
     const defaults = getDefaultCmsDatabase();
-    await saveCmsDatabase(defaults);
+    try {
+      await saveCmsDatabase(defaults);
+    } catch (e) {}
     return defaults;
   }
 }
 
 export async function saveCmsDatabase(data: CmsDatabase): Promise<void> {
   data.last_updated = new Date().toISOString();
-  await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
-  await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    await fs.mkdir(path.dirname(DB_PATH), { recursive: true });
+    await fs.writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
+  } catch (fsErr) {
+    // In serverless read-only environments (e.g., Vercel production), filesystem writes can fail gracefully
+    console.warn("Local filesystem write skipped (serverless environment):", fsErr);
+  }
 }
 
 // Authorization check helper

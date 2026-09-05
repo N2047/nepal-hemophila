@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { User, Role } from "@/types";
 import { initialUsers } from "@/data/mockData";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { authService } from "@/services/supabase/authService";
 
 interface AuthContextType {
   user: User | null;
@@ -10,7 +12,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loginAs: (targetRole: Role) => void;
   loginWithEmail: (email: string) => boolean;
-  loginWithCredentials: (email: string, password: string) => { success: boolean; message?: string; role?: Role };
+  loginWithCredentials: (email: string, password: string) => Promise<{ success: boolean; message?: string; role?: Role }>;
   logout: () => void;
   availableUsers: User[];
   hasRole: (roles: Role[]) => boolean;
@@ -23,14 +25,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(initialUsers[0]);
 
   useEffect(() => {
-    const savedUserId = localStorage.getItem("nhs_auth_user_id");
-    if (savedUserId) {
-      if (savedUserId === "public") {
-        setUser(null);
-      } else {
-        const found = initialUsers.find((u) => u.id === savedUserId);
-        if (found) setUser(found);
+    const checkLocalAuth = () => {
+      const savedUserId = localStorage.getItem("nhs_auth_user_id");
+      if (savedUserId) {
+        if (savedUserId === "public") {
+          setUser(null);
+        } else {
+          const found = initialUsers.find((u) => u.id === savedUserId);
+          if (found) setUser(found);
+        }
       }
+    };
+
+    if (isSupabaseConfigured()) {
+      authService.getCurrentUser().then((supaUser) => {
+        if (supaUser) {
+          setUser(supaUser);
+        } else {
+          checkLocalAuth();
+        }
+      }).catch(() => checkLocalAuth());
+    } else {
+      checkLocalAuth();
     }
   }, []);
 
@@ -47,10 +63,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const loginWithCredentials = (email: string, password: string): { success: boolean; message?: string; role?: Role } => {
+  const loginWithCredentials = async (email: string, password: string): Promise<{ success: boolean; message?: string; role?: Role }> => {
     const cleanEmail = email.trim().toLowerCase();
     const cleanPass = password.trim();
 
+    // 1. If Supabase is configured, attempt Supabase Auth first
+    if (isSupabaseConfigured()) {
+      try {
+        const supaRes = await authService.login(email, password);
+        if (supaRes.user) {
+          setUser(supaRes.user);
+          localStorage.setItem("nhs_auth_user_id", supaRes.user.id);
+          localStorage.setItem("nhs_admin_session", "unlocked");
+          return { success: true, role: supaRes.user.role };
+        }
+      } catch (err) {
+        console.warn("Supabase auth attempted, falling back to local accounts:", err);
+      }
+    }
+
+    // 2. Local fallback accounts
     const found = initialUsers.find(
       (u) =>
         u.email.toLowerCase() === cleanEmail ||
@@ -93,8 +125,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
+    if (isSupabaseConfigured()) {
+      authService.logout().catch(() => {});
+    }
     setUser(null);
     localStorage.setItem("nhs_auth_user_id", "public");
+    localStorage.removeItem("nhs_admin_session");
   };
 
   const currentRole: Role = user?.role || "PUBLIC_USER";

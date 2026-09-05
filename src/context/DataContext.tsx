@@ -36,6 +36,13 @@ import {
   initialAuditLogs,
 } from "@/data/mockData";
 import { useAuth } from "./AuthContext";
+import { 
+  inventoryService, 
+  supportService, 
+  membershipService, 
+  donationsService, 
+  patientsService 
+} from "@/services/supabase";
 
 interface DataContextType {
   // Treatment Centres
@@ -303,6 +310,12 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       })
     );
     logAudit("UPDATE_FACTOR_STATUS", "FactorInventoryItem", id, `Status updated to ${status} (${approxUnits || "N/A"})`);
+    // Sync with Supabase factor_inventory and history
+    inventoryService.update(id, {
+      status,
+      notes,
+      verifiedBy: user?.name ? `${user.name} (${user.role})` : "Medical Coordinator",
+    }).catch((e) => console.warn("Supabase factor inventory update fallback:", e));
   };
 
   // 3. News CRUD
@@ -638,6 +651,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     };
     setSupportRequests((prev) => [newReq, ...prev]);
     logAudit("SUBMIT_SUPPORT_REQUEST", "SupportRequest", newReq.id, `New support ticket: ${tracking} (${req.urgency})`);
+    // Sync with Supabase support_requests
+    supportService.submit(newReq).catch((e) => console.warn("Supabase support request fallback:", e));
     return newReq;
   };
 
@@ -661,6 +676,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       )
     );
     logAudit("UPDATE_SUPPORT_STATUS", "SupportRequest", id, `Status updated to ${status}`);
+    supportService.updateStatus(id, status, notes).catch((e) => console.warn("Supabase support update fallback:", e));
   };
 
   // Membership Applications
@@ -677,6 +693,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     };
     setMembershipApplications((prev) => [newApp, ...prev]);
     logAudit("SUBMIT_MEMBERSHIP_APPLICATION", "MembershipApplication", newApp.id, `Application submitted: ${appNum} (${app.fullName})`);
+    // Sync with Supabase membership_applications
+    membershipService.submit(newApp).catch((e) => console.warn("Supabase membership submit fallback:", e));
     return newApp;
   };
 
@@ -700,6 +718,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       )
     );
     logAudit("UPDATE_MEMBERSHIP_STATUS", "MembershipApplication", id, `Membership status updated to ${status}`);
+    membershipService.updateStatus(id, status, notes).catch((e) => console.warn("Supabase membership update fallback:", e));
   };
 
   // Donations
@@ -716,6 +735,15 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     };
     setDonations((prev) => [newDonation, ...prev]);
     logAudit("PROCESS_DONATION", "DonationRecord", newDonation.id, `Received ${donation.currency} ${donation.amount.toLocaleString()} via ${donation.paymentMethod}`);
+    // Sync with Supabase donations
+    donationsService.record({
+      donorName: donation.donorName,
+      amount: donation.amount,
+      currency: donation.currency,
+      paymentMethod: donation.paymentMethod,
+      transactionReference: donation.transactionReference,
+      donationType: donation.donationType,
+    }).catch((e) => console.warn("Supabase donation sync fallback:", e));
     return newDonation;
   };
 
@@ -736,6 +764,8 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   const addPatientRecord = (record: PatientRegistryRecord) => {
     setPatientRegistry((prev) => [record, ...prev]);
     logAudit("ADD_PATIENT_RECORD", "PatientRegistryRecord", record.id, `Added patient registry code: ${record.patientCode}`);
+    // Sync with Supabase patients (Strictly protected)
+    patientsService.create(record).catch((e) => console.warn("Supabase patient registry sync fallback:", e));
   };
 
   // Aggregated Stats
