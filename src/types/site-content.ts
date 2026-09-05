@@ -9,6 +9,7 @@ export interface NoticeItem {
   isUrgent: boolean;
   isActive: boolean;
   authorName?: string;
+  imageUrl?: string;
   attachmentUrl?: string;
   created_at: string;
   updated_at: string;

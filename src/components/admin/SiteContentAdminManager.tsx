@@ -27,7 +27,10 @@ import {
   Building2,
   Activity,
   Award,
-  Target
+  Target,
+  Image as ImageIcon,
+  UploadCloud,
+  X
 } from "lucide-react";
 import Link from "next/link";
 
@@ -70,7 +73,42 @@ export function SiteContentAdminManager() {
   const [noticeCategory, setNoticeCategory] = useState<any>("सूचना");
   const [noticeIsUrgent, setNoticeIsUrgent] = useState(false);
   const [noticeDate, setNoticeDate] = useState(new Date().toISOString().split("T")[0]);
+  const [noticeImageUrl, setNoticeImageUrl] = useState("");
+  const [isUploadingNoticeImage, setIsUploadingNoticeImage] = useState(false);
+  const [noticeUploadError, setNoticeUploadError] = useState("");
   const [deletingNotice, setDeletingNotice] = useState<NoticeItem | null>(null);
+
+  // Handle Notice Image Upload (Optional / ऐच्छिक)
+  const handleNoticeImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploadingNoticeImage(true);
+      setNoticeUploadError("");
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "x-user-role": role || "SUPER_ADMIN",
+        },
+        body: formData,
+      });
+
+      const json = await res.json();
+      if (res.ok && json.success && json.url) {
+        setNoticeImageUrl(json.url);
+      } else {
+        setNoticeUploadError(json.message || "तस्बिर अपलोड हुन सकेन।");
+      }
+    } catch (err: any) {
+      setNoticeUploadError(err.message || "तस्बिर अपलोड गर्दा त्रुटि भयो।");
+    } finally {
+      setIsUploadingNoticeImage(false);
+    }
+  };
 
   // Vision & Mission local form state
   const [vmVisionNp, setVmVisionNp] = useState(visionMission.visionNp);
@@ -127,6 +165,8 @@ export function SiteContentAdminManager() {
     setNoticeCategory("सूचना");
     setNoticeIsUrgent(false);
     setNoticeDate(new Date().toISOString().split("T")[0]);
+    setNoticeImageUrl("");
+    setNoticeUploadError("");
     setIsNoticeModalOpen(true);
   };
 
@@ -139,6 +179,8 @@ export function SiteContentAdminManager() {
     setNoticeCategory(notice.category);
     setNoticeIsUrgent(notice.isUrgent);
     setNoticeDate(notice.publishDate);
+    setNoticeImageUrl(notice.imageUrl || "");
+    setNoticeUploadError("");
     setIsNoticeModalOpen(true);
   };
 
@@ -155,6 +197,7 @@ export function SiteContentAdminManager() {
         category: noticeCategory,
         isUrgent: noticeIsUrgent,
         publishDate: noticeDate,
+        imageUrl: noticeImageUrl.trim() || undefined,
       });
     } else {
       await addNotice({
@@ -166,6 +209,7 @@ export function SiteContentAdminManager() {
         isUrgent: noticeIsUrgent,
         publishDate: noticeDate,
         isActive: true,
+        imageUrl: noticeImageUrl.trim() || undefined,
         authorName: role === "SUPER_ADMIN" ? "सुपर एडमिनिस्ट्रेटर" : "एन.एच.एस. व्यवस्थापक",
       });
     }
@@ -414,6 +458,17 @@ export function SiteContentAdminManager() {
                   <h4 className="font-extrabold text-sm text-slate-900 line-clamp-2 leading-snug">
                     {notice.titleNp}
                   </h4>
+
+                  {/* तस्बिर (यदि उपलब्ध भए) */}
+                  {notice.imageUrl && (
+                    <div className="w-full h-32 rounded-xl overflow-hidden bg-slate-100 border border-slate-100 relative">
+                      <img
+                        src={notice.imageUrl}
+                        alt={notice.titleNp}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
 
                   <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
                     {notice.contentNp}
@@ -737,6 +792,84 @@ export function SiteContentAdminManager() {
                     className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-mono"
                   />
                 </div>
+              </div>
+
+              {/* तस्बिर / फोटो अपलोड (वैकल्पिक / Optional Photo Upload) */}
+              <div className="space-y-2 p-3.5 rounded-2xl bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-between">
+                  <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <ImageIcon className="w-4 h-4 text-primary" />
+                    <span>सूचनाको तस्बिर / फोटो (वैकल्पिक / Optional)</span>
+                  </label>
+                  <span className="text-[10px] font-semibold text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">
+                    ऐच्छिक (Optional)
+                  </span>
+                </div>
+                
+                <p className="text-[11px] text-slate-500 leading-tight">
+                  सूचनामा आवश्यक भए तस्बिर अपलोड गर्नुहोस्। तस्बिर नराखे पनि सूचना सामान्य रूपमा प्रकाशित हुन्छ।
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <div>
+                    <label className="flex flex-col items-center justify-center p-3 border-2 border-dashed border-slate-300 hover:border-primary rounded-xl cursor-pointer bg-white transition-colors text-center">
+                      <UploadCloud className="w-5 h-5 text-slate-400 mb-1" />
+                      <span className="text-xs font-bold text-slate-700">
+                        {isUploadingNoticeImage ? "अपलोड हुँदैछ..." : "फोटो छान्नुहोस् (Upload)"}
+                      </span>
+                      <span className="text-[10px] text-slate-400">JPG, PNG, WebP (अधिकतम 10MB)</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        disabled={isUploadingNoticeImage}
+                        onChange={handleNoticeImageUpload}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+
+                  <div className="flex flex-col justify-center space-y-1">
+                    <span className="text-[10px] font-bold text-slate-600">वा तस्बिरको सीधा लिंक (URL):</span>
+                    <input
+                      type="url"
+                      value={noticeImageUrl}
+                      onChange={(e) => setNoticeImageUrl(e.target.value)}
+                      placeholder="https://... /uploads/..."
+                      className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-mono bg-white focus:ring-2 focus:ring-primary/20"
+                    />
+                  </div>
+                </div>
+
+                {noticeUploadError && (
+                  <p className="text-xs text-rose-600 font-medium">{noticeUploadError}</p>
+                )}
+
+                {/* Image Preview */}
+                {noticeImageUrl && (
+                  <div className="relative mt-2 p-2 bg-white rounded-xl border border-slate-200 flex items-center gap-3">
+                    <img
+                      src={noticeImageUrl}
+                      alt="Notice Preview"
+                      className="w-16 h-16 object-cover rounded-lg border border-slate-200 bg-slate-100 shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[11px] font-bold text-emerald-700 block truncate">
+                        ✓ तस्बिर जोडिएको छ
+                      </span>
+                      <span className="text-[10px] text-slate-500 truncate block">
+                        {noticeImageUrl}
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setNoticeImageUrl("")}
+                      className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 text-xs font-bold transition-colors"
+                      title="तस्बिर हटाउनुहोस्"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-1">

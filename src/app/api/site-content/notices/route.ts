@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
       isUrgent: !!body.isUrgent,
       isActive: body.isActive !== false,
       authorName: body.authorName || "एन.एच.एस. सचिवालय",
+      imageUrl: body.imageUrl || "",
       attachmentUrl: body.attachmentUrl || ""
     });
 

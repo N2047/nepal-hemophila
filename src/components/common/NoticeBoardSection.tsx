@@ -88,7 +88,7 @@ export function NoticeBoardSection({ limit = 3, showTitle = true }: NoticeBoardS
               </div>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-2.5">
               <div className="flex items-center gap-2 text-[11px] text-slate-500 font-semibold">
                 <span className="px-2.5 py-0.5 rounded-md bg-slate-100 text-slate-700 font-bold">
                   {notice.category}
@@ -99,10 +99,23 @@ export function NoticeBoardSection({ limit = 3, showTitle = true }: NoticeBoardS
                 </span>
               </div>
 
-              <h3 className="text-sm font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+              {/* १. सुरुमा हेडलाइन (Headline) */}
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                 {isNepali ? notice.titleNp : notice.titleEn || notice.titleNp}
               </h3>
 
+              {/* २. अनि तस्बिर (Image - यदि उपलब्ध भए) */}
+              {notice.imageUrl && (
+                <div className="w-full h-40 rounded-xl overflow-hidden bg-slate-100 border border-slate-200 relative my-1">
+                  <img
+                    src={notice.imageUrl}
+                    alt={isNepali ? notice.titleNp : notice.titleEn || notice.titleNp}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              )}
+
+              {/* ३. सुचनाको विवरण (Content) */}
               <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
                 {isNepali ? notice.contentNp : notice.contentEn || notice.contentNp}
               </p>
@@ -119,22 +132,26 @@ export function NoticeBoardSection({ limit = 3, showTitle = true }: NoticeBoardS
       {/* Notice Detail Modal */}
       {selectedNotice && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-3xl max-w-xl w-full shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Modal Header: Headline, Category & Date */}
             <div className="bg-gradient-medical text-white p-6 flex items-start justify-between gap-4">
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-0.5 rounded-md bg-white/20 text-white font-bold text-xs uppercase">
                     {selectedNotice.category}
                   </span>
                   {selectedNotice.isUrgent && (
-                    <span className="px-2.5 py-0.5 rounded-md bg-red-600 text-white font-black text-xs">
+                    <span className="px-2.5 py-0.5 rounded-md bg-red-600 text-white font-black text-xs animate-pulse">
                       जरुरी सूचना
                     </span>
                   )}
                 </div>
-                <h3 className="text-base sm:text-lg font-bold text-white leading-snug">
+                
+                {/* १. सुरुमा हेडलाइन */}
+                <h3 className="text-lg sm:text-xl font-black text-white leading-snug">
                   {isNepali ? selectedNotice.titleNp : selectedNotice.titleEn || selectedNotice.titleNp}
                 </h3>
+                
                 <p className="text-[11px] text-slate-300 flex items-center gap-1 font-mono">
                   <Calendar className="w-3.5 h-3.5" />
                   <span>प्रकाशन मिति: {selectedNotice.publishDate}</span>
@@ -142,14 +159,27 @@ export function NoticeBoardSection({ limit = 3, showTitle = true }: NoticeBoardS
               </div>
               <button
                 onClick={() => setSelectedNotice(null)}
-                className="text-white/80 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors"
+                className="text-white/80 hover:text-white p-1.5 rounded-full hover:bg-white/10 transition-colors shrink-0"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="p-6 space-y-4 max-h-[65vh] overflow-y-auto">
-              <div className="text-xs sm:text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+            {/* Modal Body: Image first, then Detailed Content */}
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+              {/* २. अनि तस्बिर (तस्बिर भएको खण्डमा मात्र देखिने) */}
+              {selectedNotice.imageUrl && (
+                <div className="w-full rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 shadow-sm max-h-96 flex items-center justify-center">
+                  <img
+                    src={selectedNotice.imageUrl}
+                    alt={selectedNotice.titleNp}
+                    className="w-full h-auto max-h-96 object-contain"
+                  />
+                </div>
+              )}
+
+              {/* ३. सुचनाको बिस्तृत विवरण */}
+              <div className="text-xs sm:text-sm text-slate-800 leading-relaxed whitespace-pre-line">
                 {isNepali ? selectedNotice.contentNp : selectedNotice.contentEn || selectedNotice.contentNp}
               </div>
 
