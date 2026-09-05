@@ -22,6 +22,7 @@ const config: Config = {
           700: "#092440",
           800: "#061A2E",
           900: "#030D17",
+          950: "#020810",
         },
         accent: {
           DEFAULT: "#DC2626", // Blood/Hemophilia crimson red

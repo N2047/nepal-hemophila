@@ -757,18 +757,18 @@ export function UniversalCmsManager() {
     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden space-y-6">
       
       {/* Top Banner */}
-      <div className="bg-gradient-to-r from-primary-950 via-primary-900 to-slate-900 text-white p-6 sm:p-8 border-b border-primary-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[10px] uppercase tracking-wide">
+      <div className="bg-gradient-to-r from-slate-950 via-[#0B2545] to-[#134074] text-white p-6 sm:p-8 border-b-4 border-amber-400 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-md">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2.5">
+            <span className="px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-black text-[11px] uppercase tracking-wider shadow-sm">
               Central Content Management Hub
             </span>
-            <span className="text-xs text-slate-300">पूर्ण वेबसाइट व्यवस्थापन</span>
+            <span className="text-xs sm:text-sm font-bold text-amber-300">पूर्ण वेबसाइट व्यवस्थापन</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight drop-shadow-sm pt-0.5">
             वेबसाइट कन्टेन्ट तथा सामग्री व्यवस्थापन प्रणाली (CMS)
           </h2>
-          <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+          <p className="text-xs sm:text-sm font-semibold text-slate-100 max-w-3xl leading-relaxed drop-shadow-sm">
             यस प्यानलबाट कुनै पनि कोड नछोई समाचार, कार्यक्रम, स्रोत सामग्री, उपचार केन्द्र, प्रादेशिक शाखा र वेबसाइट सेटिङहरू सजिलै सम्पादन गर्न सकिन्छ।
           </p>
         </div>
@@ -776,10 +776,10 @@ export function UniversalCmsManager() {
         <div className="flex items-center gap-2 shrink-0">
           <Link
             href="/"
-            className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs flex items-center gap-1.5 transition-colors border border-white/20"
+            className="px-4 py-2.5 rounded-xl bg-white text-slate-950 hover:bg-amber-400 hover:text-slate-950 font-black text-xs flex items-center gap-2 transition-all shadow-md hover:shadow-lg border border-white/50"
           >
-            <Eye className="w-3.5 h-3.5" />
-            <span>वेबसाइट हेर्नुहोस्</span>
+            <Eye className="w-4 h-4 text-slate-950" />
+            <span>वेबसाइट हेर्नुहोस् (Live Site)</span>
           </Link>
         </div>
       </div>
