@@ -53,6 +53,8 @@ export function AccessibilityDrawer() {
     goToPreviousText,
     drillIntoFeature,
     exitToFeatures,
+    audioMode,
+    toggleAudioMode,
     isSpeaking,
     isPaused,
     speakStatus,
@@ -269,64 +271,64 @@ export function AccessibilityDrawer() {
             </div>
           </div>
 
-          {/* 5. Text-to-Speech / Read Aloud (Requirements #10, #11, #12, #13, #14) */}
+          {/* 5. Audio Mode (अडियो मोड: ON / OFF) */}
           <div className="bg-slate-50 dark:bg-slate-800/60 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
-                <Volume2 className="w-4 h-4 text-primary dark:text-teal-400" />
-                <span>{isNepali ? "आवाजमा पाठ पढ्ने (Read Aloud)" : "Text-to-Speech (Nepali & English)"}</span>
-              </span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                {isNepali ? "नेपाली र अङ्ग्रेजी" : "ne-NP / en-US"}
-              </span>
-            </div>
-
-            <p className="text-xs text-slate-600 dark:text-slate-400">
-              {isNepali
-                ? "कुनै पनि पाठ चयन गरी वा तलको बटन थिचेर आवाजमा सुन्नुहोस्।"
-                : "Listen to the active section or select any text on screen to read."}
-            </p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              <button
-                onClick={playTTS}
-                className="min-h-[44px] py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors"
-                aria-label={isNepali ? "पाठ पढ्नुहोस्" : "Read text aloud"}
-              >
-                <Play className="w-3.5 h-3.5 fill-white" />
-                <span>{isNepali ? "पढ्नुहोस्" : "Read"}</span>
-              </button>
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <div className={`p-2.5 rounded-xl transition-all ${
+                  audioMode 
+                    ? "bg-emerald-600 text-white shadow-md shadow-emerald-500/25 ring-2 ring-emerald-400" 
+                    : "bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300"
+                }`}>
+                  {audioMode ? <Volume2 className="w-5 h-5 animate-pulse" /> : <VolumeX className="w-5 h-5" />}
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>{isNepali ? "अडियो मोड (Audio Mode)" : "Audio Mode (Read Aloud)"}</span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 max-w-[240px]">
+                    {isNepali 
+                      ? "ON गरेपछि वेबसाइटको जुनसुकै फिचर वा पाठ छान्दा स्वतः आवाजमा पढिन्छ।" 
+                      : "When ON, any selected feature, button, or highlighted text is automatically read aloud."}
+                  </p>
+                </div>
+              </div>
 
               <button
-                onClick={pauseTTS}
-                disabled={!isSpeaking || isPaused}
-                className="min-h-[44px] py-2.5 px-3 rounded-xl bg-amber-600 hover:bg-amber-700 disabled:opacity-40 disabled:hover:bg-amber-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                aria-label={isNepali ? "पठन रोक्नुहोस्" : "Pause reading"}
+                id="audio-mode-toggle"
+                onClick={toggleAudioMode}
+                className={`min-h-[44px] min-w-[64px] px-4 py-2 rounded-full text-xs font-black transition-all flex items-center justify-center gap-1 border ${
+                  audioMode
+                    ? "bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700 ring-2 ring-emerald-300 shadow-md"
+                    : "bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 border-slate-300 dark:border-slate-600"
+                }`}
+                role="switch"
+                aria-checked={audioMode}
+                aria-label={isNepali ? "अडियो मोड टगल गर्नुहोस्" : "Toggle Audio Mode"}
               >
-                <Pause className="w-3.5 h-3.5 fill-white" />
-                <span>{isNepali ? "रोक्नुहोस्" : "Pause"}</span>
-              </button>
-
-              <button
-                onClick={resumeTTS}
-                disabled={!isPaused}
-                className="min-h-[44px] py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:hover:bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                aria-label={isNepali ? "पुनः सुचारु गर्नुहोस्" : "Resume reading"}
-              >
-                <Play className="w-3.5 h-3.5 fill-white" />
-                <span>{isNepali ? "सुचारु" : "Resume"}</span>
-              </button>
-
-              <button
-                onClick={stopTTS}
-                disabled={!isSpeaking && !isPaused}
-                className="min-h-[44px] py-2.5 px-3 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-40 disabled:hover:bg-rose-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                aria-label={isNepali ? "पठन बन्द गर्नुहोस्" : "Stop reading"}
-              >
-                <Square className="w-3.5 h-3.5 fill-white" />
-                <span>{isNepali ? "बन्द" : "Stop"}</span>
+                <span>{audioMode ? "ON" : "OFF"}</span>
               </button>
             </div>
+
+            {/* Live speech feedback pill when Audio Mode is ON */}
+            {audioMode && (
+              <div className="flex items-center justify-between text-xs px-3 py-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 animate-in fade-in duration-200">
+                <span className="flex items-center gap-2 truncate">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping shrink-0" />
+                  <span className="font-medium truncate">
+                    {speakStatus || (isNepali ? "कुनै पनि फिचर वा पाठ छान्नुहोस्..." : "Select any feature or text...")}
+                  </span>
+                </span>
+                {isSpeaking && (
+                  <button
+                    onClick={stopTTS}
+                    className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-200 dark:bg-emerald-800 text-emerald-900 dark:text-white hover:bg-emerald-300 transition-colors shrink-0 ml-2"
+                  >
+                    {isNepali ? "रोक्नुहोस्" : "Stop"}
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* 6. Hierarchical Feature & Content Navigation (1-Click Select vs 2-Click Drill-In) */}

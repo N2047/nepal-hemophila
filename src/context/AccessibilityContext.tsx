@@ -38,6 +38,11 @@ interface AccessibilityContextType {
   drillIntoFeature: () => void;
   exitToFeatures: () => void;
 
+  // Audio Mode (अडियो मोड: Auto-read on any feature select or text selection)
+  audioMode: boolean;
+  toggleAudioMode: () => void;
+  speakText: (text: string) => void;
+
   // Text-to-Speech (TTS)
   isSpeaking: boolean;
   isPaused: boolean;
@@ -65,6 +70,10 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   const [isDyslexicFont, setIsDyslexicFont] = useState<boolean>(false);
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState<boolean>(false);
 
+  // Audio Mode (अडियो मोड: ON / OFF)
+  const [audioMode, setAudioModeState] = useState<boolean>(false);
+  const audioModeRef = useRef<boolean>(false);
+
   // Hierarchical Navigation: Level 1 ("features") vs Level 2 ("content" inside feature)
   const [navLevel, setNavLevel] = useState<NavLevel>("features");
   const [currentTextIndex, setCurrentTextIndex] = useState<number>(-1);
@@ -91,6 +100,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       const savedMotion = localStorage.getItem("nhs_reduced_motion") === "true";
       const savedUnderline = localStorage.getItem("nhs_underline_links") === "true";
       const savedDyslexic = localStorage.getItem("nhs_dyslexic") === "true";
+      const savedAudio = localStorage.getItem("nhs_audio_mode") === "true";
 
       setTheme(savedTheme);
       setHighContrast(savedContrast);
@@ -98,6 +108,8 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       setReducedMotion(savedMotion);
       setUnderlineLinks(savedUnderline);
       setIsDyslexicFont(savedDyslexic);
+      setAudioModeState(savedAudio);
+      audioModeRef.current = savedAudio;
 
       applyDomAttributes(savedTheme, savedContrast, savedSize, savedMotion, savedUnderline, savedDyslexic);
     } catch {
@@ -265,6 +277,15 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       if (!isVisible) {
         el.scrollIntoView({ behavior: "smooth", block: "nearest" });
       }
+
+      // If Audio Mode is active, automatically read the highlighted feature/text!
+      if (audioModeRef.current) {
+        const text = el.getAttribute("aria-label") || el.innerText || el.textContent || "";
+        const clean = text.trim();
+        if (clean.length > 1) {
+          speakText(clean);
+        }
+      }
     }
   };
 
@@ -398,15 +419,139 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     }
   };
 
-  // 5. Speech Synthesis (Text-to-Speech)
-  const stopTTS = () => {
+  // 5. Speech Synthesis & Audio Mode (अडियो मोड: ON / OFF)
+  const stopTTS = useCallback(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
       setIsPaused(false);
-      setSpeakStatus("वाचन बन्द गरियो / Speech stopped");
+      setSpeakStatus("वाचन बन्द गरियो / Audio stopped");
+    }
+  }, []);
+
+  const speakText = useCallback((textToRead: string) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const cleanText = textToRead.trim().replace(/\s+/g, " ");
+    if (!cleanText || cleanText.length < 2) return;
+
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    const hasDevanagari = /[\u0900-\u097F]/.test(cleanText);
+    const voices = window.speechSynthesis.getVoices();
+
+    if (hasDevanagari) {
+      utterance.lang = "ne-NP";
+      const nepaliVoice = voices.find(
+        (v) => v.lang.includes("ne") || v.name.toLowerCase().includes("nepali") || v.lang.includes("hi")
+      );
+      if (nepaliVoice) utterance.voice = nepaliVoice;
+    } else {
+      utterance.lang = "en-US";
+      const englishVoice = voices.find(
+        (v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("US") || v.name.includes("Google"))
+      );
+      if (englishVoice) utterance.voice = englishVoice;
+    }
+
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+
+    utterance.onstart = () => {
+      setIsSpeaking(true);
+      setIsPaused(false);
+      setSpeakStatus(`पढ्दैछ: "${cleanText.slice(0, 35)}..."`);
+    };
+
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      setIsPaused(false);
+      setSpeakStatus("वाचन सम्पन्न");
+    };
+
+    utterance.onerror = () => {
+      setIsSpeaking(false);
+      setIsPaused(false);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  }, []);
+
+  const toggleAudioMode = () => {
+    const next = !audioMode;
+    setAudioModeState(next);
+    audioModeRef.current = next;
+    localStorage.setItem("nhs_audio_mode", String(next));
+
+    if (!next) {
+      stopTTS();
+      setSpeakStatus("अडियो मोड बन्द गरियो / Audio Mode OFF");
+    } else {
+      setSpeakStatus("अडियो मोड सक्रिय / Audio Mode ON");
+      speakText("अडियो मोड सक्रिय भयो। कुनै पनि फिचर वा पाठ छान्नुहोस्।");
     }
   };
+
+  // Global Auto-Reader when Audio Mode is ON:
+  // Reads any selected text (mouseup) or any focused/clicked feature (button, link, heading, card)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    let selectionTimer: NodeJS.Timeout;
+    const handleMouseUpOrSelect = () => {
+      if (!audioModeRef.current) return;
+      clearTimeout(selectionTimer);
+      selectionTimer = setTimeout(() => {
+        const sel = window.getSelection()?.toString().trim();
+        if (sel && sel.length > 1) {
+          speakText(sel);
+        }
+      }, 200);
+    };
+
+    const handleFocusOrClick = (e: Event) => {
+      if (!audioModeRef.current) return;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      // Ignore audio toggle button itself and prevent duplicate fires
+      if (target.closest("#audio-mode-toggle") || target.closest("[role='switch']")) return;
+
+      // When focusing an input, read its label/placeholder, but don't read every keystroke
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+        if (e.type === "focusin") {
+          const label = target.getAttribute("aria-label") || target.getAttribute("placeholder") || "इनपुट बक्स";
+          speakText(label);
+        }
+        return;
+      }
+
+      // If user selected text with mouse drag, let selection handler read it
+      if (window.getSelection()?.toString().trim()) return;
+
+      // Find nearest semantic readable element
+      const readable = target.closest<HTMLElement>(
+        "button, a, [role='button'], [role='menuitem'], [role='alert'], h1, h2, h3, h4, .quick-access-card, li"
+      ) || target;
+
+      const text = readable.getAttribute("aria-label") || readable.innerText || readable.textContent || "";
+      const trimmed = text.trim();
+      if (trimmed.length > 1 && trimmed.length < 350) {
+        speakText(trimmed);
+      }
+    };
+
+    document.addEventListener("mouseup", handleMouseUpOrSelect);
+    document.addEventListener("focusin", handleFocusOrClick);
+    document.addEventListener("click", handleFocusOrClick);
+
+    return () => {
+      clearTimeout(selectionTimer);
+      document.removeEventListener("mouseup", handleMouseUpOrSelect);
+      document.removeEventListener("focusin", handleFocusOrClick);
+      document.removeEventListener("click", handleFocusOrClick);
+    };
+  }, [speakText]);
 
   const pauseTTS = () => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -429,82 +574,28 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   };
 
   const playTTS = () => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      setSpeakStatus("ब्राउजरमा Speech Synthesis उपलब्ध छैन / TTS not supported in browser");
+    const sel = typeof window !== "undefined" ? window.getSelection()?.toString().trim() : "";
+    if (sel) {
+      speakText(sel);
       return;
     }
-
-    window.speechSynthesis.cancel();
-
-    let textToRead = "";
-    const userSelection = window.getSelection()?.toString().trim();
-
-    if (userSelection && userSelection.length > 0) {
-      textToRead = userSelection;
-      setSpeakStatus("चयन गरिएको पाठ पढ्दैछ / Reading selected text...");
-    } else {
-      const activeEl = document.querySelector<HTMLElement>(".accessibility-active-text");
-      if (activeEl) {
-        textToRead = activeEl.innerText || activeEl.textContent || "";
-        setSpeakStatus(`पाठ पढ्दैछ: "${textToRead.slice(0, 30)}..." / Reading...`);
-      } else {
-        const features = scanFeatures();
-        if (features.length > 0) {
-          textToRead = features[0].innerText || "";
-          highlightElement(features[0]);
-        }
-      }
-    }
-
-    if (!textToRead || textToRead.trim().length === 0) {
-      setSpeakStatus("पढ्नका लागि कुनै पाठ भेटिएन / No readable text found");
+    const activeEl = document.querySelector<HTMLElement>(".accessibility-active-text");
+    if (activeEl) {
+      const text = activeEl.innerText || activeEl.textContent || "";
+      speakText(text);
       return;
     }
-
-    const utterance = new SpeechSynthesisUtterance(textToRead);
-    const hasDevanagari = /[\u0900-\u097F]/.test(textToRead);
-    const voices = window.speechSynthesis.getVoices();
-
-    if (hasDevanagari) {
-      utterance.lang = "ne-NP";
-      const nepaliVoice = voices.find(
-        (v) => v.lang.includes("ne") || v.name.toLowerCase().includes("nepali")
-      );
-      if (nepaliVoice) utterance.voice = nepaliVoice;
-    } else {
-      utterance.lang = "en-US";
-      const englishVoice = voices.find(
-        (v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("US"))
-      );
-      if (englishVoice) utterance.voice = englishVoice;
+    const features = scanFeatures();
+    if (features.length > 0) {
+      speakText(features[0].innerText || "");
     }
-
-    utterance.rate = 0.95;
-    utterance.pitch = 1.0;
-
-    utterance.onstart = () => {
-      setIsSpeaking(true);
-      setIsPaused(false);
-    };
-
-    utterance.onend = () => {
-      setIsSpeaking(false);
-      setIsPaused(false);
-      setSpeakStatus("वाचन सम्पन्न भयो / Reading completed");
-    };
-
-    utterance.onerror = () => {
-      setIsSpeaking(false);
-      setIsPaused(false);
-      setSpeakStatus("वाचन त्रुटि / Speech error");
-    };
-
-    window.speechSynthesis.speak(utterance);
   };
 
   // 6. Reset All Settings
   const resetAccessibility = () => {
     stopTTS();
+    setAudioModeState(false);
+    audioModeRef.current = false;
     setTheme("light");
     setHighContrast(false);
     setFontSizeState("normal");
@@ -525,6 +616,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     localStorage.removeItem("nhs_reduced_motion");
     localStorage.removeItem("nhs_underline_links");
     localStorage.removeItem("nhs_dyslexic");
+    localStorage.removeItem("nhs_audio_mode");
 
     applyDomAttributes("light", false, "normal", false, false, false);
     setSpeakStatus("सबै पहुँच सेटिङहरू पूर्वनिर्धारित अवस्थामा फर्काइयो");
@@ -546,6 +638,9 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
         toggleReducedMotion,
         underlineLinks,
         toggleUnderlineLinks,
+        audioMode,
+        toggleAudioMode,
+        speakText,
         navLevel,
         currentTextIndex,
         totalTextBlocks,
