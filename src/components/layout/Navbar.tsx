@@ -159,15 +159,15 @@ export function Navbar() {
         </div>
 
         {/* ======================================================== */}
-        {/* TIER 2: Dedicated Navigation Bar for Features & Menus   */}
+        {/* TIER 2: Secondary Navigation Bar with Oval Pill Badges   */}
         {/* ======================================================== */}
-        <div className="hidden lg:block bg-[#0A2540] dark:bg-slate-950 border-t border-primary-800/80 shadow-md">
+        <div className="hidden lg:block bg-white dark:bg-slate-900 border-t border-b border-slate-200/90 dark:border-slate-800 py-1.5 shadow-xs">
           <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex items-center justify-between">
               
-              {/* Desktop Navigation Links with Accessible Hierarchical Menus */}
+              {/* Desktop Navigation Links with Oval Pill Badges */}
               <nav 
-                className="flex items-center space-x-1 py-1 font-bold text-xs sm:text-sm text-white"
+                className="flex items-center flex-wrap gap-2 font-bold text-xs sm:text-sm"
                 aria-label={isNepali ? "मुख्य मेनु" : "Main Navigation"}
               >
                 
@@ -200,12 +200,14 @@ export function Navbar() {
                     }}
                     aria-haspopup="true"
                     aria-expanded={activeMegaMenu === "about"}
-                    className={`px-3 py-2 rounded-md hover:text-amber-300 hover:bg-white/10 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
-                      activeMegaMenu === "about" ? "text-amber-300 bg-white/15 ring-1 ring-white/30" : "text-white"
+                    className={`group px-4 py-1.5 rounded-full flex items-center gap-1.5 transition-all text-xs sm:text-sm font-extrabold focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xs ${
+                      activeMegaMenu === "about"
+                        ? "bg-blue-700 text-white shadow-md ring-2 ring-blue-300"
+                        : "bg-blue-50/90 hover:bg-blue-600 text-blue-900 hover:text-white dark:bg-blue-950/60 dark:text-blue-200 border border-blue-200 dark:border-blue-800"
                     }`}
                   >
                     <span>{t("nav.about")}</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${activeMegaMenu === "about" ? "rotate-180 text-white" : "text-blue-600 dark:text-blue-300 group-hover:text-white"}`} />
                   </button>
 
                 {activeMegaMenu === "about" && (
@@ -393,12 +395,14 @@ export function Navbar() {
                   }}
                   aria-haspopup="true"
                   aria-expanded={activeMegaMenu === "hemo"}
-                  className={`px-3 py-2 rounded-md hover:text-amber-300 hover:bg-white/10 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
-                    activeMegaMenu === "hemo" ? "text-amber-300 bg-white/15 ring-1 ring-white/30" : "text-white"
+                  className={`group px-4 py-1.5 rounded-full flex items-center gap-1.5 transition-all text-xs sm:text-sm font-extrabold focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-xs ${
+                    activeMegaMenu === "hemo"
+                      ? "bg-rose-700 text-white shadow-md ring-2 ring-rose-300"
+                      : "bg-rose-50/90 hover:bg-rose-600 text-rose-900 hover:text-white dark:bg-rose-950/60 dark:text-rose-200 border border-rose-200 dark:border-rose-800"
                   }`}
                 >
                   <span>{t("nav.hemophilia")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${activeMegaMenu === "hemo" ? "rotate-180 text-white" : "text-rose-600 dark:text-rose-300 group-hover:text-white"}`} />
                 </button>
 
                 {activeMegaMenu === "hemo" && (
@@ -683,12 +687,14 @@ export function Navbar() {
                   }}
                   aria-haspopup="true"
                   aria-expanded={activeMegaMenu === "services"}
-                  className={`px-3 py-2 rounded-md hover:text-amber-300 hover:bg-white/10 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
-                    activeMegaMenu === "services" ? "text-amber-300 bg-white/15 ring-1 ring-white/30" : "text-white"
+                  className={`group px-4 py-1.5 rounded-full flex items-center gap-1.5 transition-all text-xs sm:text-sm font-extrabold focus:outline-none focus:ring-2 focus:ring-emerald-500 shadow-xs ${
+                    activeMegaMenu === "services"
+                      ? "bg-emerald-700 text-white shadow-md ring-2 ring-emerald-300"
+                      : "bg-emerald-50/90 hover:bg-emerald-600 text-emerald-900 hover:text-white dark:bg-emerald-950/60 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800"
                   }`}
                 >
                   <span>{t("nav.services")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-150 ${activeMegaMenu === "services" ? "rotate-180 text-white" : "text-emerald-600 dark:text-emerald-300 group-hover:text-white"}`} />
                 </button>
 
                 {activeMegaMenu === "services" && (
@@ -889,7 +895,7 @@ export function Navbar() {
                     document.getElementById("nav-btn-services")?.focus();
                   }
                 }}
-                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="px-4 py-1.5 rounded-full bg-cyan-50/90 hover:bg-cyan-700 text-cyan-950 hover:text-white dark:bg-cyan-950/60 dark:text-cyan-200 border border-cyan-200 dark:border-cyan-800 transition-all shadow-xs text-xs sm:text-sm font-extrabold focus:outline-none focus:ring-2 focus:ring-cyan-500"
               >
                 {t("nav.healthcarePros")}
               </Link>
@@ -908,7 +914,7 @@ export function Navbar() {
                     document.getElementById("nav-link-hcp")?.focus();
                   }
                 }}
-                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="px-4 py-1.5 rounded-full bg-purple-50/90 hover:bg-purple-700 text-purple-950 hover:text-white dark:bg-purple-950/60 dark:text-purple-200 border border-purple-200 dark:border-purple-800 transition-all shadow-xs text-xs sm:text-sm font-extrabold focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 {t("nav.registry")}
               </Link>
@@ -927,7 +933,7 @@ export function Navbar() {
                     document.getElementById("nav-link-registry")?.focus();
                   }
                 }}
-                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="px-4 py-1.5 rounded-full bg-amber-50/90 hover:bg-amber-600 text-amber-950 hover:text-white dark:bg-amber-950/60 dark:text-amber-200 border border-amber-200 dark:border-amber-800 transition-all shadow-xs text-xs sm:text-sm font-extrabold focus:outline-none focus:ring-2 focus:ring-amber-500"
               >
                 {t("nav.resources")}
               </Link>
@@ -943,26 +949,26 @@ export function Navbar() {
                     document.getElementById("nav-link-resources")?.focus();
                   }
                 }}
-                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
+                className="px-4 py-1.5 rounded-full bg-orange-50/90 hover:bg-orange-600 text-orange-950 hover:text-white dark:bg-orange-950/60 dark:text-orange-200 border border-orange-200 dark:border-orange-800 transition-all shadow-xs text-xs sm:text-sm font-extrabold focus:outline-none focus:ring-2 focus:ring-orange-500"
               >
                 {t("nav.news")}
               </Link>
             </nav>
 
             {/* Quick Navigation Shortcuts on Tier 2 Right */}
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 py-1 shrink-0">
+            <div className="flex items-center gap-2 py-1 shrink-0">
               <Link 
                 href="/treatment-centres" 
-                className="px-2.5 py-1.5 rounded-md hover:bg-white/15 hover:text-amber-300 transition-colors flex items-center gap-1 text-slate-200"
+                className="group px-3.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-600 text-rose-800 hover:text-white border border-rose-200 dark:bg-rose-950/40 dark:border-rose-800 transition-all flex items-center gap-1.5 text-xs font-bold shadow-xs"
               >
-                <Building2 className="w-3.5 h-3.5 text-red-400" />
+                <Building2 className="w-3.5 h-3.5 text-rose-600 group-hover:text-white shrink-0" />
                 <span>{isNepali ? "उपचार केन्द्रहरू" : "Treatment Centres"}</span>
               </Link>
               <Link 
                 href="/factor-availability" 
-                className="px-2.5 py-1.5 rounded-md hover:bg-white/15 hover:text-amber-300 transition-colors flex items-center gap-1 text-slate-200"
+                className="group px-3.5 py-1.5 rounded-full bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white border border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800 transition-all flex items-center gap-1.5 text-xs font-bold shadow-xs"
               >
-                <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                <Activity className="w-3.5 h-3.5 text-emerald-600 group-hover:text-white shrink-0" />
                 <span>{isNepali ? "फ्याक्टर मौज्दात" : "Factor Stock"}</span>
               </Link>
             </div>
