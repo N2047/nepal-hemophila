@@ -25,7 +25,8 @@ import {
   Building2,
   Compass,
   History,
-  ShieldCheck
+  ShieldCheck,
+  ChevronDown
 } from "lucide-react";
 import { GlobalSearchModal } from "@/components/common/GlobalSearchModal";
 import { EmergencyModal } from "@/components/common/EmergencyModal";
@@ -39,6 +40,11 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [emergencyOpen, setEmergencyOpen] = useState(false);
   const [menuDropdownOpen, setMenuDropdownOpen] = useState(false);
+  const [openCategory, setOpenCategory] = useState<string | null>(null);
+
+  const toggleCategory = (catId: string) => {
+    setOpenCategory(prev => prev === catId ? null : catId);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -220,530 +226,800 @@ export function Navbar() {
                   </button>
                 </div>
 
-                {/* All 7 Main Categories from Previous Navigation + Hospital Services (८ वटा ठाडो ब्लकहरू) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                  
+                {/* Vertical Accordion List: १, २, ३... बुदागत हेडिंगहरू - क्लिक गर्दा सब-हेडिङहरू खुल्ने */}
+                <div className="max-w-4xl mx-auto space-y-3" role="list">
+
+                  {/* ========================================================= */}
                   {/* १. हाम्रो बारेमा (About Us) */}
-                  <div className="flex flex-col space-y-3 bg-slate-50/50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <Users className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "हाम्रो बारेमा" : "About Us"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1 text-xs">
-                      {/* १. संस्थागत विवरण */}
-                      <Link
-                        href="/about#overview"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Compass className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "about" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("about")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "about"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "१" : "1"}
+                        </span>
                         <div>
-                          <div className="font-bold">{isNepali ? "संस्थागत विवरण" : "Overview & Vision"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "भिजन, मिसन र उद्देश्य" : "Vision, mission & objectives"}</div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Users className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "१. हाम्रो बारेमा" : "1. About Us"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "संस्थागत विवरण, इतिहास, नेतृत्व, प्रदेश शाखाहरू, सुशासन र सम्पर्क" : "Vision, history, leadership, provincial chapters, governance & contact"}
+                          </p>
                         </div>
-                      </Link>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "८ उपशीर्षक" : "8 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "about" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
 
-                      {/* २. इतिहास */}
-                      <Link
-                        href="/about#history"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <History className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "इतिहास" : "History in Nepal"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "१९९२ देखिको इतिहास" : "Milestones since 1992"}</div>
-                        </div>
-                      </Link>
-
-                      {/* ३. नेतृत्व तथा सल्लाहकार */}
-                      <Link
-                        href="/about#leadership"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Users className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "नेतृत्व तथा सल्लाहकार" : "Leadership & Advisors"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "कार्यसमिति र सल्लाहकारहरू" : "Board & medical advisors"}</div>
-                        </div>
-                      </Link>
-
-                      {/* ४. ७ प्रदेश शाखाहरू */}
-                      <Link
-                        href="/about#provinces"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <MapPin className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "७ प्रदेश शाखाहरू" : "7 Provincial Chapters"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "प्रदेश स्तरीय सम्पर्क" : "7 provincial presence"}</div>
-                        </div>
-                      </Link>
-
-                      {/* ५. सुशासन र नीतिहरू */}
-                      <Link
-                        href="/about#governance"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <ShieldCheck className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "सुशासन र नीतिहरू" : "Governance & Ethics"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "आचारसंहिता र नीतिहरू" : "Ethics & operational policies"}</div>
-                        </div>
-                      </Link>
-
-                      {/* ६. पारदर्शिता प्रतिवेदन */}
-                      <Link
-                        href="/transparency"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "पारदर्शिता प्रतिवेदन" : "Transparency & Audit"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "लेखापरीक्षण र विवरण" : "Audited financials"}</div>
-                        </div>
-                      </Link>
-
-                      {/* ७. सदस्यता आवेदन */}
-                      {features.onlineMembershipForm && (
+                    {openCategory === "about" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
                         <Link
-                          href="/membership"
+                          href="/about#overview"
                           onClick={() => setMenuDropdownOpen(false)}
-                          className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
                         >
-                          <Sparkles className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <Compass className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
                           <div>
-                            <div className="font-bold">{isNepali ? "सदस्यता आवेदन" : "Membership"}</div>
-                            <div className="text-[11px] text-slate-500">{isNepali ? "अनलाइन फारम" : "Online member form"}</div>
+                            <div className="font-bold text-xs">{isNepali ? "संस्थागत विवरण" : "Overview & Vision"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "भिजन, मिसन र उद्देश्य" : "Vision, mission & objectives"}</div>
                           </div>
                         </Link>
-                      )}
 
-                      {/* ८. सम्पर्क तथा ठेगाना */}
-                      <Link
-                        href="/contact"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Building2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "सम्पर्क तथा ठेगाना" : "Contact & Office"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "अनामनगर, काठमाडौं" : "Anamnagar, Kathmandu"}</div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* २. हेमोफिलिया तथा रक्तस्राव विकार (Hemophilia & Bleeding Disorders) */}
-                  <div className="flex flex-col space-y-3 bg-slate-50/50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <Activity className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "हेमोफिलिया तथा विकार" : "Bleeding Disorders"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1 text-xs">
-                      <Link
-                        href="/hemophilia"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <HelpCircle className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "हेमोफिलिया के हो?" : "What is Hemophilia?"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "परिभाषा र कारणहरू" : "Basics & genetics"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/hemophilia#types"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Activity className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "प्रकार र गम्भीरता" : "Types & Severity"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "हेमोफिलिया A, B र फ्याक्टर स्तर" : "Types A, B & levels"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/hemophilia#symptoms"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Stethoscope className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "लक्षण तथा पहिचान" : "Symptoms & Signs"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "जोर्नी रक्तस्राव र परीक्षण" : "Joint bleeds & diagnosis"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/emergency"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl bg-red-100/70 dark:bg-red-950/50 border border-red-200 dark:border-red-900/60 text-red-800 dark:text-red-300 hover:bg-red-100 transition-colors group flex items-start gap-2"
-                      >
-                        <ShieldAlert className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold flex items-center gap-1">
-                            <span>{isNepali ? "आपतकालीन प्राथमिक उपचार" : "Emergency Care"}</span>
-                            <span className="px-1 py-0.2 bg-red-600 text-white rounded text-[9px] font-black">🚨 SOS</span>
+                        <Link
+                          href="/about#history"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <History className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "इतिहास" : "History in Nepal"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "१९९२ देखिको इतिहास" : "Milestones since 1992"}</div>
                           </div>
-                          <div className="text-[11px] text-red-600 dark:text-red-400">{isNepali ? "RICE विधि र तत्काल गर्ने काम" : "Immediate RICE action"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/hemophilia#rare"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <BookOpen className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "अन्य दुर्लभ रक्त विकार" : "Rare Disorders"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "vWD, फ्याक्टर VII, XIII" : "vWD & rare factors"}</div>
-                        </div>
-                      </Link>
-                    </div>
+                        </Link>
+
+                        <Link
+                          href="/about#leadership"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Users className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "कार्यसमिति र नेतृत्व" : "Leadership & Advisors"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "केन्द्रीय समिति विवरण" : "Board & advisors"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/about#provinces"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <MapPin className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "प्रादेशिक शाखाहरू" : "7 Provincial Chapters"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "७ वटै प्रदेशका शाखाहरू" : "7 provincial presence"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/about#governance"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <ShieldCheck className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "सुशासन र नीतिहरू" : "Governance & Ethics"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "आचारसंहिता र नीतिहरू" : "Ethics & operational policies"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/transparency"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <FileText className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "पारदर्शिता प्रतिवेदन" : "Transparency & Audit"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "लेखापरीक्षण र विवरण" : "Audited financials"}</div>
+                          </div>
+                        </Link>
+
+                        {features.onlineMembershipForm && (
+                          <Link
+                            href="/membership"
+                            onClick={() => setMenuDropdownOpen(false)}
+                            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                          >
+                            <Sparkles className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-bold text-xs">{isNepali ? "सदस्यता आवेदन" : "Membership"}</div>
+                              <div className="text-[10px] text-slate-500">{isNepali ? "अनलाइन फारम" : "Online member form"}</div>
+                            </div>
+                          </Link>
+                        )}
+
+                        <Link
+                          href="/contact"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Building2 className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "सम्पर्क तथा ठेगाना" : "Contact & Office"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "अनामनगर, काठमाडौं" : "Anamnagar, Kathmandu"}</div>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
                   </div>
 
+                  {/* ========================================================= */}
+                  {/* २. हेमोफिलिया तथा रक्तस्राव विकार (Hemophilia & Disorders) */}
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "hemo" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("hemo")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "hemo"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "२" : "2"}
+                        </span>
+                        <div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Activity className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "२. हेमोफिलिया तथा विकार" : "2. Bleeding Disorders"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "हेमोफिलिया के हो, प्रकार, लक्षण तथा पहिचान, आपतकालीन उपचार र दुर्लभ विकार" : "Definition, types, symptoms, emergency RICE care & rare bleeding disorders"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "५ उपशीर्षक" : "5 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "hemo" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
+
+                    {openCategory === "hemo" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                        <Link
+                          href="/hemophilia"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <HelpCircle className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "हेमोफिलिया के हो?" : "What is Hemophilia?"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "परिभाषा र कारणहरू" : "Basics & genetics"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/hemophilia#types"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Activity className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "प्रकार र गम्भीरता" : "Types & Severity"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "हेमोफिलिया A, B र फ्याक्टर स्तर" : "Types A, B & factor levels"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/hemophilia#symptoms"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Stethoscope className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "लक्षण तथा पहिचान" : "Symptoms & Signs"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "जोर्नी रक्तस्राव र परीक्षण" : "Joint bleeds & diagnosis"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/emergency"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-red-100/80 dark:bg-red-950/60 border border-red-300 dark:border-red-900 text-red-800 dark:text-red-200 hover:bg-red-200/80 transition-colors group flex items-start gap-2.5 shadow-2xs"
+                        >
+                          <ShieldAlert className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs flex items-center gap-1.5">
+                              <span>{isNepali ? "आपतकालीन प्राथमिक उपचार" : "Emergency Care"}</span>
+                              <span className="px-1 py-0.2 bg-red-600 text-white rounded text-[9px] font-black">🚨 SOS</span>
+                            </div>
+                            <div className="text-[10px] text-red-700 dark:text-red-300">{isNepali ? "RICE विधि र तत्काल गर्ने काम" : "Immediate RICE action"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/hemophilia#rare"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <BookOpen className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "अन्य दुर्लभ रक्त विकार" : "Rare Bleeding Disorders"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "vWD, फ्याक्टर VII, XIII" : "vWD & rare clotting factors"}</div>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ========================================================= */}
                   {/* ३. बिरामी तथा परिवार सेवाहरू (Patient & Family Services) */}
-                  <div className="flex flex-col space-y-3 bg-slate-50/50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <Heart className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "बिरामी तथा परिवार सेवाहरू" : "Patient Services"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1 text-xs">
-                      <Link
-                        href="/services/get-support"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <ShieldAlert className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "services" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("services")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "services"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "३" : "3"}
+                        </span>
                         <div>
-                          <div className="font-bold">{isNepali ? "आकस्मिक सहयोग अनुरोध" : "Get Emergency Support"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "तत्काल फ्याक्टर समन्वय" : "Urgent factor help"}</div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Heart className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "३. बिरामी तथा परिवार सेवाहरू" : "3. Patient & Family Services"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "आकस्मिक सहयोग, उपचार केन्द्र, फ्याक्टर मौज्दात, एआई स्वास्थ्य सहयोगी र बिरामी पोर्टल" : "Emergency support, HTC centers, stock status, AI assistant & patient portal"}
+                          </p>
                         </div>
-                      </Link>
-                      <Link
-                        href="/treatment-centres"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Building2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "उपचार केन्द्र खोज्नुहोस्" : "Treatment Centres"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "देशभरका एचटीसी र अस्पतालहरू" : "HTCs across Nepal"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/factor-availability"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Activity className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "फ्याक्टर मौज्दात स्थिति" : "Factor Stock Tracker"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "प्रत्यक्ष अस्पताल मौज्दात" : "Hospital inventory"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/services"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Bot className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "एआई स्वास्थ्य सहयोगी" : "AI Assistant"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "२४ घण्टा स्वास्थ्य प्रश्नोत्तर" : "24/7 AI chat support"}</div>
-                        </div>
-                      </Link>
-                      {isAuthenticated && (
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "५ उपशीर्षक" : "5 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "services" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
+
+                    {openCategory === "services" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
                         <Link
-                          href={isAdminOrStaff ? "/admin" : role === "PATIENT" ? "/portal/patient" : "/portal/member"}
+                          href="/services/get-support"
                           onClick={() => setMenuDropdownOpen(false)}
-                          className="p-2 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-slate-950 transition-colors group flex items-start gap-2 font-black border border-yellow-500 shadow-xs"
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
                         >
-                          <LayoutDashboard className="w-3.5 h-3.5 text-slate-950 shrink-0 mt-0.5" />
+                          <ShieldAlert className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
                           <div>
-                            <div className="text-slate-950">{isAdminOrStaff ? "Admin CMS" : isNepali ? "मेरो पोर्टल" : "My Portal"}</div>
-                            <div className="text-[11px] font-medium text-slate-800">{isAdminOrStaff ? "व्यवस्थापन प्यानल" : isNepali ? "उपचार इतिहास र डोज लग" : "Infusion history & log"}</div>
+                            <div className="font-bold text-xs">{isNepali ? "आकस्मिक सहयोग अनुरोध" : "Get Emergency Support"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "तत्काल फ्याक्टर समन्वय" : "Urgent factor coordination"}</div>
                           </div>
                         </Link>
-                      )}
-                    </div>
+
+                        <Link
+                          href="/treatment-centres"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Building2 className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "उपचार केन्द्र खोज्नुहोस्" : "Treatment Centres"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "देशभरका एचटीसी र अस्पतालहरू" : "HTCs across Nepal"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/factor-availability"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Activity className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "फ्याक्टर मौज्दात स्थिति" : "Factor Stock Tracker"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "प्रत्यक्ष अस्पताल मौज्दात" : "Hospital factor inventory"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/services"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Bot className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "एआई स्वास्थ्य सहयोगी" : "AI Assistant"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "२४ घण्टा स्वास्थ्य प्रश्नोत्तर" : "24/7 AI chat support"}</div>
+                          </div>
+                        </Link>
+
+                        {isAuthenticated && (
+                          <Link
+                            href={isAdminOrStaff ? "/admin" : role === "PATIENT" ? "/portal/patient" : "/portal/member"}
+                            onClick={() => setMenuDropdownOpen(false)}
+                            className="p-2.5 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-slate-950 transition-colors group flex items-start gap-2.5 font-bold border border-yellow-500 shadow-xs"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-slate-950 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-bold text-xs text-slate-950">{isAdminOrStaff ? "Admin CMS" : isNepali ? "मेरो पोर्टल" : "My Portal"}</div>
+                              <div className="text-[10px] text-slate-800">{isAdminOrStaff ? "व्यवस्थापन प्यानल" : isNepali ? "उपचार इतिहास र डोज लग" : "Infusion history & log"}</div>
+                            </div>
+                          </Link>
+                        )}
+                      </div>
+                    )}
                   </div>
 
+                  {/* ========================================================= */}
                   {/* ४. स्वास्थ्यकर्मीहरूका लागि (For Healthcare Professionals) */}
-                  <div className="flex flex-col space-y-3 bg-slate-50/50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <Stethoscope className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "स्वास्थ्यकर्मीहरूका लागि" : "For Healthcare Pros"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1 text-xs">
-                      <Link
-                        href="/healthcare-professionals"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "hcp" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("hcp")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "hcp"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "४" : "4"}
+                        </span>
                         <div>
-                          <div className="font-bold">{isNepali ? "क्लिनिकल प्रोटोकल" : "Clinical Protocols"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "उपचार विधि र दिशानिर्देश" : "Evidence-based guidelines"}</div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Stethoscope className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "४. स्वास्थ्यकर्मीहरूका लागि" : "4. For Healthcare Professionals"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "क्लिनिकल प्रोटोकल, फ्याक्टर डोजिङ क्यालकुलेटर, आपतकालीन व्यवस्थापन र रेफरल दिशानिर्देश" : "Clinical protocols, dosing guide, emergency management & HTC referral pathways"}
+                          </p>
                         </div>
-                      </Link>
-                      <Link
-                        href="/healthcare-professionals#dosing"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Activity className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "फ्याक्टर डोजिङ क्यालकुलेटर" : "Factor Dosing Guide"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "तौल र फ्याक्टर हिसाब" : "Weight-based calculator"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/healthcare-professionals#emergency"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <ShieldAlert className="w-3.5 h-3.5 text-red-600 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "आपतकालीन व्यवस्थापन" : "Emergency Management"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "गम्भीर रक्तस्राव उपचार" : "Acute bleed stabilization"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/healthcare-professionals#referral"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Building2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "रेफरल तथा परामर्श" : "Referral Guidelines"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "एचटीसी समन्वय संयन्त्र" : "HTC network referral"}</div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "४ उपशीर्षक" : "4 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "hcp" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
 
-                  {/* ५. तथ्याङ्क तथा अनुसन्धान (Data & Research) */}
-                  <div className="flex flex-col space-y-3 bg-slate-50/50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <PieChart className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "तथ्याङ्क तथा अनुसन्धान" : "Data & Research"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1 text-xs">
-                      <Link
-                        href="/data-research"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <PieChart className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "राष्ट्रिय बिरामी रजिस्ट्री" : "National Registry"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "नेपालभरको दर्ता विवरण" : "Patient population data"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/data-research#statistics"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Activity className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "नेपाल हेमोफिलिया तथ्याङ्क" : "Nepal Statistics"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "प्रकार र उमेर समूह विवरण" : "Demographic breakdown"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/data-research#publications"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "अनुसन्धान तथा प्रकाशनहरू" : "Research & Papers"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "वैज्ञानिक अध्ययन र जर्नलहरू" : "Published literature"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/advocacy"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Users className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "नीति तथा पैरवी" : "Policy Advocacy"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "सरकारसँग अधिकार पैरवी" : "Government advocacy"}</div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* ६. स्रोत पुस्तकालय (Resource Library) */}
-                  <div className="flex flex-col space-y-3 bg-slate-50/50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <BookOpen className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "स्रोत पुस्तकालय" : "Resource Library"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1 text-xs">
-                      <Link
-                        href="/resources"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <BookOpen className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "स्रोत सामग्री तथा गाइड" : "Resources & Guides"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "पुस्तिका र ब्रोसर डाउनलोड" : "Brochures & manuals"}</div>
-                        </div>
-                      </Link>
-                      {features.elearningAcademy && (
+                    {openCategory === "hcp" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
                         <Link
-                          href="/elearning"
+                          href="/healthcare-professionals"
                           onClick={() => setMenuDropdownOpen(false)}
-                          className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
                         >
-                          <GraduationCap className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <FileText className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
                           <div>
-                            <div className="font-bold">{isNepali ? "ई-लर्निङ एकेडेमी" : "E-Learning Academy"}</div>
-                            <div className="text-[11px] text-slate-500">{isNepali ? "अनलाइन तालिम र कोर्सहरू" : "Online training courses"}</div>
+                            <div className="font-bold text-xs">{isNepali ? "क्लिनिकल प्रोटोकल" : "Clinical Protocols"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "उपचार विधि र दिशानिर्देश" : "Evidence-based guidelines"}</div>
                           </div>
                         </Link>
-                      )}
-                      <Link
-                        href="/resources#media"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "भिडियो तथा अडियो" : "Media Library"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "स्वास्थ्य सचेतना भिडियोहरू" : "Awareness video clips"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/accessibility-statement"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "पहुँचयोग्यता विवरण" : "Accessibility Statement"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "WCAG 2.2 अपाङ्गता सुविधा" : "WCAG 2.2 AA features"}</div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
 
-                  {/* ७. समाचार तथा कथाहरू (News & Stories) */}
-                  <div className="flex flex-col space-y-3 bg-slate-50/50 dark:bg-slate-800/40 p-3.5 rounded-2xl border border-slate-200/80 dark:border-slate-700/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-slate-200 dark:border-slate-700">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <FileText className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "समाचार तथा कथाहरू" : "News & Stories"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1 text-xs">
-                      <Link
-                        href="/news"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <FileText className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "ताजा समाचार र सुचना" : "News & Notices"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "सोसाइटीका ताजा गतिविधि" : "Official press updates"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/events"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Sparkles className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "आगामी कार्यक्रमहरू" : "Upcoming Events"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "कार्यशाला र दिवस समारोह" : "Workshops & meetings"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/news#stories"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
-                      >
-                        <Heart className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold">{isNepali ? "बिरामीका प्रेरक कथाहरू" : "Patient Stories"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "अनुभव र संघर्षका कथा" : "Living with hemophilia"}</div>
-                        </div>
-                      </Link>
-                    </div>
-                  </div>
-
-                  {/* ८. द्रुत सेवाहरू (उपचार केन्द्र तथा फ्याक्टर मौज्दात) */}
-                  <div className="flex flex-col space-y-3 bg-red-50/50 dark:bg-red-950/30 p-3.5 rounded-2xl border border-red-200 dark:border-red-900/60">
-                    <div className="flex items-center gap-2 pb-2 border-b border-red-200 dark:border-red-800">
-                      <span className="px-3 py-1 rounded-full bg-[#8A0303] text-white border border-[#6E0000] text-xs font-bold inline-flex items-center gap-1.5 shadow-xs">
-                        <Activity className="w-3.5 h-3.5" />
-                        <span>{isNepali ? "उपचार तथा फ्याक्टर सेवा" : "Treatment & Stock"}</span>
-                      </span>
-                    </div>
-                    <div className="flex flex-col space-y-1.5 text-xs">
-                      <Link
-                        href="/treatment-centres"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors group flex items-start gap-2 border border-slate-200 dark:border-slate-700"
-                      >
-                        <Building2 className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold text-red-700 dark:text-red-400">{isNepali ? "उपचार केन्द्रहरू (HTCs)" : "Treatment Centres"} 📍</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "नजिकको अस्पताल खोजी" : "Locate hospitals across Nepal"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/factor-availability"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2.5 rounded-xl bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 transition-colors group flex items-start gap-2 border border-slate-200 dark:border-slate-700"
-                      >
-                        <Activity className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
-                        <div>
-                          <div className="font-bold text-red-700 dark:text-red-400">{isNepali ? "फ्याक्टर मौज्दात स्थिति" : "Factor Stock"} 🩸</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "अस्पताल मौज्दात ट्र्याकर" : "Hospital factor inventory"}</div>
-                        </div>
-                      </Link>
-                      <Link
-                        href="/services/get-support"
-                        onClick={() => setMenuDropdownOpen(false)}
-                        className="p-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1.5 text-center shadow-xs"
-                      >
-                        <ShieldAlert className="w-3.5 h-3.5" />
-                        <span>{t("getSupport")}</span>
-                      </Link>
-                      {features.onlineDonations && (
                         <Link
-                          href="/donate"
+                          href="/healthcare-professionals#dosing"
                           onClick={() => setMenuDropdownOpen(false)}
-                          className="p-2 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold flex items-center justify-center gap-1.5 text-center shadow-xs"
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
                         >
-                          <Heart className="w-3.5 h-3.5 text-red-300 fill-red-400" />
-                          <span>{t("donate")}</span>
+                          <Activity className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "फ्याक्टर डोजिङ क्यालकुलेटर" : "Factor Dosing Guide"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "तौल र फ्याक्टर हिसाब" : "Weight-based calculator"}</div>
+                          </div>
                         </Link>
-                      )}
-                    </div>
+
+                        <Link
+                          href="/healthcare-professionals#emergency"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <ShieldAlert className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "आपतकालीन व्यवस्थापन" : "Emergency Management"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "गम्भीर रक्तस्राव उपचार" : "Acute bleed stabilization"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/healthcare-professionals#referral"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Building2 className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "रेफरल तथा परामर्श" : "Referral Guidelines"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "एचटीसी समन्वय संयन्त्र" : "HTC network referral"}</div>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ========================================================= */}
+                  {/* ५. तथ्याङ्क तथा अनुसन्धान (Data & Research) */}
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "research" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("research")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "research"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "५" : "5"}
+                        </span>
+                        <div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <PieChart className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "५. तथ्याङ्क तथा अनुसन्धान" : "5. Data & Research"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "राष्ट्रिय बिरामी रजिस्ट्री, नेपाल तथ्याङ्क, अनुसन्धान प्रकाशन र नीति पैरवी" : "National patient registry, demographic data, publications & policy advocacy"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "४ उपशीर्षक" : "4 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "research" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
+
+                    {openCategory === "research" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                        <Link
+                          href="/data-research"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <PieChart className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "राष्ट्रिय बिरामी रजिस्ट्री" : "National Registry"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "नेपालभरको दर्ता विवरण" : "Patient population data"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/data-research#statistics"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Activity className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "नेपाल तथ्याङ्क" : "Nepal Statistics"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "प्रकार र उमेर समूह विवरण" : "Demographic breakdown"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/data-research#publications"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <FileText className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "अनुसन्धान तथा प्रकाशनहरू" : "Research & Papers"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "वैज्ञानिक अध्ययन र जर्नलहरू" : "Published literature"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/advocacy"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Users className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "नीति तथा पैरवी" : "Policy Advocacy"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "सरकारसँग अधिकार पैरवी" : "Government advocacy"}</div>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ========================================================= */}
+                  {/* ६. स्रोत पुस्तकालय (Resource Library) */}
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "resources" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("resources")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "resources"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "६" : "6"}
+                        </span>
+                        <div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <BookOpen className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "६. स्रोत पुस्तकालय" : "6. Resource Library"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "स्रोत सामग्री तथा गाइड, ई-लर्निङ एकेडेमी, मिडिया पुस्तकालय र पहुँचयोग्यता" : "Guides & brochures, e-learning courses, media library & accessibility"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "४ उपशीर्षक" : "4 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "resources" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
+
+                    {openCategory === "resources" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                        <Link
+                          href="/resources"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <BookOpen className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "स्रोत सामग्री तथा गाइड" : "Resources & Guides"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "पुस्तिका र ब्रोसर डाउनलोड" : "Brochures & manuals"}</div>
+                          </div>
+                        </Link>
+
+                        {features.elearningAcademy && (
+                          <Link
+                            href="/elearning"
+                            onClick={() => setMenuDropdownOpen(false)}
+                            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                          >
+                            <GraduationCap className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-bold text-xs">{isNepali ? "ई-लर्निङ एकेडेमी" : "E-Learning Academy"}</div>
+                              <div className="text-[10px] text-slate-500">{isNepali ? "अनलाइन तालिम र कोर्सहरू" : "Online training courses"}</div>
+                            </div>
+                          </Link>
+                        )}
+
+                        <Link
+                          href="/resources#media"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <FileText className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "भिडियो तथा अडियो" : "Media Library"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "स्वास्थ्य सचेतना भिडियोहरू" : "Awareness video clips"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/accessibility-statement"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Sparkles className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "पहुँचयोग्यता विवरण" : "Accessibility"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "WCAG 2.2 अपाङ्गता सुविधा" : "WCAG 2.2 AA features"}</div>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ========================================================= */}
+                  {/* ७. समाचार तथा कथाहरू (News & Stories) */}
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "news" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("news")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "news"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "७" : "7"}
+                        </span>
+                        <div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <FileText className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "७. समाचार तथा कथाहरू" : "7. News & Stories"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "ताजा समाचार र सुचना, आगामी कार्यक्रम तथा बिरामीका प्रेरक कथाहरू" : "Latest announcements, workshops, meetings & inspiring patient stories"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "३ उपशीर्षक" : "3 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "news" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
+
+                    {openCategory === "news" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                        <Link
+                          href="/news"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <FileText className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "ताजा समाचार र सुचना" : "News & Notices"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "सोसाइटीका गतिविधि तथा सुचनाहरू" : "Official press updates"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/events"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Sparkles className="w-4 h-4 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "आगामी कार्यक्रमहरू" : "Upcoming Events"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "कार्यशाला र दिवस समारोह" : "Workshops & meetings"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/news#stories"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Heart className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs">{isNepali ? "बिरामीका प्रेरक कथाहरू" : "Patient Stories"}</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "अनुभव र संघर्षका कथा" : "Living with hemophilia"}</div>
+                          </div>
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* ========================================================= */}
+                  {/* ८. उपचार केन्द्र तथा फ्याक्टर सेवाहरू (Treatment & Stock Services) */}
+                  {/* ========================================================= */}
+                  <div className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
+                    openCategory === "treatment" 
+                      ? "border-red-600 bg-white dark:bg-slate-900 shadow-md ring-1 ring-red-500/20" 
+                      : "border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 hover:border-red-300 dark:hover:border-red-900/60 shadow-xs"
+                  }`}>
+                    <button
+                      type="button"
+                      onClick={() => toggleCategory("treatment")}
+                      className="w-full flex items-center justify-between p-3.5 sm:p-4 text-left font-bold transition-colors cursor-pointer group"
+                      aria-expanded={openCategory === "treatment"}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="w-8 h-8 rounded-xl bg-[#8A0303] text-white flex items-center justify-center text-sm font-black shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                          {isNepali ? "८" : "8"}
+                        </span>
+                        <div>
+                          <div className="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                            <Building2 className="w-4 h-4 text-[#8A0303] dark:text-red-400 shrink-0" />
+                            <span>{isNepali ? "८. उपचार केन्द्र तथा फ्याक्टर सेवा" : "8. Treatment & Stock Services"}</span>
+                          </div>
+                          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-normal">
+                            {isNepali ? "एचटीसी उपचार केन्द्र खोजी, फ्याक्टर मौज्दात ट्र्याकर, आकस्मिक सहायता र अनलाइन दान" : "HTC directory, factor stock tracker, emergency assistance & donate"}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="hidden sm:inline-block text-[11px] font-semibold text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">
+                          {isNepali ? "४ उपशीर्षक" : "4 items"}
+                        </span>
+                        <ChevronDown className={`w-5 h-5 transition-transform duration-200 ${
+                          openCategory === "treatment" ? "rotate-180 text-red-600" : "text-slate-400 group-hover:text-slate-600"
+                        }`} />
+                      </div>
+                    </button>
+
+                    {openCategory === "treatment" && (
+                      <div className="p-3 sm:p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/40 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5 animate-in fade-in slide-in-from-top-1 duration-150">
+                        <Link
+                          href="/treatment-centres"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-100 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Building2 className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs text-red-700 dark:text-red-400">{isNepali ? "उपचार केन्द्रहरू (HTCs)" : "Treatment Centres"} 📍</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "नजिकको अस्पताल खोजी" : "Locate hospitals across Nepal"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/factor-availability"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-red-50 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-100 transition-colors group flex items-start gap-2.5"
+                        >
+                          <Activity className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
+                          <div>
+                            <div className="font-bold text-xs text-red-700 dark:text-red-400">{isNepali ? "फ्याक्टर मौज्दात स्थिति" : "Factor Stock"} 🩸</div>
+                            <div className="text-[10px] text-slate-500">{isNepali ? "अस्पताल मौज्दात ट्र्याकर" : "Hospital factor inventory"}</div>
+                          </div>
+                        </Link>
+
+                        <Link
+                          href="/services/get-support"
+                          onClick={() => setMenuDropdownOpen(false)}
+                          className="p-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1.5 text-center shadow-xs text-xs"
+                        >
+                          <ShieldAlert className="w-4 h-4" />
+                          <span>{t("getSupport")}</span>
+                        </Link>
+
+                        {features.onlineDonations && (
+                          <Link
+                            href="/donate"
+                            onClick={() => setMenuDropdownOpen(false)}
+                            className="p-2.5 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold flex items-center justify-center gap-1.5 text-center shadow-xs text-xs"
+                          >
+                            <Heart className="w-4 h-4 text-red-300 fill-red-400" />
+                            <span>{t("donate")}</span>
+                          </Link>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                 </div>
