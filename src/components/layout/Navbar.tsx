@@ -22,7 +22,8 @@ import {
   Stethoscope,
   BookOpen,
   PieChart,
-  Bot
+  Bot,
+  Building2
 } from "lucide-react";
 import { GlobalSearchModal } from "@/components/common/GlobalSearchModal";
 import { EmergencyModal } from "@/components/common/EmergencyModal";
@@ -53,82 +54,159 @@ export function Navbar() {
   return (
     <>
       <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md border-b border-slate-200"
-            : "bg-white border-b border-slate-100"
+        className={`sticky top-0 z-40 w-full transition-all duration-300 shadow-md ${
+          isScrolled ? "shadow-lg" : ""
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-20">
-            
-            {/* NHS Institutional Branding */}
-            <Link 
-              href="/" 
-              className="flex items-center gap-3 group shrink-0"
-              onClick={closeMegaMenu}
-            >
-              {/* NHS Official Logo */}
-              <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-white p-1 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                <img
-                  src="/nhs-logo.jpg"
-                  alt={isNepali ? "नेपाल हेमोफिलिया सोसाइटी लोगो" : "Nepal Hemophilia Society Logo"}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-
-              <div>
-                <div className="font-extrabold text-base sm:text-lg text-primary-900 leading-tight group-hover:text-primary transition-colors">
-                  {isNepali ? "नेपाल हेमोफिलिया सोसाइटी" : "Nepal Hemophilia Society"}
-                </div>
-                <div className="text-[11px] font-medium text-slate-500 leading-tight">
-                  {isNepali ? "राष्ट्रिय बिरामी संस्था (स्था. १९९२)" : "National Patient Organization (Est. 1992)"}
-                </div>
-              </div>
-            </Link>
-
-            {/* Desktop Navigation Links with Accessible Hierarchical Menus */}
-            <nav 
-              className="hidden lg:flex items-center space-x-1 font-bold text-xs text-slate-700"
-              aria-label={isNepali ? "मुख्य मेनु" : "Main Navigation"}
-            >
+        {/* ======================================================== */}
+        {/* TIER 1: Organization Branding, Address & Key Actions    */}
+        {/* ======================================================== */}
+        <div className="bg-white dark:bg-slate-900 border-b border-slate-200/90 dark:border-slate-800 transition-colors">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="flex items-center justify-between py-2.5 sm:py-3">
               
-              {/* 1. About Us (हाम्रो बारेमा) */}
-              <div 
-                className="relative"
-                onMouseEnter={() => setActiveMegaMenu("about")}
+              {/* NHS Institutional Branding */}
+              <Link 
+                href="/" 
+                className="flex items-center gap-3 sm:gap-3.5 group shrink-0"
+                onClick={closeMegaMenu}
               >
+                {/* NHS Official Logo */}
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden shadow-sm border border-slate-200 dark:border-slate-700 bg-white p-1 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                  <img
+                    src="/nhs-logo.jpg"
+                    alt={isNepali ? "नेपाल हेमोफिलिया सोसाइटी लोगो" : "Nepal Hemophilia Society Logo"}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  {/* Name: सुरुको भागमा लोगो सहित नेपाल हेमोफिलिया सोसाइटी */}
+                  <div className="font-black text-base sm:text-xl lg:text-2xl text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors tracking-tight">
+                    {isNepali ? "नेपाल हेमोफिलिया सोसाइटी" : "Nepal Hemophilia Society"}
+                  </div>
+                  {/* Enter हान: अनि अनामनगर काठमाडौं -नेपाल */}
+                  <div className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 leading-snug flex items-center gap-1.5 mt-0.5">
+                    <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                    <span>{isNepali ? "अनामनगर, काठमाडौं - नेपाल" : "Anamnagar, Kathmandu - Nepal"}</span>
+                    <span className="text-slate-300 dark:text-slate-600 hidden md:inline">•</span>
+                    <span className="text-[11px] font-normal text-slate-500 hidden md:inline">
+                      {isNepali ? "राष्ट्रिय बिरामी संस्था (स्था. १९९२)" : "National Patient Organization (Est. 1992)"}
+                    </span>
+                  </div>
+                </div>
+              </Link>
+
+              {/* Right Header CTAs */}
+              <div className="flex items-center gap-2 sm:gap-2.5">
+                
+                {/* Global Search Button */}
                 <button
-                  id="nav-btn-about"
-                  onClick={() => {
-                    if (activeMegaMenu !== "about") {
-                      setActiveMegaMenu("about");
-                    } else {
-                      document.getElementById("nav-about-sub-0")?.focus();
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setActiveMegaMenu("about");
-                      setTimeout(() => document.getElementById("nav-about-sub-0")?.focus(), 50);
-                    } else if (e.key === "ArrowRight") {
-                      e.preventDefault();
-                      document.getElementById("nav-btn-hemo")?.focus();
-                    } else if (e.key === "Escape") {
-                      e.preventDefault();
-                      closeMegaMenu();
-                    }
-                  }}
-                  aria-haspopup="true"
-                  aria-expanded={activeMegaMenu === "about"}
-                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
-                    activeMegaMenu === "about" ? "text-primary bg-slate-100 ring-2 ring-primary/40" : ""
-                  }`}
+                  onClick={() => setSearchOpen(true)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-600 dark:text-slate-300 hover:text-primary transition-colors border border-slate-200 dark:border-slate-700 text-xs font-semibold"
+                  title="Global Search (Ctrl + K)"
+                  aria-label="Open search dialog"
                 >
-                  <span>{t("nav.about")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  <Search className="w-4 h-4 text-slate-500" />
+                  <span className="hidden md:inline text-slate-500">{isNepali ? "खोज्नुहोस्..." : "Search..."}</span>
+                  <kbd className="hidden md:inline-block text-[10px] bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 px-1.5 py-0.5 rounded text-slate-500">Ctrl K</kbd>
                 </button>
+
+                {/* Admin CMS / Portal Quick Access Button if Authenticated */}
+                {isAuthenticated && (
+                  <Link
+                    href={isAdminOrStaff ? "/admin" : role === "PATIENT" ? "/portal/patient" : "/portal/member"}
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-900 dark:text-primary-200 hover:bg-primary-100 font-bold text-xs border border-primary-200 dark:border-primary-800 shadow-xs transition-colors"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
+                    <span>{isAdminOrStaff ? "Admin CMS" : "My Portal"}</span>
+                  </Link>
+                )}
+
+                {/* Primary CTA: Get Support (Semantic Emergency Red) */}
+                <Link
+                  href="/services/get-support"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-accent hover:bg-accent-dark text-white font-extrabold text-xs shadow-sm transition-all hover:shadow hover:scale-[1.02] active:scale-[0.98] border border-red-600"
+                >
+                  <ShieldAlert className="w-3.5 h-3.5 text-white" />
+                  <span>{t("getSupport")}</span>
+                </Link>
+
+                {/* Secondary CTA: Donate (Trustworthy Medical Blue) */}
+                {features.onlineDonations && (
+                  <Link
+                    href="/donate"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary-dark text-white font-extrabold text-xs shadow-sm transition-all hover:shadow hover:scale-[1.02] active:scale-[0.98] border border-primary-dark"
+                  >
+                    <Heart className="w-3.5 h-3.5 text-red-300 fill-red-400" />
+                    <span>{t("donate")}</span>
+                  </Link>
+                )}
+
+                {/* Mobile Menu Hamburger Trigger */}
+                <button
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                  className="lg:hidden p-2 rounded-xl text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  aria-label="Toggle navigation menu"
+                >
+                  {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        {/* ======================================================== */}
+        {/* TIER 2: Dedicated Navigation Bar for Features & Menus   */}
+        {/* ======================================================== */}
+        <div className="hidden lg:block bg-[#0A2540] dark:bg-slate-950 border-t border-primary-800/80 shadow-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="flex items-center justify-between">
+              
+              {/* Desktop Navigation Links with Accessible Hierarchical Menus */}
+              <nav 
+                className="flex items-center space-x-1 py-1 font-bold text-xs sm:text-sm text-white"
+                aria-label={isNepali ? "मुख्य मेनु" : "Main Navigation"}
+              >
+                
+                {/* 1. About Us (हाम्रो बारेमा) */}
+                <div 
+                  className="relative"
+                  onMouseEnter={() => setActiveMegaMenu("about")}
+                >
+                  <button
+                    id="nav-btn-about"
+                    onClick={() => {
+                      if (activeMegaMenu !== "about") {
+                        setActiveMegaMenu("about");
+                      } else {
+                        document.getElementById("nav-about-sub-0")?.focus();
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setActiveMegaMenu("about");
+                        setTimeout(() => document.getElementById("nav-about-sub-0")?.focus(), 50);
+                      } else if (e.key === "ArrowRight") {
+                        e.preventDefault();
+                        document.getElementById("nav-btn-hemo")?.focus();
+                      } else if (e.key === "Escape") {
+                        e.preventDefault();
+                        closeMegaMenu();
+                      }
+                    }}
+                    aria-haspopup="true"
+                    aria-expanded={activeMegaMenu === "about"}
+                    className={`px-3 py-2 rounded-md hover:text-amber-300 hover:bg-white/10 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                      activeMegaMenu === "about" ? "text-amber-300 bg-white/15 ring-1 ring-white/30" : "text-white"
+                    }`}
+                  >
+                    <span>{t("nav.about")}</span>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
+                  </button>
 
                 {activeMegaMenu === "about" && (
                   <div 
@@ -315,12 +393,12 @@ export function Navbar() {
                   }}
                   aria-haspopup="true"
                   aria-expanded={activeMegaMenu === "hemo"}
-                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
-                    activeMegaMenu === "hemo" ? "text-primary bg-slate-100 ring-2 ring-primary/40" : ""
+                  className={`px-3 py-2 rounded-md hover:text-amber-300 hover:bg-white/10 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                    activeMegaMenu === "hemo" ? "text-amber-300 bg-white/15 ring-1 ring-white/30" : "text-white"
                   }`}
                 >
                   <span>{t("nav.hemophilia")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
                 </button>
 
                 {activeMegaMenu === "hemo" && (
@@ -605,19 +683,19 @@ export function Navbar() {
                   }}
                   aria-haspopup="true"
                   aria-expanded={activeMegaMenu === "services"}
-                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
-                    activeMegaMenu === "services" ? "text-primary bg-slate-100 ring-2 ring-primary/40" : ""
+                  className={`px-3 py-2 rounded-md hover:text-amber-300 hover:bg-white/10 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400 ${
+                    activeMegaMenu === "services" ? "text-amber-300 bg-white/15 ring-1 ring-white/30" : "text-white"
                   }`}
                 >
                   <span>{t("nav.services")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  <ChevronDown className="w-3.5 h-3.5 text-slate-300" />
                 </button>
 
                 {activeMegaMenu === "services" && (
                   <div 
                     role="menu"
                     aria-label={t("nav.services")}
-                    className="absolute top-full -left-10 w-96 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-3 z-50 animate-in fade-in duration-150 text-slate-800 dark:text-slate-200"
+                    className="absolute top-full left-0 w-96 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-3 z-50 animate-in fade-in duration-150 text-slate-800 dark:text-slate-200"
                     onMouseLeave={closeMegaMenu}
                   >
                     <div className="space-y-1">
@@ -811,7 +889,7 @@ export function Navbar() {
                     document.getElementById("nav-btn-services")?.focus();
                   }
                 }}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
               >
                 {t("nav.healthcarePros")}
               </Link>
@@ -830,7 +908,7 @@ export function Navbar() {
                     document.getElementById("nav-link-hcp")?.focus();
                   }
                 }}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
               >
                 {t("nav.registry")}
               </Link>
@@ -849,7 +927,7 @@ export function Navbar() {
                     document.getElementById("nav-link-registry")?.focus();
                   }
                 }}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
               >
                 {t("nav.resources")}
               </Link>
@@ -865,69 +943,33 @@ export function Navbar() {
                     document.getElementById("nav-link-resources")?.focus();
                   }
                 }}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
+                className="px-3.5 py-2.5 rounded-md hover:text-amber-300 hover:bg-white/10 text-white font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-amber-400"
               >
                 {t("nav.news")}
               </Link>
             </nav>
 
-            {/* Right Header CTAs */}
-            <div className="flex items-center gap-2.5">
-              
-              {/* Global Search Button */}
-              <button
-                onClick={() => setSearchOpen(true)}
-                className="p-2 rounded-full hover:bg-slate-100 text-slate-600 hover:text-primary transition-colors"
-                title="Global Search (Ctrl + K)"
-                aria-label="Open search dialog"
+            {/* Quick Navigation Shortcuts on Tier 2 Right */}
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 py-1 shrink-0">
+              <Link 
+                href="/treatment-centres" 
+                className="px-2.5 py-1.5 rounded-md hover:bg-white/15 hover:text-amber-300 transition-colors flex items-center gap-1 text-slate-200"
               >
-                <Search className="w-4 h-4" />
-              </button>
-
-              {/* Admin CMS / Portal Quick Access Button if Authenticated */}
-              {isAuthenticated && (
-                <Link
-                  href={isAdminOrStaff ? "/admin" : role === "PATIENT" ? "/portal/patient" : "/portal/member"}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary-50 text-primary-900 hover:bg-primary-100 font-bold text-xs border border-primary-200 shadow-xs transition-colors"
-                >
-                  <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
-                  <span>{isAdminOrStaff ? "Admin CMS" : "My Portal"}</span>
-                </Link>
-              )}
-
-              {/* Primary CTA: Get Support (Semantic Emergency Red) */}
-              <Link
-                href="/services/get-support"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-accent hover:bg-accent-dark text-white font-extrabold text-xs shadow-sm transition-all hover:shadow border border-red-600"
-              >
-                <ShieldAlert className="w-3.5 h-3.5 text-white" />
-                <span>{t("getSupport")}</span>
+                <Building2 className="w-3.5 h-3.5 text-red-400" />
+                <span>{isNepali ? "उपचार केन्द्रहरू" : "Treatment Centres"}</span>
               </Link>
-
-              {/* Secondary CTA: Donate (Trustworthy Medical Blue) */}
-              {features.onlineDonations && (
-                <Link
-                  href="/donate"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white font-extrabold text-xs shadow-sm transition-all hover:shadow border border-primary-dark"
-                >
-                  <Heart className="w-3.5 h-3.5 text-red-300 fill-red-400" />
-                  <span>{t("donate")}</span>
-                </Link>
-              )}
-
-              {/* Mobile Menu Hamburger Trigger */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
-                aria-label="Toggle navigation menu"
+              <Link 
+                href="/factor-availability" 
+                className="px-2.5 py-1.5 rounded-md hover:bg-white/15 hover:text-amber-300 transition-colors flex items-center gap-1 text-slate-200"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-              </button>
-
+                <Activity className="w-3.5 h-3.5 text-emerald-400" />
+                <span>{isNepali ? "फ्याक्टर मौज्दात" : "Factor Stock"}</span>
+              </Link>
             </div>
 
           </div>
         </div>
+      </div>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
