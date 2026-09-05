@@ -55,8 +55,8 @@ export function Navbar() {
       <header
         className={`sticky top-0 z-40 w-full transition-all duration-300 ${
           isScrolled
-            ? "bg-white/95 backdrop-blur-md shadow-md border-b border-slate-200"
-            : "bg-white border-b border-slate-100"
+            ? "bg-[#B91C1C]/95 backdrop-blur-md shadow-lg border-b border-[#991B1B]"
+            : "bg-[#C1121F] border-b border-[#991B1B] shadow-md"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -69,7 +69,7 @@ export function Navbar() {
               onClick={closeMegaMenu}
             >
               {/* NHS Official Logo */}
-              <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-white p-1 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-12 h-12 rounded-xl overflow-hidden shadow-md border-2 border-white/60 bg-white p-1 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                 <img
                   src="/nhs-logo.jpg"
                   alt={isNepali ? "नेपाल हेमोफिलिया सोसाइटी लोगो" : "Nepal Hemophilia Society Logo"}
@@ -78,17 +78,17 @@ export function Navbar() {
               </div>
 
               <div>
-                <div className="font-extrabold text-base sm:text-lg text-primary-900 leading-tight group-hover:text-primary transition-colors">
+                <div className="font-black text-base sm:text-lg text-white leading-tight drop-shadow-sm group-hover:text-red-100 transition-colors">
                   {isNepali ? "नेपाल हेमोफिलिया सोसाइटी" : "Nepal Hemophilia Society"}
                 </div>
-                <div className="text-[11px] font-medium text-slate-500 leading-tight">
+                <div className="text-[11px] font-bold text-red-100 leading-tight">
                   {isNepali ? "राष्ट्रिय बिरामी संस्था (स्था. १९९२)" : "National Patient Organization (Est. 1992)"}
                 </div>
               </div>
             </Link>
 
             {/* Desktop Navigation Links with Mega-Menus */}
-            <nav className="hidden lg:flex items-center space-x-1 font-medium text-xs text-slate-700">
+            <nav className="hidden lg:flex items-center space-x-1 font-bold text-xs text-white">
               
               {/* 1. About Us */}
               <div 
@@ -96,17 +96,17 @@ export function Navbar() {
                 onMouseEnter={() => setActiveMegaMenu("about")}
               >
                 <button
-                  className={`px-3 py-2 rounded-md hover:text-primary hover:bg-slate-50 flex items-center gap-1 transition-colors ${
-                    activeMegaMenu === "about" ? "text-primary bg-slate-50" : ""
+                  className={`px-3 py-2 rounded-lg text-white font-bold hover:bg-white/20 flex items-center gap-1 transition-colors ${
+                    activeMegaMenu === "about" ? "bg-white/20 text-white" : ""
                   }`}
                 >
                   <span>{t("nav.about")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  <ChevronDown className="w-3.5 h-3.5 text-white/80" />
                 </button>
 
                 {activeMegaMenu === "about" && (
                   <div 
-                    className="absolute top-full left-0 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150"
+                    className="absolute top-full left-0 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-slate-800"
                     onMouseLeave={closeMegaMenu}
                   >
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
@@ -142,17 +142,17 @@ export function Navbar() {
                 onMouseEnter={() => setActiveMegaMenu("hemo")}
               >
                 <button
-                  className={`px-3 py-2 rounded-md hover:text-primary hover:bg-slate-50 flex items-center gap-1 transition-colors ${
-                    activeMegaMenu === "hemo" ? "text-primary bg-slate-50" : ""
+                  className={`px-3 py-2 rounded-lg text-white font-bold hover:bg-white/20 flex items-center gap-1 transition-colors ${
+                    activeMegaMenu === "hemo" ? "bg-white/20 text-white" : ""
                   }`}
                 >
                   <span>{t("nav.hemophilia")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  <ChevronDown className="w-3.5 h-3.5 text-white/80" />
                 </button>
 
                 {activeMegaMenu === "hemo" && (
                   <div 
-                    className="absolute top-full -left-20 w-[460px] bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 grid grid-cols-2 gap-3 animate-in fade-in duration-150"
+                    className="absolute top-full -left-20 w-[460px] bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 grid grid-cols-2 gap-3 animate-in fade-in duration-150 text-slate-800"
                     onMouseLeave={closeMegaMenu}
                   >
                     <div>
@@ -206,17 +206,17 @@ export function Navbar() {
                 onMouseEnter={() => setActiveMegaMenu("services")}
               >
                 <button
-                  className={`px-3 py-2 rounded-md hover:text-primary hover:bg-slate-50 flex items-center gap-1 transition-colors ${
-                    activeMegaMenu === "services" ? "text-primary bg-slate-50" : ""
+                  className={`px-3 py-2 rounded-lg text-white font-bold hover:bg-white/20 flex items-center gap-1 transition-colors ${
+                    activeMegaMenu === "services" ? "bg-white/20 text-white" : ""
                   }`}
                 >
                   <span>{t("nav.services")}</span>
-                  <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  <ChevronDown className="w-3.5 h-3.5 text-white/80" />
                 </button>
 
                 {activeMegaMenu === "services" && (
                   <div 
-                    className="absolute top-full -left-10 w-96 bg-white rounded-xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in duration-150"
+                    className="absolute top-full -left-10 w-96 bg-white rounded-xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in duration-150 text-slate-800"
                     onMouseLeave={closeMegaMenu}
                   >
                     <div className="space-y-1">
@@ -283,7 +283,7 @@ export function Navbar() {
               <Link 
                 href="/healthcare-professionals" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-md hover:text-primary hover:bg-slate-50 transition-colors"
+                className="px-3 py-2 rounded-lg text-white font-bold hover:bg-white/20 transition-colors"
               >
                 {t("nav.healthcarePros")}
               </Link>
@@ -292,7 +292,7 @@ export function Navbar() {
               <Link 
                 href="/data-research" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-md hover:text-primary hover:bg-slate-50 transition-colors"
+                className="px-3 py-2 rounded-lg text-white font-bold hover:bg-white/20 transition-colors"
               >
                 {t("nav.registry")}
               </Link>
@@ -301,7 +301,7 @@ export function Navbar() {
               <Link 
                 href="/resources" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-md hover:text-primary hover:bg-slate-50 transition-colors"
+                className="px-3 py-2 rounded-lg text-white font-bold hover:bg-white/20 transition-colors"
               >
                 {t("nav.resources")}
               </Link>
@@ -310,7 +310,7 @@ export function Navbar() {
               <Link 
                 href="/news" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-md hover:text-primary hover:bg-slate-50 transition-colors"
+                className="px-3 py-2 rounded-lg text-white font-bold hover:bg-white/20 transition-colors"
               >
                 {t("nav.news")}
               </Link>
@@ -322,30 +322,30 @@ export function Navbar() {
               {/* Global Search Button */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="p-2 rounded-full hover:bg-slate-100 text-slate-600 hover:text-primary transition-colors"
+                className="p-2 rounded-full hover:bg-white/20 text-white transition-colors"
                 title="Global Search (Ctrl + K)"
                 aria-label="Open search dialog"
               >
-                <Search className="w-4 h-4" />
+                <Search className="w-4 h-4 text-white" />
               </button>
 
               {/* Admin CMS / Portal Quick Access Button if Authenticated */}
               {isAuthenticated && (
                 <Link
                   href={isAdminOrStaff ? "/admin" : role === "PATIENT" ? "/portal/patient" : "/portal/member"}
-                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary-50 text-primary-900 hover:bg-primary-100 font-semibold text-xs border border-primary-200 transition-colors"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white text-slate-900 hover:bg-red-50 font-black text-xs border border-white shadow-sm transition-all hover:shadow"
                 >
-                  <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
+                  <LayoutDashboard className="w-3.5 h-3.5 text-red-700" />
                   <span>{isAdminOrStaff ? "Admin CMS" : "My Portal"}</span>
                 </Link>
               )}
 
-              {/* Primary CTA: Get Support */}
+              {/* Primary CTA: Get Support (HERIYO / GREEN as requested) */}
               <Link
                 href="/services/get-support"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-accent hover:bg-accent-dark text-white font-bold text-xs shadow-sm transition-all hover:shadow"
+                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-md transition-all hover:shadow-lg border border-emerald-500"
               >
-                <ShieldAlert className="w-3.5 h-3.5" />
+                <ShieldAlert className="w-3.5 h-3.5 text-white" />
                 <span>{t("getSupport")}</span>
               </Link>
 
@@ -353,7 +353,7 @@ export function Navbar() {
               {features.onlineDonations && (
                 <Link
                   href="/donate"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-xs shadow-sm transition-all hover:shadow"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 hover:bg-slate-950 text-white font-black text-xs shadow-md transition-all hover:shadow-lg border border-slate-700"
                 >
                   <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
                   <span>{t("donate")}</span>
@@ -363,10 +363,10 @@ export function Navbar() {
               {/* Mobile Menu Hamburger Trigger */}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-lg text-slate-700 hover:bg-slate-100 transition-colors"
+                className="lg:hidden p-2 rounded-lg text-white hover:bg-white/20 transition-colors"
                 aria-label="Toggle navigation menu"
               >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                {mobileMenuOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
               </button>
 
             </div>
@@ -381,7 +381,7 @@ export function Navbar() {
               <Link
                 href="/services/get-support"
                 onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-lg bg-accent text-white font-bold text-xs text-center flex items-center justify-center gap-1.5"
+                className="p-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs text-center flex items-center justify-center gap-1.5 shadow-sm"
               >
                 <ShieldAlert className="w-3.5 h-3.5" />
                 <span>{t("getSupport")}</span>
