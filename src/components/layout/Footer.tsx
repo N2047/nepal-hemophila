@@ -3,6 +3,9 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
+import { useData } from "@/context/DataContext";
+import { EditableContentWrapper } from "@/components/common/EditableContentWrapper";
 import { 
   Heart, 
   Mail, 
@@ -16,6 +19,8 @@ import {
 
 export function Footer() {
   const { lang, t, isNepali } = useLanguage();
+  const { orgDetails, features } = useSiteContent();
+  const { globalSettings } = useData();
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterSubmitted, setNewsletterSubmitted] = useState(false);
 
@@ -80,8 +85,12 @@ export function Footer() {
           {/* Column 1: Organization Overview */}
           <div className="lg:col-span-1 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-lg bg-accent flex items-center justify-center font-black text-white text-xs">
-                NHS
+              <div className="w-10 h-10 rounded-xl overflow-hidden bg-white p-1 flex items-center justify-center shadow-sm shrink-0 border border-slate-700">
+                <img
+                  src="/nhs-logo.jpg"
+                  alt="Nepal Hemophilia Society"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="font-extrabold text-white text-base leading-tight">
                 {isNepali ? "नेपाल हेमोफिलिया सोसाइटी" : "Nepal Hemophilia Society"}
@@ -92,10 +101,10 @@ export function Footer() {
             </p>
             <div className="pt-2">
               <span className="text-[11px] font-semibold text-amber-400 block mb-1">
-                Social Welfare Council (SWC) Reg. No. 1290
+                Social Welfare Council (SWC) Reg. No. {globalSettings?.swcAffiliationNo || "1290"}
               </span>
               <span className="text-[11px] text-slate-400 block">
-                Official National Patient Organization of Nepal
+                PAN: {globalSettings?.panNumber || "300123456"} | National Patient Organization
               </span>
             </div>
           </div>
@@ -150,35 +159,39 @@ export function Footer() {
 
           {/* Column 5: Central Secretariat & Contact */}
           <div className="space-y-3">
-            <h4 className="font-bold text-xs uppercase tracking-wider text-white">
-              {isNepali ? "केन्द्रीय कार्यालय" : "Head Office & Contact"}
-            </h4>
-            <div className="space-y-2.5 text-xs text-slate-400">
-              <div className="flex items-start gap-2">
-                <MapPin className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                <span>Bir Hospital Premises / Mahabouddha, Kantipath, Kathmandu, Nepal</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-teal-400 shrink-0" />
-                <a href="tel:+97714221119" className="hover:text-white transition-colors">+977-1-4221119</a>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
-                <a href="mailto:info@hemophilia.org.np" className="hover:text-white transition-colors">info@hemophilia.org.np</a>
-              </div>
-            </div>
+            <EditableContentWrapper label="सम्पर्क सम्पादन गर्नुहोस्" adminUrl="/admin?tab=cms&sub=settings">
+              <div>
+                <h4 className="font-bold text-xs uppercase tracking-wider text-white mb-2">
+                  {isNepali ? "केन्द्रीय कार्यालय" : "Head Office & Contact"}
+                </h4>
+                <div className="space-y-2.5 text-xs text-slate-400">
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                    <span>{isNepali ? (globalSettings?.addressNp || orgDetails?.addressNp || "काठमाडौं, नेपाल (केन्द्रीय सचिवालय)") : (globalSettings?.addressEn || orgDetails?.addressEn || "Kathmandu, Nepal (Central Secretariat)")}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-teal-400 shrink-0" />
+                    <a href={`tel:${(globalSettings?.contactPhone || orgDetails?.phone || "+97714221119").replace(/[^0-9+]/g, "")}`} className="hover:text-white transition-colors">{globalSettings?.contactPhone || orgDetails?.phone || "+977-1-4221119"}</a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+                    <a href={`mailto:${globalSettings?.contactEmail || orgDetails?.email || "info@hemophilia-nepal.org.np"}`} className="hover:text-white transition-colors">{globalSettings?.contactEmail || orgDetails?.email || "info@hemophilia-nepal.org.np"}</a>
+                  </div>
+                </div>
 
-            <div className="pt-2">
-              <div className="text-[11px] font-bold text-red-400 uppercase tracking-wide mb-1">
-                24/7 Emergency Line:
+                <div className="pt-2">
+                  <div className="text-[11px] font-bold text-red-400 uppercase tracking-wide mb-1">
+                    24/7 Emergency Line:
+                  </div>
+                  <a 
+                    href={`tel:${(globalSettings?.emergencyHotline || orgDetails?.emergencyPhone || "+9779851000000").replace(/[^0-9+]/g, "")}`} 
+                    className="inline-block px-3 py-1.5 rounded-lg bg-red-950 border border-red-800 text-red-200 font-mono text-xs font-bold hover:bg-red-900 transition-colors"
+                  >
+                    📞 {globalSettings?.emergencyHotline || orgDetails?.emergencyPhone || "+977-9851000000"}
+                  </a>
+                </div>
               </div>
-              <a 
-                href="tel:+9779851000000" 
-                className="inline-block px-3 py-1.5 rounded-lg bg-red-950 border border-red-800 text-red-200 font-mono text-xs font-bold hover:bg-red-900 transition-colors"
-              >
-                📞 +977-9851000000
-              </a>
-            </div>
+            </EditableContentWrapper>
           </div>
 
         </div>

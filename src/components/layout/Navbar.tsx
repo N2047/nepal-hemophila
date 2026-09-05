@@ -26,10 +26,12 @@ import {
 } from "lucide-react";
 import { GlobalSearchModal } from "@/components/common/GlobalSearchModal";
 import { EmergencyModal } from "@/components/common/EmergencyModal";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export function Navbar() {
   const { lang, t, isNepali } = useLanguage();
   const { user, isAuthenticated, role } = useAuth();
+  const { features } = useSiteContent();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -66,15 +68,13 @@ export function Navbar() {
               className="flex items-center gap-3 group shrink-0"
               onClick={closeMegaMenu}
             >
-              {/* NHS Emblem: Deep Blue Shield with Crimson Blood Drop & Medical Cross */}
-              <div className="w-12 h-12 rounded-xl bg-gradient-medical flex items-center justify-center shadow-md group-hover:scale-105 transition-transform text-white relative overflow-hidden border border-primary-700">
-                <div className="absolute inset-0 bg-red-600/20 rounded-xl" />
-                <div className="relative flex flex-col items-center justify-center">
-                  <div className="w-4 h-4 bg-accent rounded-full mb-0.5 flex items-center justify-center">
-                    <div className="w-2 h-2 bg-white rounded-full" />
-                  </div>
-                  <span className="font-extrabold text-[10px] tracking-wider text-white">NHS</span>
-                </div>
+              {/* NHS Official Logo */}
+              <div className="w-12 h-12 rounded-xl overflow-hidden shadow-sm border border-slate-200 bg-white p-1 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                <img
+                  src="/nhs-logo.jpg"
+                  alt={isNepali ? "नेपाल हेमोफिलिया सोसाइटी लोगो" : "Nepal Hemophilia Society Logo"}
+                  className="w-full h-full object-contain"
+                />
               </div>
 
               <div>
@@ -228,40 +228,48 @@ export function Navbar() {
                         </div>
                       </Link>
 
-                      <Link href="/chat" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-primary-900 font-semibold text-xs">
-                        <Bot className="w-4 h-4 text-primary" />
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span>{isNepali ? "AI च्याट बोर्ड (n8n)" : "AI Helpdesk Chat (n8n)"}</span>
-                            <span className="text-[9px] px-1 bg-primary text-white rounded font-bold">24/7</span>
+                      {features.aiChatbot && (
+                        <Link href="/chat" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-primary-900 font-semibold text-xs">
+                          <Bot className="w-4 h-4 text-primary" />
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span>{isNepali ? "AI च्याट बोर्ड (n8n)" : "AI Helpdesk Chat (n8n)"}</span>
+                              <span className="text-[9px] px-1 bg-primary text-white rounded font-bold">24/7</span>
+                            </div>
+                            <div className="text-[10px] text-slate-500 font-normal">AI Agent & Emergency Assistant</div>
                           </div>
-                          <div className="text-[10px] text-slate-500 font-normal">AI Agent & Emergency Assistant</div>
-                        </div>
-                      </Link>
+                        </Link>
+                      )}
 
-                      <Link href="/treatment-centres" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
-                        <MapPin className="w-4 h-4 text-primary" />
-                        <div>
-                          <div>{t("nav.servicesSub.treatmentCentres")}</div>
-                          <div className="text-[10px] text-slate-500 font-normal">Hospitals across all 7 provinces</div>
-                        </div>
-                      </Link>
+                      {features.treatmentCentresLocator && (
+                        <Link href="/treatment-centres" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
+                          <MapPin className="w-4 h-4 text-primary" />
+                          <div>
+                            <div>{t("nav.servicesSub.treatmentCentres")}</div>
+                            <div className="text-[10px] text-slate-500 font-normal">Hospitals across all 7 provinces</div>
+                          </div>
+                        </Link>
+                      )}
 
-                      <Link href="/factor-availability" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
-                        <Activity className="w-4 h-4 text-accent" />
-                        <div>
-                          <div>{t("nav.servicesSub.factorTracker")}</div>
-                          <div className="text-[10px] text-slate-500 font-normal">Live hospital inventory status</div>
-                        </div>
-                      </Link>
+                      {features.factorAvailabilityTracker && (
+                        <Link href="/factor-availability" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
+                          <Activity className="w-4 h-4 text-accent" />
+                          <div>
+                            <div>{t("nav.servicesSub.factorTracker")}</div>
+                            <div className="text-[10px] text-slate-500 font-normal">Live hospital inventory status</div>
+                          </div>
+                        </Link>
+                      )}
 
-                      <Link href="/membership" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
-                        <Users className="w-4 h-4 text-teal-600" />
-                        <div>
-                          <div>{t("nav.servicesSub.membership")}</div>
-                          <div className="text-[10px] text-slate-500 font-normal">Online application & status tracker</div>
-                        </div>
-                      </Link>
+                      {features.onlineMembershipForm && (
+                        <Link href="/membership" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
+                          <Users className="w-4 h-4 text-teal-600" />
+                          <div>
+                            <div>{t("nav.servicesSub.membership")}</div>
+                            <div className="text-[10px] text-slate-500 font-normal">Online application & status tracker</div>
+                          </div>
+                        </Link>
+                      )}
 
                       <Link href="/services#physio-counselling" onClick={closeMegaMenu} className="block px-3 py-1.5 rounded-lg hover:bg-slate-100 text-slate-700 text-xs">
                         {t("nav.servicesSub.physioSupport")} & {t("nav.servicesSub.counselling")}
@@ -342,13 +350,15 @@ export function Navbar() {
               </Link>
 
               {/* Secondary CTA: Donate */}
-              <Link
-                href="/donate"
-                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-xs shadow-sm transition-all hover:shadow"
-              >
-                <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
-                <span>{t("donate")}</span>
-              </Link>
+              {features.onlineDonations && (
+                <Link
+                  href="/donate"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-xs shadow-sm transition-all hover:shadow"
+                >
+                  <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
+                  <span>{t("donate")}</span>
+                </Link>
+              )}
 
               {/* Mobile Menu Hamburger Trigger */}
               <button
@@ -367,7 +377,7 @@ export function Navbar() {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-b border-slate-200 shadow-xl max-h-[80vh] overflow-y-auto p-4 space-y-3">
-            <div className="grid grid-cols-2 gap-2 mb-3">
+            <div className={`grid ${features.onlineDonations ? "grid-cols-2" : "grid-cols-1"} gap-2 mb-3`}>
               <Link
                 href="/services/get-support"
                 onClick={() => setMobileMenuOpen(false)}
@@ -376,14 +386,16 @@ export function Navbar() {
                 <ShieldAlert className="w-3.5 h-3.5" />
                 <span>{t("getSupport")}</span>
               </Link>
-              <Link
-                href="/donate"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-lg bg-primary text-white font-bold text-xs text-center flex items-center justify-center gap-1.5"
-              >
-                <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
-                <span>{t("donate")}</span>
-              </Link>
+              {features.onlineDonations && (
+                <Link
+                  href="/donate"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="p-2.5 rounded-lg bg-primary text-white font-bold text-xs text-center flex items-center justify-center gap-1.5"
+                >
+                  <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
+                  <span>{t("donate")}</span>
+                </Link>
+              )}
             </div>
 
             <div className="space-y-1 text-sm font-semibold text-slate-800">
@@ -396,12 +408,16 @@ export function Navbar() {
               <Link href="/hemophilia" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
                 {t("nav.hemophilia")}
               </Link>
-              <Link href="/treatment-centres" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100 text-primary">
-                📍 {t("findCentre")}
-              </Link>
-              <Link href="/factor-availability" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100 text-accent">
-                🩸 {t("factorAvailability")}
-              </Link>
+              {features.treatmentCentresLocator && (
+                <Link href="/treatment-centres" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100 text-primary">
+                  📍 {t("findCentre")}
+                </Link>
+              )}
+              {features.factorAvailabilityTracker && (
+                <Link href="/factor-availability" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100 text-accent">
+                  🩸 {t("factorAvailability")}
+                </Link>
+              )}
               <Link href="/emergency" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-red-50 text-red-700">
                 🚨 {t("nav.hemoSub.emergencyCare")}
               </Link>
@@ -414,18 +430,22 @@ export function Navbar() {
               <Link href="/resources" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
                 {t("nav.resources")}
               </Link>
-              <Link href="/elearning" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
-                {t("nav.elearning")}
-              </Link>
+              {features.elearningAcademy && (
+                <Link href="/elearning" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
+                  {t("nav.elearning")}
+                </Link>
+              )}
               <Link href="/news" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
                 {t("nav.news")}
               </Link>
               <Link href="/events" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
                 {t("nav.events")}
               </Link>
-              <Link href="/membership" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
-                {t("membership")}
-              </Link>
+              {features.onlineMembershipForm && (
+                <Link href="/membership" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
+                  {t("membership")}
+                </Link>
+              )}
               <Link href="/transparency" onClick={() => setMobileMenuOpen(false)} className="block py-2 px-3 rounded hover:bg-slate-100">
                 {t("nav.transparency")}
               </Link>

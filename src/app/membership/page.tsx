@@ -16,9 +16,14 @@ import {
   Award,
   IdCard
 } from "lucide-react";
+import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function MembershipPage() {
   const { isNepali } = useLanguage();
+  const { role } = useAuth();
+  const { features } = useSiteContent();
   const { membershipApplications, submitMembershipApplication } = useData();
 
   const [activeTab, setActiveTab] = useState<"apply" | "track">("apply");
@@ -108,6 +113,33 @@ export default function MembershipPage() {
         </div>
       </section>
 
+      {!features.onlineMembershipForm ? (
+        <div className="max-w-4xl mx-auto px-4 py-16 text-center space-y-6">
+          <div className="w-16 h-16 rounded-3xl bg-teal-100 text-teal-700 mx-auto flex items-center justify-center shadow-inner">
+            <Users className="w-8 h-8" />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-900">
+            {isNepali ? "अनलाइन सदस्यता प्रणाली हाल निष्क्रिय छ" : "Online Membership Intake is Temporarily Closed"}
+          </h2>
+          <p className="text-sm text-slate-600 max-w-xl mx-auto leading-relaxed">
+            {isNepali 
+              ? "नयाँ सदस्यता दर्ता हाल व्यवस्थापनको निर्णय अनुसार रोक्का वा अद्यावधिक गरिएको छ। सदस्यता सम्बन्धी थप जानकारीका लागि सिधै केन्द्रीय सचिवालयमा सम्पर्क गर्नुहोस्।"
+              : "Online membership intake is temporarily paused by administration for record updating. Please contact the NHS Secretariat directly for any inquiries."}
+          </p>
+          <div className="flex flex-wrap justify-center gap-3 pt-2">
+            <Link href="/contact" className="px-5 py-2.5 rounded-xl bg-teal-700 hover:bg-teal-800 text-white font-bold text-sm shadow flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              <span>{isNepali ? "सचिवालय सम्पर्क" : "Contact Secretariat"}</span>
+            </Link>
+            {role === "SUPER_ADMIN" && (
+              <Link href="/admin?tab=site-content" className="px-5 py-2.5 rounded-xl bg-primary hover:bg-primary-600 text-white font-bold text-sm shadow flex items-center gap-2">
+                <ShieldCheck className="w-4 h-4" />
+                <span>फिचर पुन: सुचारु गर्नुहोस् (Super Admin)</span>
+              </Link>
+            )}
+          </div>
+        </div>
+      ) : (
       <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-8">
         
         {/* Navigation Tabs */}
@@ -532,6 +564,7 @@ export default function MembershipPage() {
         )}
 
       </div>
+      )}
 
     </div>
   );

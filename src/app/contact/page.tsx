@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useData } from "@/context/DataContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 import { ProvinceName } from "@/types";
 import { 
   Building2, 
@@ -16,9 +17,12 @@ import {
   HelpCircle
 } from "lucide-react";
 
+import { EditableContentWrapper } from "@/components/common/EditableContentWrapper";
+
 export default function ContactPage() {
   const { isNepali, t } = useLanguage();
-  const { logAudit } = useData();
+  const { logAudit, chapters, globalSettings } = useData();
+  const { orgDetails, emergency } = useSiteContent();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,14 +42,14 @@ export default function ContactPage() {
     setMessage("");
   };
 
-  const provincialOffices = [
-    { name: "Koshi Provincial Chapter", city: "Dharan (BPKIHS Premises)", phone: "+977-25-525555", email: "koshi@hemophilia.org.np" },
-    { name: "Madhesh Provincial Chapter", city: "Janakpurdham", phone: "+977-41-520133", email: "madhesh@hemophilia.org.np" },
-    { name: "Bagmati Provincial Chapter", city: "Kathmandu (Central Secretariat)", phone: "+977-1-4221119", email: "bagmati@hemophilia.org.np" },
-    { name: "Gandaki Provincial Chapter", city: "Pokhara (Western Regional Hospital)", phone: "+977-61-520067", email: "gandaki@hemophilia.org.np" },
-    { name: "Lumbini Provincial Chapter", city: "Nepalgunj (Bheri Hospital)", phone: "+977-81-520120", email: "lumbini@hemophilia.org.np" },
-    { name: "Karnali Provincial Chapter", city: "Birendranagar, Surkhet", phone: "+977-83-520200", email: "karnali@hemophilia.org.np" },
-    { name: "Sudurpashchim Provincial Chapter", city: "Dhangadhi (Seti Hospital)", phone: "+977-91-521259", email: "sudurpashchim@hemophilia.org.np" },
+  const fallbackOffices = [
+    { nameNp: "कोशी प्रादेशिक शाखा", nameEn: "Koshi Provincial Chapter", cityNp: "धरान / विराटनगर", cityEn: "Dharan / Biratnagar", phone: "+977-25-525555", email: "koshi@hemophilia.org.np" },
+    { nameNp: "मधेश प्रादेशिक शाखा", nameEn: "Madhesh Provincial Chapter", cityNp: "जनकपुरधाम", cityEn: "Janakpurdham", phone: "+977-41-520133", email: "madhesh@hemophilia.org.np" },
+    { nameNp: "बागमती प्रादेशिक शाखा", nameEn: "Bagmati Provincial Chapter", cityNp: "काठमाडौं", cityEn: "Kathmandu", phone: "+977-1-4221119", email: "bagmati@hemophilia.org.np" },
+    { nameNp: "गण्डकी प्रादेशिक शाखा", nameEn: "Gandaki Provincial Chapter", cityNp: "पोखरा", cityEn: "Pokhara", phone: "+977-61-520067", email: "gandaki@hemophilia.org.np" },
+    { nameNp: "लुम्बिनी प्रादेशिक शाखा", nameEn: "Lumbini Provincial Chapter", cityNp: "नेपालगञ्ज / बुटवल", cityEn: "Nepalgunj / Butwal", phone: "+977-81-520120", email: "lumbini@hemophilia.org.np" },
+    { nameNp: "कर्णाली प्रादेशिक शाखा", nameEn: "Karnali Provincial Chapter", cityNp: "वीरेन्द्रनगर, सुर्खेत", cityEn: "Birendranagar, Surkhet", phone: "+977-83-520200", email: "karnali@hemophilia.org.np" },
+    { nameNp: "सुदूरपश्चिम प्रादेशिक शाखा", nameEn: "Sudurpashchim Provincial Chapter", cityNp: "धनगढी", cityEn: "Dhangadhi", phone: "+977-91-521259", email: "sudurpashchim@hemophilia.org.np" },
   ];
 
   return (
@@ -196,48 +200,50 @@ export default function ContactPage() {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Central Office Card */}
-            <div className="bg-gradient-medical text-white rounded-3xl p-6 sm:p-8 space-y-5 shadow-xl">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">Central Secretariat</span>
-                <h3 className="text-xl font-extrabold text-white mt-1">Nepal Hemophilia Society (NHS)</h3>
-              </div>
+            <EditableContentWrapper label="सम्पर्क तथा हटलाइन सम्पादन गर्नुहोस्" adminUrl="/admin?tab=cms&sub=settings">
+              <div className="bg-gradient-medical text-white rounded-3xl p-6 sm:p-8 space-y-5 shadow-xl">
+                <div>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300">Central Secretariat</span>
+                  <h3 className="text-xl font-extrabold text-white mt-1">Nepal Hemophilia Society (NHS)</h3>
+                </div>
 
-              <div className="space-y-3 text-xs text-slate-200">
-                <div className="flex items-start gap-2.5">
-                  <MapPin className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                  <span>Bir Hospital Premises, Mahabouddha, Kantipath, Kathmandu, Nepal</span>
+                <div className="space-y-3 text-xs text-slate-200">
+                  <div className="flex items-start gap-2.5">
+                    <MapPin className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                    <span>{isNepali ? (globalSettings?.addressNp || orgDetails?.addressNp || "काठमाडौं, नेपाल (केन्द्रीय सचिवालय)") : (globalSettings?.addressEn || orgDetails?.addressEn || "Kathmandu, Nepal (Central Secretariat)")}</span>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Phone className="w-4 h-4 text-teal-300 shrink-0" />
+                    <a href={`tel:${(globalSettings?.contactPhone || orgDetails?.phone || "+97714221119").replace(/[^0-9+]/g, "")}`} className="hover:text-white font-semibold">{globalSettings?.contactPhone || orgDetails?.phone || "+977-1-4221119"}</a>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Mail className="w-4 h-4 text-amber-300 shrink-0" />
+                    <a href={`mailto:${globalSettings?.contactEmail || orgDetails?.email || "info@hemophilia-nepal.org.np"}`} className="hover:text-white font-semibold">{globalSettings?.contactEmail || orgDetails?.email || "info@hemophilia-nepal.org.np"}</a>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Clock className="w-4 h-4 text-slate-300 shrink-0" />
+                    <span>{isNepali ? (orgDetails?.officeHoursNp || "आइतबार – शुक्रबार: बिहान १०:०० – साँझ ५:००") : (orgDetails?.officeHoursEn || "Sunday – Friday: 10:00 AM – 05:00 PM NPT")}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2.5">
-                  <Phone className="w-4 h-4 text-teal-300 shrink-0" />
-                  <a href="tel:+97714221119" className="hover:text-white font-semibold">+977-1-4221119 / +977-1-4221988</a>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Mail className="w-4 h-4 text-amber-300 shrink-0" />
-                  <a href="mailto:info@hemophilia.org.np" className="hover:text-white font-semibold">info@hemophilia.org.np</a>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Clock className="w-4 h-4 text-slate-300 shrink-0" />
-                  <span>Sunday – Friday: 09:30 AM – 05:00 PM NPT</span>
-                </div>
-              </div>
 
-              <div className="pt-2 border-t border-white/20">
-                <div className="text-xs font-bold text-red-200 uppercase tracking-wide mb-1">
-                  24/7 Bleeding Emergency On-Call Hotline:
+                <div className="pt-2 border-t border-white/20">
+                  <div className="text-xs font-bold text-red-200 uppercase tracking-wide mb-1">
+                    24/7 Bleeding Emergency On-Call Hotline:
+                  </div>
+                  <a
+                    href={`tel:${(globalSettings?.emergencyHotline || orgDetails?.emergencyPhone || emergency?.hotline1 || "+9779851000000").replace(/[^0-9+]/g, "")}`}
+                    className="inline-block px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold transition-colors shadow"
+                  >
+                    📞 {globalSettings?.emergencyHotline || orgDetails?.emergencyPhone || emergency?.hotline1 || "+977-9851000000"}
+                  </a>
                 </div>
-                <a
-                  href="tel:+9779851000000"
-                  className="inline-block px-3.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-mono text-xs font-bold transition-colors shadow"
-                >
-                  📞 +977-9851000000
-                </a>
               </div>
-            </div>
+            </EditableContentWrapper>
 
             {/* Social & Legal Note */}
             <div className="p-6 bg-slate-50 rounded-3xl border border-slate-200 text-xs text-slate-600 space-y-2">
               <span className="font-bold text-slate-800 block">Registration & Statutory Transparency:</span>
-              <p>Social Welfare Council (SWC) Affiliation No. 1290. Registered under Kathmandu DAO 312/049/050. PAN: 300124890.</p>
+              <p>Social Welfare Council (SWC) Affiliation No. {globalSettings?.swcAffiliationNo || orgDetails?.swcRegNo || "1290"}. PAN: {globalSettings?.panNumber || orgDetails?.panNo || "300123456"}.</p>
             </div>
 
           </div>
@@ -245,29 +251,33 @@ export default function ContactPage() {
         </div>
 
         {/* 7 Provincial Chapters Directory */}
-        <section className="space-y-6 pt-6">
-          <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-bold text-primary-900">
-              {isNepali ? "७ वटै प्रदेश शाखाहरूको प्रत्यक्ष सम्पर्क" : "7 Provincial Chapters Contact Directory"}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-600">
-              Direct hotlines and email addresses for localized hospital liaison across Nepal:
-            </p>
-          </div>
+        <EditableContentWrapper label="प्रादेशिक शाखाहरू सम्पादन गर्नुहोस्" adminUrl="/admin?tab=cms&sub=chapters">
+          <section className="space-y-6 pt-6">
+            <div className="space-y-1">
+              <h2 className="text-xl sm:text-2xl font-bold text-primary-900">
+                {isNepali ? "७ वटै प्रदेश शाखाहरूको प्रत्यक्ष सम्पर्क" : "7 Provincial Chapters Contact Directory"}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600">
+                Direct hotlines and email addresses for localized hospital liaison across Nepal:
+              </p>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-            {provincialOffices.map((office, idx) => (
-              <div key={idx} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
-                <h4 className="font-bold text-sm text-primary-900">{office.name}</h4>
-                <div className="text-slate-600 space-y-1">
-                  <div>📍 <strong>Location:</strong> {office.city}</div>
-                  <div>📞 <strong>Phone:</strong> <a href={`tel:${office.phone}`} className="text-accent font-semibold">{office.phone}</a></div>
-                  <div>✉️ <strong>Email:</strong> <a href={`mailto:${office.email}`} className="text-primary hover:underline">{office.email}</a></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+              {(chapters && chapters.length > 0 ? chapters : fallbackOffices).map((office: any, idx: number) => (
+                <div key={idx} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2 hover:shadow-md transition-shadow">
+                  <h4 className="font-bold text-sm text-primary-900">
+                    {isNepali ? (office.provinceNameNp || office.nameNp || office.name) : (office.provinceNameEn || office.nameEn || office.name)}
+                  </h4>
+                  <div className="text-slate-600 space-y-1">
+                    <div>📍 <strong>Location:</strong> {isNepali ? (office.cityNp || office.partnerHospitalNp || office.city) : (office.cityEn || office.partnerHospitalEn || office.city)}</div>
+                    <div>📞 <strong>Phone:</strong> <a href={`tel:${office.phone}`} className="text-accent font-semibold">{office.phone}</a></div>
+                    {office.email && <div>✉️ <strong>Email:</strong> <a href={`mailto:${office.email}`} className="text-primary hover:underline">{office.email}</a></div>}
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
+        </EditableContentWrapper>
 
       </div>
 

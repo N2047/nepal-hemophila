@@ -14,6 +14,7 @@ import {
   Heart
 } from "lucide-react";
 import Link from "next/link";
+import { NoticeBoardSection } from "@/components/common/NoticeBoardSection";
 
 export default function NewsPage() {
   const { isNepali, l } = useLanguage();
@@ -66,6 +67,9 @@ export default function NewsPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-8">
         
+        {/* Official Notices Board from CMS */}
+        <NoticeBoardSection limit={6} showTitle={true} />
+
         {/* Search & Category Filter */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div className="relative">

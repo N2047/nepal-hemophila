@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useData } from "@/context/DataContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 import { 
   Heart, 
   ShieldCheck, 
@@ -20,6 +21,7 @@ import confetti from "canvas-confetti";
 export default function DonatePage() {
   const { isNepali, t } = useLanguage();
   const { submitDonation } = useData();
+  const { orgDetails } = useSiteContent();
 
   const [donationType, setDonationType] = useState<"One-time" | "Monthly">("One-time");
   const [amount, setAmount] = useState<number>(1500);
@@ -275,6 +277,38 @@ export default function DonatePage() {
                   </button>
                 ))}
               </div>
+
+              {/* Dynamic Payment Account Info from CMS */}
+              {paymentMethod === "Bank Transfer" && (
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-700 space-y-1.5 animate-in fade-in duration-150">
+                  <span className="font-bold text-slate-900 flex items-center gap-1.5">
+                    <Building2 className="w-4 h-4 text-primary" />
+                    <span>बैंक खाता विवरण (Official Bank Account Details):</span>
+                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 font-medium">
+                    <div>बैंक: <strong>{orgDetails?.bankName || "राष्ट्रिय वाणिज्य बैंक"}</strong></div>
+                    <div>खातावाला: <strong>{orgDetails?.accountName || "नेपाल हेमोफिलिया सोसाइटी"}</strong></div>
+                    <div>खाता नम्बर: <strong className="font-mono text-primary text-sm font-bold">{orgDetails?.accountNumber || "1090010002345001"}</strong></div>
+                    <div>शाखा: <strong>{orgDetails?.branch || "विशाल बजार, काठमाडौं"}</strong> (SWIFT: <strong className="font-mono">{orgDetails?.swiftCode || "RBBANPKA"}</strong>)</div>
+                  </div>
+                </div>
+              )}
+
+              {paymentMethod === "eSewa" && (
+                <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 space-y-1 animate-in fade-in duration-150">
+                  <span className="font-bold block">🟢 eSewa वालेट विवरण:</span>
+                  <div>eSewa ID / मोबाइल नम्बर: <strong className="font-mono text-sm font-bold">{orgDetails?.esewaId || "9851000000"}</strong> ({orgDetails?.accountName || "Nepal Hemophilia Society"})</div>
+                  <div className="text-[11px] text-emerald-700">रकम पठाउँदा Remarks मा आफ्नो नाम र "Donation" उल्लेख गरिदिनुहोला।</div>
+                </div>
+              )}
+
+              {paymentMethod === "Fonepay QR" && (
+                <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-xs text-red-900 space-y-1 animate-in fade-in duration-150">
+                  <span className="font-bold block">📱 Fonepay Direct QR & Merchant ID:</span>
+                  <div>संस्थाको नाम: <strong>{orgDetails?.orgNameNp || "नेपाल हेमोफिलिया सोसाइटी"}</strong></div>
+                  <div>Fonepay / Mobile Banking बाट सोझै स्क्यान गरी सुरक्षित भुक्तानी गर्न सक्नुहुन्छ।</div>
+                </div>
+              )}
             </div>
 
             {/* Donor Information */}

@@ -23,12 +23,19 @@ import {
   ExternalLink,
   ChevronRight,
   TrendingUp,
-  AlertCircle
+  AlertCircle,
+  Settings
 } from "lucide-react";
 import { EmergencyModal } from "@/components/common/EmergencyModal";
+import { useSiteContent } from "@/context/SiteContentContext";
+import { useAuth } from "@/context/AuthContext";
+import { NoticeBoardSection } from "@/components/common/NoticeBoardSection";
+import { EditableContentWrapper } from "@/components/common/EditableContentWrapper";
 
 export default function HomePage() {
   const { lang, t, l, isNepali } = useLanguage();
+  const { role } = useAuth();
+  const { features, hero, emergency: emergencyContent, stats: siteStats, orgDetails } = useSiteContent();
   const { 
     treatmentCentres, 
     factorInventory, 
@@ -51,8 +58,28 @@ export default function HomePage() {
   return (
     <div className="space-y-16 sm:space-y-24 pb-16">
       
+      {/* Super Admin CMS Quick Access Banner */}
+      {role === "SUPER_ADMIN" && (
+        <div className="bg-primary-950 text-white px-4 py-2.5 text-xs border-b border-primary-800">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+            <span className="font-bold flex items-center gap-2 text-amber-300">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>👑 सुपर एडमिन मोड: कुनै पनि कन्टेन्ट सम्पादन गर्न वा फिचर अन/अफ गर्न CMS उपलब्ध छ।</span>
+            </span>
+            <Link
+              href="/admin?tab=site-content"
+              className="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold flex items-center gap-1.5 text-[11px] transition-colors shrink-0"
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>🌐 कन्टेन्ट तथा फिचर व्यवस्थापन खोल्नुहोस्</span>
+            </Link>
+          </div>
+        </div>
+      )}
+
       {/* 1. HERO SECTION */}
-      <section className="relative bg-gradient-medical text-white overflow-hidden py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-primary-800">
+      <EditableContentWrapper label="मुख्य ब्यानर (Hero) सम्पादन गर्नुहोस्" adminUrl="/admin?tab=site-content">
+        <section className="relative bg-gradient-medical text-white overflow-hidden py-16 sm:py-24 px-4 sm:px-6 lg:px-8 border-b border-primary-800">
         {/* Background Subtle Medical Grid Pattern */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]" />
         
@@ -67,17 +94,17 @@ export default function HomePage() {
             {/* Tagline Badge */}
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs sm:text-sm font-semibold text-amber-300">
               <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
-              <span>{isNepali ? "राष्ट्रिय बिरामी संस्था • नेपाल" : "National Bleeding Disorders Organization • Nepal"}</span>
+              <span>{isNepali ? (hero.taglineBadgeNp || "राष्ट्रिय बिरामी संस्था • नेपाल") : (hero.taglineBadgeEn || "National Bleeding Disorders Organization • Nepal")}</span>
             </div>
 
             {/* Main Headline */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-tight text-white">
-              {t("hero.title")}
+              {isNepali ? (hero.titleNp || t("hero.title")) : (hero.titleEn || t("hero.title"))}
             </h1>
 
             {/* Subtitle */}
             <p className="text-base sm:text-lg text-slate-200 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              {t("hero.subtitle")}
+              {isNepali ? (hero.subtitleNp || t("hero.subtitle")) : (hero.subtitleEn || t("hero.subtitle"))}
             </p>
 
             {/* Primary Action CTAs */}
@@ -197,71 +224,82 @@ export default function HomePage() {
 
         </div>
       </section>
+    </EditableContentWrapper>
 
+      {/* NEW: NOTICE BOARD & URGENT TICKER (Controlled by Super Admin CMS) */}
+      {features.noticeBoardTicker && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
+          <NoticeBoardSection limit={3} showTitle={true} />
+        </section>
+      )}
 
-      {/* 2. EMERGENCY SUPPORT BANNER CARD (Requirement #11) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="bg-red-600 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-red-500 relative overflow-hidden">
-          <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-64 h-64 bg-red-700/50 rounded-full blur-2xl pointer-events-none" />
-          
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            
-            <div className="flex items-start gap-4">
-              <div className="p-3.5 bg-white text-red-600 rounded-2xl shadow-lg emergency-pulse shrink-0">
-                <ShieldAlert className="w-8 h-8" />
-              </div>
-              <div className="space-y-1">
-                <div className="inline-block px-2.5 py-0.5 rounded bg-white/20 text-white text-xs font-black uppercase tracking-wider">
-                  {isNepali ? "आकस्मिक चिकित्सा सहयोग" : "URGENT MEDICAL HELP"}
+      {/* 2. EMERGENCY SUPPORT BANNER CARD (Controlled by Super Admin CMS) */}
+      {features.emergencyAlertBanner && (
+        <EditableContentWrapper label="आपतकालीन ब्यानर सम्पादन गर्नुहोस्" adminUrl="/admin?tab=site-content">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="bg-red-600 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border-2 border-red-500 relative overflow-hidden">
+              <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-64 h-64 bg-red-700/50 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                
+                <div className="flex items-start gap-4">
+                  <div className="p-3.5 bg-white text-red-600 rounded-2xl shadow-lg emergency-pulse shrink-0">
+                    <ShieldAlert className="w-8 h-8" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="inline-block px-2.5 py-0.5 rounded bg-white/20 text-white text-xs font-black uppercase tracking-wider">
+                      {isNepali ? "आकस्मिक चिकित्सा सहयोग" : "URGENT MEDICAL HELP"}
+                    </div>
+                    <h2 className="text-xl sm:text-2xl font-extrabold">
+                      {isNepali ? "आकस्मिक रक्तस्राव वा चोटपटक लागेको छ?" : "Need Urgent Bleeding Emergency Help?"}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-red-100 max-w-2xl leading-relaxed">
+                      {isNepali
+                        ? "रक्तस्रावको आकस्मिक अवस्थामा तुरुन्त नजिकैको अस्पताल वा आकस्मिक स्वास्थ्य केन्द्रमा सम्पर्क गर्नुहोस्। एन.एच.एस.ले अन-कल फ्याक्टर उपलब्धता तथा समन्वय सहयोग प्रदान गर्दछ।"
+                        : "For bleeding emergencies, contact your nearest healthcare facility or emergency medical service immediately. NHS provides 24/7 on-call factor guidance and hospital coordination."}
+                    </p>
+                  </div>
                 </div>
-                <h2 className="text-xl sm:text-2xl font-extrabold">
-                  {isNepali ? "आकस्मिक रक्तस्राव वा चोटपटक लागेको छ?" : "Need Urgent Bleeding Emergency Help?"}
-                </h2>
-                <p className="text-xs sm:text-sm text-red-100 max-w-2xl leading-relaxed">
+
+                <div className="flex flex-wrap items-center gap-3 shrink-0">
+                  <a
+                    href={`tel:${(emergencyContent.hotline1 || "+97714221119").replace(/[^0-9+]/g, "")}`}
+                    className="px-5 py-3 rounded-xl bg-white text-red-700 font-extrabold text-xs sm:text-sm shadow-md hover:bg-slate-100 transition-colors flex items-center gap-2"
+                  >
+                    <PhoneCall className="w-4 h-4 text-red-600" />
+                    <span>Call Hotline ({emergencyContent.hotline1 || "01-4221119"})</span>
+                  </a>
+
+                  <Link
+                    href="/treatment-centres"
+                    className="px-5 py-3 rounded-xl bg-red-800 hover:bg-red-900 text-white font-bold text-xs sm:text-sm border border-red-400/40 transition-colors flex items-center gap-1.5"
+                  >
+                    <MapPin className="w-4 h-4" />
+                    <span>{isNepali ? "उपचार केन्द्र खोज्नुहोस्" : "Find Hospital"}</span>
+                  </Link>
+
+                  <button
+                    onClick={() => setEmergencyModalOpen(true)}
+                    className="px-4 py-3 rounded-xl bg-red-900/60 hover:bg-red-900 text-white font-semibold text-xs sm:text-sm border border-red-400/20 transition-colors"
+                  >
+                    {isNepali ? "R.I.C.E. विधि हेर्नुहोस्" : "R.I.C.E. Triage"}
+                  </button>
+                </div>
+
+              </div>
+
+              <div className="mt-4 pt-4 border-t border-red-500/60 text-[11px] text-red-200 flex items-center gap-2">
+                <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                <span>
                   {isNepali
-                    ? "रक्तस्रावको आकस्मिक अवस्थामा तुरुन्त नजिकैको अस्पताल वा आकस्मिक स्वास्थ्य केन्द्रमा सम्पर्क गर्नुहोस्। एन.एच.एस.ले अन-कल फ्याक्टर उपलब्धता तथा समन्वय सहयोग प्रदान गर्दछ।"
-                    : "For bleeding emergencies, contact your nearest healthcare facility or emergency medical service immediately. NHS provides 24/7 on-call factor guidance and hospital coordination."}
-                </p>
+                    ? "चिकित्सा अस्वीकरण: यो डिजिटल प्रणाली संस्थागत सहयोगका लागि हो, आकस्मिक अस्पताल उपचारको विकल्प होइन।"
+                    : "Disclaimer: This platform provides institutional support and does not replace emergency medical diagnosis or immediate hospital care."}
+                </span>
               </div>
             </div>
-
-            <div className="flex flex-wrap items-center gap-3 shrink-0">
-              <a
-                href="tel:+97714221119"
-                className="px-5 py-3 rounded-xl bg-white text-red-700 font-extrabold text-xs sm:text-sm shadow-md hover:bg-slate-100 transition-colors flex items-center gap-2"
-              >
-                <PhoneCall className="w-4 h-4 text-red-600" />
-                <span>Call Hotline (01-4221119)</span>
-              </a>
-
-              <Link
-                href="/treatment-centres"
-                className="px-5 py-3 rounded-xl bg-red-800 hover:bg-red-900 text-white font-bold text-xs sm:text-sm border border-red-400/40 transition-colors flex items-center gap-1.5"
-              >
-                <MapPin className="w-4 h-4" />
-                <span>{isNepali ? "उपचार केन्द्र खोज्नुहोस्" : "Find Hospital"}</span>
-              </Link>
-
-              <button
-                onClick={() => setEmergencyModalOpen(true)}
-                className="px-4 py-3 rounded-xl bg-red-900/60 hover:bg-red-900 text-white font-semibold text-xs sm:text-sm border border-red-400/20 transition-colors"
-              >
-                {isNepali ? "R.I.C.E. विधि हेर्नुहोस्" : "R.I.C.E. Triage"}
-              </button>
-            </div>
-
-          </div>
-
-          <div className="mt-4 pt-4 border-t border-red-500/60 text-[11px] text-red-200 flex items-center gap-2">
-            <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-            <span>
-              {isNepali
-                ? "चिकित्सा अस्वीकरण: यो डिजिटल प्रणाली संस्थागत सहयोगका लागि हो, आकस्मिक अस्पताल उपचारको विकल्प होइन।"
-                : "Disclaimer: This platform provides institutional support and does not replace emergency medical diagnosis or immediate hospital care."}
-            </span>
-          </div>
-        </div>
-      </section>
+          </section>
+        </EditableContentWrapper>
+      )}
 
 
       {/* 3. 8 QUICK ACCESS ACTION CARDS (Requirement #12) */}
@@ -555,91 +593,95 @@ export default function HomePage() {
       </section>
 
 
-      {/* 5. DYNAMIC STATISTICS (Requirement #14) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="bg-gradient-medical rounded-3xl p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
-          
-          <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-              {isNepali ? "राष्ट्रिय तथ्याङ्क तथा प्रभाव" : "National Data & Collective Impact"}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-200">
-              {isNepali
-                ? "नेपाल हेमोफिलिया सोसाइटीको प्रमाणीकृत राष्ट्रिय तथ्याङ्क (२०२६ सम्मको अद्यावधिक)।"
-                : "Real-time verified data from the Nepal Hemophilia Registry and Provincial Chapters."}
-            </p>
-          </div>
+      {/* 5. DYNAMIC STATISTICS (Controlled by Super Admin CMS) */}
+      {features.statisticsCounter && (
+        <EditableContentWrapper label="राष्ट्रिय तथ्याङ्क सम्पादन गर्नुहोस्" adminUrl="/admin?tab=site-content">
+          <section className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="bg-gradient-medical rounded-3xl p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden">
+              
+              <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                  {isNepali ? "राष्ट्रिय तथ्याङ्क तथा प्रभाव" : "National Data & Collective Impact"}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-200">
+                  {isNepali
+                    ? "नेपाल हेमोफिलिया सोसाइटीको प्रमाणीकृत राष्ट्रिय तथ्याङ्क (२०२६ सम्मको अद्यावधिक)।"
+                    : "Real-time verified data from the Nepal Hemophilia Registry and Provincial Chapters."}
+                </p>
+              </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
-            
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-white block">
-                {stats.totalPatients}+
-              </span>
-              <span className="text-xs text-slate-300 font-medium block">
-                {t("stats.patientsRegistered")}
-              </span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+                
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
+                  <span className="text-2xl sm:text-3xl font-black text-white block">
+                    {siteStats?.registeredPatients || stats.totalPatients}+
+                  </span>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    {t("stats.patientsRegistered")}
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
+                  <span className="text-2xl sm:text-3xl font-black text-amber-300 block">
+                    {siteStats?.provincesCovered || 7} / 7
+                  </span>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    {t("stats.provincesActive")}
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
+                  <span className="text-2xl sm:text-3xl font-black text-emerald-300 block">
+                    {siteStats?.treatmentCentresCount || stats.totalCentres}
+                  </span>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    {t("stats.treatmentCentres")}
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
+                  <span className="text-2xl sm:text-3xl font-black text-white block">
+                    {siteStats?.factorDistributedUnits || "184K+"}
+                  </span>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    {t("stats.factorDistributed")}
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
+                  <span className="text-2xl sm:text-3xl font-black text-teal-300 block">
+                    {siteStats?.hcpTrainedCount || 320}+
+                  </span>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    {t("stats.hcpTrained")}
+                  </span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
+                  <span className="text-2xl sm:text-3xl font-black text-red-300 block">
+                    {siteStats?.activeMembers || stats.totalMembers}+
+                  </span>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    {t("stats.activeMembers")}
+                  </span>
+                </div>
+
+              </div>
+
+              <div className="mt-8 text-center">
+                <Link
+                  href="/data-research"
+                  className="inline-flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-white underline underline-offset-4"
+                >
+                  <span>{isNepali ? "विस्तृत जनसांख्यिकीय ड्यासबोर्ड हेर्नुहोस्" : "Explore National Registry Dashboard & Provincial Breakdown"}</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+
             </div>
-
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-amber-300 block">
-                7 / 7
-              </span>
-              <span className="text-xs text-slate-300 font-medium block">
-                {t("stats.provincesActive")}
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-emerald-300 block">
-                {stats.totalCentres}
-              </span>
-              <span className="text-xs text-slate-300 font-medium block">
-                {t("stats.treatmentCentres")}
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-white block">
-                184K+
-              </span>
-              <span className="text-xs text-slate-300 font-medium block">
-                {t("stats.factorDistributed")}
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-teal-300 block">
-                320+
-              </span>
-              <span className="text-xs text-slate-300 font-medium block">
-                {t("stats.hcpTrained")}
-              </span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 space-y-1">
-              <span className="text-2xl sm:text-3xl font-black text-red-300 block">
-                {stats.totalMembers}+
-              </span>
-              <span className="text-xs text-slate-300 font-medium block">
-                {t("stats.activeMembers")}
-              </span>
-            </div>
-
-          </div>
-
-          <div className="mt-8 text-center">
-            <Link
-              href="/data-research"
-              className="inline-flex items-center gap-2 text-xs font-semibold text-slate-200 hover:text-white underline underline-offset-4"
-            >
-              <span>{isNepali ? "विस्तृत जनसांख्यिकीय ड्यासबोर्ड हेर्नुहोस्" : "Explore National Registry Dashboard & Provincial Breakdown"}</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
-
-        </div>
-      </section>
+          </section>
+        </EditableContentWrapper>
+      )}
 
 
       {/* 6. OUR WORK — 6 CORE PILLARS (Requirement #15) */}
@@ -755,8 +797,9 @@ export default function HomePage() {
       </section>
 
 
-      {/* 7. PATIENT & COMMUNITY STORIES (Requirement #16) */}
-      <section className="bg-slate-100 py-16 sm:py-20 border-y border-slate-200">
+      {/* 7. PATIENT & COMMUNITY STORIES (Controlled by Super Admin CMS) */}
+      {features.communityStoriesSection && (
+        <section className="bg-slate-100 py-16 sm:py-20 border-y border-slate-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
@@ -838,10 +881,12 @@ export default function HomePage() {
 
         </div>
       </section>
+      )}
 
 
       {/* 8. LATEST NEWS & EVENTS SECTION (Requirements #17 & #18) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+      <EditableContentWrapper label="समाचार तथा कार्यक्रमहरू सम्पादन गर्नुहोस्" adminUrl="/admin?tab=cms&sub=news">
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
           
           {/* Latest News (7 cols) */}
@@ -975,10 +1020,12 @@ export default function HomePage() {
 
         </div>
       </section>
+    </EditableContentWrapper>
 
 
-      {/* 9. DONATION CALL TO ACTION (Requirement #26) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+      {/* 9. DONATION CALL TO ACTION (Controlled by Super Admin CMS) */}
+      {features.onlineDonations && (
+        <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="bg-gradient-medical rounded-3xl p-8 sm:p-12 text-white shadow-2xl relative overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
           <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
@@ -1061,6 +1108,7 @@ export default function HomePage() {
 
         </div>
       </section>
+      )}
 
       {/* Global Emergency Modal Trigger */}
       <EmergencyModal isOpen={emergencyModalOpen} onClose={() => setEmergencyModalOpen(false)} />

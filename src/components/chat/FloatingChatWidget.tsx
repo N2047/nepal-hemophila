@@ -4,15 +4,17 @@ import React, { useState, useEffect } from "react";
 import { MessageSquare, X, Sparkles, Bot } from "lucide-react";
 import { ChatBoard } from "./ChatBoard";
 import { useLanguage } from "@/context/LanguageContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 import { usePathname } from "next/navigation";
 
 export function FloatingChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasPrompted, setHasPrompted] = useState(false);
   const { isNepali } = useLanguage();
+  const { features } = useSiteContent();
   const pathname = usePathname();
 
-  // Don't show floating widget if already on the full /chat page
+  // Don't show floating widget if already on the full /chat page or if disabled by Super Admin
   const isFullChatPage = pathname === "/chat";
 
   // Auto-show friendly tooltip once after 4 seconds
@@ -34,7 +36,7 @@ export function FloatingChatWidget() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
-  if (isFullChatPage) {
+  if (isFullChatPage || !features.aiChatbot) {
     return null;
   }
 

@@ -15,9 +15,14 @@ import {
   Stethoscope
 } from "lucide-react";
 import Link from "next/link";
+import { useSiteContent } from "@/context/SiteContentContext";
 
 export default function EmergencyPage() {
   const { isNepali, t } = useLanguage();
+  const { emergency, orgDetails } = useSiteContent();
+
+  const hotline1 = emergency.hotline1 || orgDetails.emergencyPhone || "+977-9851000000";
+  const hotline2 = emergency.hotline2 || orgDetails.phone || "+977-1-4221119";
 
   return (
     <div className="space-y-12 pb-16">
@@ -135,10 +140,17 @@ export default function EmergencyPage() {
 
             <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
               <span className="font-bold text-sm text-slate-900 block">NHS National On-Call Line</span>
-              <p className="text-xs text-slate-500">Patient Assistance Bureau</p>
-              <a href="tel:+9779851000000" className="inline-block px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-lg transition-colors shadow">
-                📞 9851000000
+              <p className="text-xs text-slate-500">Patient Assistance Bureau (24/7)</p>
+              <a href={`tel:${hotline1.replace(/\s+/g, '')}`} className="inline-block px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm rounded-lg transition-colors shadow">
+                📞 {hotline1}
               </a>
+              {hotline2 && hotline2 !== hotline1 && (
+                <div className="pt-1">
+                  <a href={`tel:${hotline2.replace(/\s+/g, '')}`} className="text-xs font-bold text-red-600 hover:underline">
+                    Alt: {hotline2}
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </section>

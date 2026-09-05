@@ -40,6 +40,9 @@ import {
   Cell 
 } from "recharts";
 import { provinceStats, diagnosisBreakdown } from "@/data/mockData";
+import { CommitteeAdminManager } from "@/components/admin/CommitteeAdminManager";
+import { SiteContentAdminManager } from "@/components/admin/SiteContentAdminManager";
+import { UniversalCmsManager } from "@/components/admin/UniversalCmsManager";
 
 export default function AdminDashboardPage() {
   const { isNepali, l } = useLanguage();
@@ -63,8 +66,26 @@ export default function AdminDashboardPage() {
   } = useData();
 
   const [activeTab, setActiveTab] = useState<
-    "overview" | "news" | "events" | "resources" | "centres" | "factor" | "membership" | "support" | "donations" | "audits"
-  >("overview");
+    "overview" | "cms" | "site-content" | "committee" | "news" | "events" | "resources" | "centres" | "factor" | "membership" | "support" | "donations" | "audits" | "trash"
+  >("cms");
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get("tab");
+      if (tabParam === "committee") {
+        setActiveTab("committee");
+      } else if (tabParam === "site-content") {
+        setActiveTab("site-content");
+      } else if (tabParam === "cms") {
+        setActiveTab("cms");
+      } else if (tabParam === "trash") {
+        setActiveTab("trash");
+      } else if (tabParam === "overview") {
+        setActiveTab("overview");
+      }
+    }
+  }, []);
 
   // Quick Create News Form Modal State
   const [showAddNews, setShowAddNews] = useState(false);
@@ -143,14 +164,13 @@ export default function AdminDashboardPage() {
         {/* Navigation Sidebar Tabs */}
         <div className="flex flex-wrap gap-2 pb-2 border-b border-slate-200">
           {[
+            { id: "cms", label: "🌐 सम्पूर्ण CMS (Website Content Management)", icon: Sparkles },
             { id: "overview", label: "Executive Overview", icon: LayoutDashboard },
+            { id: "site-content", label: "⚙️ फिचर तथा हेडलाइन व्यवस्थापन", icon: LayoutDashboard },
+            { id: "committee", label: "👥 केन्द्रीय कार्यसमिति", icon: Users },
             { id: "membership", label: `Memberships (${membershipApplications.filter(m => m.status === 'Submitted').length} pending)`, icon: Users },
             { id: "support", label: `Support Tickets (${supportRequests.filter(s => s.status === 'New').length} new)`, icon: ShieldAlert },
             { id: "factor", label: "Factor Inventory", icon: Activity },
-            { id: "centres", label: "Treatment Centres", icon: MapPin },
-            { id: "news", label: "News & CMS", icon: FileText },
-            { id: "events", label: "Events & RSVPs", icon: Calendar },
-            { id: "resources", label: "Resource Files", icon: BookOpen },
             { id: "donations", label: "Donations & Ledger", icon: Heart },
             { id: "audits", label: "Security Audit Logs", icon: ShieldCheck },
           ].map((tab) => {
@@ -721,6 +741,21 @@ export default function AdminDashboardPage() {
               </table>
             </div>
           </div>
+        )}
+
+        {/* TAB: UNIVERSAL MASTER CMS */}
+        {(activeTab === "cms" || activeTab === "trash" || activeTab === "news" || activeTab === "events" || activeTab === "resources" || activeTab === "centres") && (
+          <UniversalCmsManager />
+        )}
+
+        {/* TAB: SITE CONTENT & FEATURE CMS */}
+        {activeTab === "site-content" && (
+          <SiteContentAdminManager />
+        )}
+
+        {/* TAB: CENTRAL WORKING COMMITTEE MANAGEMENT */}
+        {activeTab === "committee" && (
+          <CommitteeAdminManager />
         )}
 
       </div>

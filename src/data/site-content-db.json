@@ -1,0 +1,193 @@
+{
+  "features": {
+    "aiChatbot": true,
+    "factorAvailabilityTracker": true,
+    "onlineDonations": true,
+    "elearningAcademy": true,
+    "onlineMembershipForm": true,
+    "emergencyAlertBanner": true,
+    "noticeBoardTicker": true,
+    "statisticsCounter": true,
+    "communityStoriesSection": true,
+    "treatmentCentresLocator": true
+  },
+  "visionMission": {
+    "visionNp": "नेपालका सम्पूर्ण हेमोफिलिया तथा रक्त विकार भएका व्यक्तिहरूले पूर्ण स्वास्थ्य, मर्यादा, समान अधिकार र सक्रिय जीवन बाँच्न पाउने समाजको निर्माण।",
+    "visionEn": "A future where every individual with a bleeding disorder in Nepal enjoys accessible treatment, physical dignity, social equality, and full life potential.",
+    "missionNp": "निःशुल्क फ्याक्टर प्रतिस्थापन, विकेन्द्रीकृत प्रयोगशाला परीक्षण, फिजियोथेरापी, मनोसामाजिक सहयोग र नीतिगत पैरवीमार्फत जीवनस्तर उकास्ने।",
+    "missionEn": "To decentralize specialized coagulation diagnosis, guarantee national factor supply, provide comprehensive psychosocial care, and advocate for universal health coverage.",
+    "coreValues": [
+      {
+        "id": "val-1",
+        "titleNp": "बिरामी-केन्द्रित मर्यादा (Patient-Centered Dignity)",
+        "titleEn": "Patient-Centered Dignity",
+        "descNp": "प्रत्येक बिरामी र परिवारको आत्मसम्मान र मानवीय अधिकारको पूर्ण संरक्षण।"
+      },
+      {
+        "id": "val-2",
+        "titleNp": "चिकित्सीय विश्वसनीयता र आचारसंहिता (Medical Credibility & Ethics)",
+        "titleEn": "Medical Credibility & Ethics",
+        "descNp": "प्रमाण-आधारित उपचार र विश्व हेमोफिलिया महासंघ (WFH) को मापदण्ड पालना।"
+      },
+      {
+        "id": "val-3",
+        "titleNp": "वित्तीय पारदर्शिता र सुशासन (Financial Transparency & Integrity)",
+        "titleEn": "Financial Transparency & Integrity",
+        "descNp": "हरेक स्रोत, अनुदान तथा फ्याक्टर औषधिको निष्पक्ष र सार्वजनिक अडिट।"
+      },
+      {
+        "id": "val-4",
+        "titleNp": "सातै प्रदेशमा समतामूलक पहुँच (Inclusivity Across 7 Provinces)",
+        "titleEn": "Inclusivity Across 7 Provinces",
+        "descNp": "भौगोलिक विकटता भए पनि देशका कुनाकाप्चासम्म औषधि र हेरचाह विस्तार।"
+      }
+    ],
+    "strategicObjectives": [
+      {
+        "id": "obj-1",
+        "number": 1,
+        "titleNp": "निःशुल्क फ्याक्टरको स्थायी सरकारी पहुँच (Universal Factor Access)",
+        "titleEn": "Universal Factor Access",
+        "descNp": "नेपाल सरकारको स्थायी बजेट विनियोजनमार्फत सबै प्रादेशिक अस्पतालहरूमा निःशुल्क Factor VIII र IX को निरन्तर आपूर्ति सुनिश्चित गर्ने।",
+        "descEn": "Advocate for permanent government budget allocation to provide free Factor VIII and IX across all provincial hospitals."
+      },
+      {
+        "id": "obj-2",
+        "number": 2,
+        "titleNp": "विकेन्द्रीकृत परीक्षण प्रयोगशाला स्थापना (Provincial Diagnostic Hubs)",
+        "titleEn": "Provincial Diagnostic Hubs",
+        "descNp": "सातै प्रदेशका प्रमुख शिक्षण अस्पतालहरूमा आधुनिक कोगुलोमिटर र फ्याक्टर स्तर परीक्षण सुविधा स्थापना गर्ने।",
+        "descEn": "Establish specialized coagulation diagnostic facilities and assay testing across all 7 provinces."
+      },
+      {
+        "id": "obj-3",
+        "number": 3,
+        "titleNp": "समग्र स्वास्थ्य तथा पुनर्स्थापना सेवा (Comprehensive Clinical Care)",
+        "titleEn": "Comprehensive Clinical Care",
+        "descNp": "हेमोफिलिया बिरामीहरूका लागि फिजियोथेरापी, हाडजोर्नी हेरचाह, दन्त चिकित्सा र मनोसामाजिक परामर्श सेवा विस्तार गर्ने।",
+        "descEn": "Provide holistic rehabilitation, physical therapy, dental surgery guidance, and psychosocial support."
+      },
+      {
+        "id": "obj-4",
+        "number": 4,
+        "titleNp": "राष्ट्रिय बिरामी रजिष्ट्री विस्तार (National Patient Registry Expansion)",
+        "titleEn": "National Patient Registry Expansion",
+        "descNp": "नेपालभर ५,००० भन्दा बढी पहिचान हुन बाँकी बिरामीहरूलाई खोज्न ग्रामीण सचेतना र राष्ट्रिय डिजिटल रजिष्ट्री अद्यावधिक गर्ने।",
+        "descEn": "Expand active outreach in remote communities to identify undiagnosed patients and maintain confidential registry."
+      }
+    ]
+  },
+  "hero": {
+    "taglineBadgeNp": "बिस्व हेमोफिलिया महासघ",
+    "taglineBadgeEn": "National Bleeding Disorders Organization • Nepal",
+    "titleNp": "रक्तस्राव विकार भएका प्रत्येक नागरिकको स्वास्थ्य, मर्यादा र समान अवसर।",
+    "titleEn": "Building a Future Where Every Person with Bleeding Disorders Lives with Health, Dignity and Equal Opportunity.",
+    "subtitleNp": "नेपाल हेमोफिलिया सोसाइटी (NHS) सन् १९९२ देखि नेपालभरका हेमोफिलिया बिरामीहरूको उपचार पहुँच, फ्याक्टर आपूर्ति, अधिकार र मानवीय मर्यादाका लागि समर्पित राष्ट्रिय गैर-नाफामूलक संस्था हो।",
+    "subtitleEn": "Nepal Hemophilia Society (NHS) is the national patient-led organization dedicated to diagnosis, factor access, comprehensive clinical care, social dignity, and human rights across all 7 provinces of Nepal.",
+    "ctaSupportTextNp": "बिरामी सहयोग लिनुहोस्",
+    "ctaSupportTextEn": "Get Patient Support",
+    "ctaLearnTextNp": "हेमोफिलियाबारे बुझ्नुहोस्",
+    "ctaLearnTextEn": "Understand Hemophilia",
+    "ctaDonateTextNp": "सहयोग / दान गर्नुहोस्",
+    "ctaDonateTextEn": "Donate Now"
+  },
+  "emergency": {
+    "headlineNp": "आकस्मिक रक्तस्राव २४/७ हटलाइन तथा प्राथमिक उपचार सहायता",
+    "headlineEn": "Emergency 24/7 Bleeding Protocol & Clinical Guidance",
+    "hotline1": "+977-1-4221119",
+    "hotline2": "+977-9842661754",
+    "birHospitalContact": "वीर अस्पताल केन्द्रीय हेमोफिलिया केयर: ०१-४२२१११९",
+    "disclaimerNp": "गम्भीर चोटपटक वा टाउको, घाँटी वा पेटमा रक्तस्राव भए तुरुन्त नजिकको अस्पतालको आकस्मिक कक्षमा जानुहोस् वा फ्याक्टर इन्फ्युजन लिनुहोस्।",
+    "disclaimerEn": "For acute internal bleeding or trauma, seek emergency hospital care immediately and administer clotting factors."
+  },
+  "stats": {
+    "registeredPatients": 984,
+    "activeMembers": 650,
+    "treatmentCentresCount": 8,
+    "provincesCovered": 7,
+    "districtsReached": 68,
+    "factorDistributedUnits": "184K+",
+    "hcpTrainedCount": 320
+  },
+  "orgDetails": {
+    "orgNameNp": "नेपाल हेमोफिलिया सोसाइटी",
+    "orgNameEn": "Nepal Hemophilia Society",
+    "taglineNp": "राष्ट्रिय बिरामी संस्था (स्था. १९९२)",
+    "taglineEn": "National Patient Organization (Est. 1992)",
+    "phone": "+977-1-4221119",
+    "emergencyPhone": "+977-9851000000",
+    "email": "info@hemophilia-nepal.org.np",
+    "addressNp": "काठमाडौं, नेपाल (केन्द्रीय सचिवालय)",
+    "addressEn": "Kathmandu, Nepal (Central Secretariat)",
+    "officeHoursNp": "आइतबार - शुक्रबार: बिहान १०:०० - साँझ ५:००",
+    "officeHoursEn": "Sunday - Friday: 10:00 AM - 5:00 PM",
+    "swcRegNo": "१२९० (समाज कल्याण परिषद)",
+    "panNo": "३००१२३४५६",
+    "bankName": "राष्ट्रिय वाणिज्य बैंक (Rastriya Banijya Bank)",
+    "accountName": "नेपाल हेमोफिलिया सोसाइटी (Nepal Hemophilia Society)",
+    "accountNumber": "1090010002345001",
+    "branch": "विशाल बजार शाखा, काठमाडौं",
+    "swiftCode": "RBBANPKA",
+    "esewaId": "9851000000"
+  },
+  "notices": [
+    {
+      "titleNp": "परीक्षण सूचना (Automated Test Notice)",
+      "titleEn": "Automated Test Notice",
+      "contentNp": "यो एक परीक्षण सूचना हो।",
+      "contentEn": "This is an automated test notice content.",
+      "category": "सूचना",
+      "publishDate": "2026-09-05",
+      "isUrgent": true,
+      "isActive": true,
+      "authorName": "एन.एच.एस. सचिवालय",
+      "attachmentUrl": "",
+      "id": "not-1788573218274",
+      "created_at": "2026-09-05T01:53:38.274Z",
+      "updated_at": "2026-09-05T01:53:38.274Z"
+    },
+    {
+      "id": "not-1",
+      "titleNp": "विश्व हेमोफिलिया दिवस २०२६ को उपलक्ष्यमा विशेष स्वास्थ्य शिविर तथा सचेतना कार्यक्रम",
+      "titleEn": "Special Health Camp and National Awareness Program on World Hemophilia Day 2026",
+      "contentNp": "नेपाल हेमोफिलिया सोसाइटीको आयोजनामा सातै प्रदेशका प्रमुख उपचार केन्द्रहरूमा निःशुल्क स्वास्थ्य परीक्षण, फिजियोथेरापी परामर्श तथा फ्याक्टर आपूर्ति समीक्षा कार्यक्रम सञ्चालन हुँदैछ। सम्पूर्ण बिरामी तथा अभिभावकहरूलाई उपस्थितिको लागि अनुरोध गरिन्छ।",
+      "contentEn": "Free health check-ups, physical therapy consultations, and factor availability reviews are being conducted across all provincial centers.",
+      "category": "कार्यक्रम",
+      "publishDate": "२०२६-०९-०१",
+      "isUrgent": true,
+      "isActive": true,
+      "authorName": "केन्द्रीय सचिवालय",
+      "created_at": "2026-09-01T00:00:00.000Z",
+      "updated_at": "2026-09-05T00:00:00.000Z"
+    },
+    {
+      "id": "not-2",
+      "titleNp": "वीर अस्पताल र कान्ति बाल अस्पतालमा फ्याक्टर VIII तथा IX को नयाँ खेप उपलब्ध भएको सम्बन्धी सूचना",
+      "titleEn": "Notice Regarding Arrival of New Consignment of Factor VIII and IX at Bir and Kanti Hospitals",
+      "contentNp": "विश्व हेमोफिलिया महासंघ (WFH) को सहयोगमा प्राप्त भएको नयाँ जीवनरक्षक फ्याक्टर कन्सन्ट्रेट वीर अस्पताल तथा कान्ति बाल अस्पतालको फार्मेसी काउन्टरमा आइपुगेको जानकारी गराइन्छ। सम्बन्धित बिरामीहरूले चिकित्सकको सिफारिस सहित औषधि प्राप्त गर्न सक्नुहुनेछ।",
+      "contentEn": "Newly arrived life-saving Factor VIII and IX concentrates are now available at Bir Hospital and Kanti Children's Hospital pharmacy counters upon physician prescription.",
+      "category": "सूचना",
+      "publishDate": "२०२६-०८-२८",
+      "isUrgent": false,
+      "isActive": true,
+      "authorName": "औषधि व्यवस्थापन विभाग",
+      "created_at": "2026-08-28T00:00:00.000Z",
+      "updated_at": "2026-09-05T00:00:00.000Z"
+    },
+    {
+      "id": "not-3",
+      "titleNp": "हेमोफिलिया बिरामीहरूका लागि सरकारी अपाङ्गता परिचयपत्र सहजीकरण अभियान",
+      "titleEn": "Government Disability Identity Card Facilitation Campaign for Bleeding Disorder Patients",
+      "contentNp": "नेपाल सरकारबाट प्राप्त हुने सामाजिक सुरक्षा तथा अपाङ्गता परिचयपत्र प्राप्त गर्न कठिनाइ भएका बिरामीहरूका लागि सोसाइटीको प्रादेशिक शाखाहरूबाट आवश्यक चिकित्सा प्रमाण र सिफारिस पत्र निःशुल्क उपलब्ध गराइँदैछ।",
+      "contentEn": "Provincial chapters are providing certified clinical documentation and liaison support for patients applying for government disability identity cards.",
+      "category": "सेवा",
+      "publishDate": "२०२६-०८-२०",
+      "isUrgent": false,
+      "isActive": true,
+      "authorName": "पैरवी तथा अधिकार समिति",
+      "created_at": "2026-08-20T00:00:00.000Z",
+      "updated_at": "2026-09-05T00:00:00.000Z"
+    }
+  ],
+  "last_updated": "2026-09-05T03:13:35.725Z"
+}

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useAccessibility } from "@/context/AccessibilityContext";
 import { useAuth } from "@/context/AuthContext";
+import { useSiteContent } from "@/context/SiteContentContext";
 import { Role } from "@/types";
 import { 
   PhoneCall, 
@@ -22,6 +23,7 @@ export function TopUtilityBar() {
   const { lang, setLang, t, isNepali } = useLanguage();
   const { isAccessibilityOpen, setIsAccessibilityOpen } = useAccessibility();
   const { user, role, loginAs, logout, isAuthenticated } = useAuth();
+  const { emergency, orgDetails, features } = useSiteContent();
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
 
   const rolesList: { role: Role; label: string; desc: string; icon: string }[] = [
@@ -62,11 +64,11 @@ export function TopUtilityBar() {
             </Link>
 
             <a
-              href="tel:+97714221119"
+              href={`tel:${(emergency?.hotline1 || "+97714221119").replace(/[^0-9+]/g, "")}`}
               className="hidden sm:inline-flex items-center gap-1 text-slate-300 hover:text-white font-medium transition-colors"
             >
               <PhoneCall className="w-3 h-3 text-red-400" />
-              <span>+977-1-4221119 (Bir Hospital) / +977-9851000000</span>
+              <span>{emergency?.hotline1 || "+977-1-4221119"} / {orgDetails?.emergencyPhone || "+977-9851000000"}</span>
             </a>
           </div>
 

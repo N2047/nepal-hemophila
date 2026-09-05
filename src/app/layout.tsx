@@ -5,12 +5,16 @@ import { LanguageProvider } from "@/context/LanguageContext";
 import { AccessibilityProvider } from "@/context/AccessibilityContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { DataProvider } from "@/context/DataContext";
+import { CommitteeProvider } from "@/context/CommitteeContext";
+import { SiteContentProvider } from "@/context/SiteContentContext";
+import { AdminEditModeProvider } from "@/context/AdminEditModeContext";
 import { TopUtilityBar } from "@/components/layout/TopUtilityBar";
 import { Navbar } from "@/components/layout/Navbar";
 import { AccessibilityDrawer } from "@/components/layout/AccessibilityDrawer";
 import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingChatWidget } from "@/components/chat/FloatingChatWidget";
+import { AdminFloatingBar } from "@/components/common/AdminFloatingBar";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -107,15 +111,22 @@ export default function RootLayout({
           <LanguageProvider>
             <AccessibilityProvider>
               <DataProvider>
-                <TopUtilityBar />
-                <Navbar />
-                <AccessibilityDrawer />
-                <main id="main-content" className="flex-1">
-                  {children}
-                </main>
-                <Footer />
-                <FloatingChatWidget />
-                <MobileActionBar />
+                <CommitteeProvider>
+                  <SiteContentProvider>
+                    <AdminEditModeProvider>
+                      <TopUtilityBar />
+                      <Navbar />
+                      <AccessibilityDrawer />
+                      <main id="main-content" className="flex-1">
+                        {children}
+                      </main>
+                      <Footer />
+                      <FloatingChatWidget />
+                      <MobileActionBar />
+                      <AdminFloatingBar />
+                    </AdminEditModeProvider>
+                  </SiteContentProvider>
+                </CommitteeProvider>
               </DataProvider>
             </AccessibilityProvider>
           </LanguageProvider>

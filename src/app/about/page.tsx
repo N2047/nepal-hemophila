@@ -19,29 +19,49 @@ import {
   HeartHandshake
 } from "lucide-react";
 import Link from "next/link";
+import { CommitteeSection } from "@/components/committee/CommitteeSection";
+import { useSiteContent } from "@/context/SiteContentContext";
+import { useAuth } from "@/context/AuthContext";
+import { useData } from "@/context/DataContext";
+import { EditableContentWrapper } from "@/components/common/EditableContentWrapper";
+import { Edit3 } from "lucide-react";
 
 export default function AboutPage() {
   const { isNepali, t } = useLanguage();
+  const { role } = useAuth();
+  const { visionMission } = useSiteContent();
+  const { advisors, chapters } = useData();
   const [activeTab, setActiveTab] = useState<"overview" | "history" | "leadership" | "provinces" | "governance">("overview");
 
-  const boardMembers = [
-    { name: "Mr. Mukunda Sharma", role: isNepali ? "अध्यक्ष" : "President", org: "NHS Central Committee", exp: "Patient Advocate since 1995" },
-    { name: "Dr. Bishal Subedi", role: isNepali ? "उपाध्यक्ष (चिकित्सा)" : "Vice President (Medical)", org: "Senior Consultant Hematologist", exp: "Bir Hospital / NAMS" },
-    { name: "Ms. Sita Adhikari", role: isNepali ? "महासचिव" : "General Secretary", org: "Patient Family Representative", exp: "Advocacy & Youth Programs" },
-    { name: "Mr. Ramesh Thapa", role: isNepali ? "कोषाध्यक्ष" : "Treasurer", org: "Gandaki Provincial Chapter", exp: "Finance & Regional Operations" },
-    { name: "Ms. Gita Shrestha", role: isNepali ? "कार्यसमिति सदस्य" : "Executive Member (Women & Girls)", org: "Bleeding Disorder Advocate", exp: "Women's Health Initiative" },
-    { name: "Mr. Aashish Tamang", role: isNepali ? "युवा प्रतिनिधि" : "Youth Representative", org: "NHS Youth Wing", exp: "Digital & E-Learning Lead" }
+  React.useEffect(() => {
+    const handleHash = () => {
+      if (typeof window !== "undefined") {
+        const hash = window.location.hash.replace("#", "");
+        if (hash === "leadership" || hash === "board" || hash === "committee") {
+          setActiveTab("leadership");
+        } else if (hash === "history") {
+          setActiveTab("history");
+        } else if (hash === "provinces") {
+          setActiveTab("provinces");
+        } else if (hash === "governance") {
+          setActiveTab("governance");
+        }
+      }
+    };
+    handleHash();
+    window.addEventListener("hashchange", handleHash);
+    return () => window.removeEventListener("hashchange", handleHash);
+  }, []);
+
+  const fallbackAdvisors = [
+    { nameNp: "प्रा. डा. विशेष पौड्याल", nameEn: "Prof. Dr. Bishesh Poudyal", titleNp: "प्रमुख क्लिनिकल सल्लाहकार / हेमाटोलोजी", titleEn: "Chief Clinical Advisor / Hematology", instNp: "राष्ट्रिय चिकित्सा विज्ञान प्रतिष्ठान (वीर अस्पताल)", instEn: "Bir Hospital (NAMS)" },
+    { nameNp: "प्रा. डा. निभा ओझा", nameEn: "Prof. Dr. Neebha Ojha", titleNp: "वरिष्ठ हेमाटोलोजिस्ट", titleEn: "Senior Consultant Hematologist", instNp: "त्रिभुवन विश्वविद्यालय शिक्षण अस्पताल (TUTH)", instEn: "Tribhuvan University Teaching Hospital (TUTH)" },
+    { nameNp: "डा. अनुपमा कार्की", nameEn: "Dr. Anupama Karki", titleNp: "बाल हेमाटोलोजिस्ट / अन्कोलोजिस्ट", titleEn: "Pediatric Hematologist / Oncologist", instNp: "कान्ति बाल अस्पताल", instEn: "Kanti Children's Hospital" },
+    { nameNp: "डा. बद्री चापागाईं", nameEn: "Dr. Badri Chapagain", titleNp: "प्रादेशिक क्लिनिकल संयोजक", titleEn: "Provincial Medical Coordinator", instNp: "भेरी अस्पताल, नेपालगञ्ज", instEn: "Bheri Hospital Nepalgunj" },
+    { nameNp: "डा. हेमराज पाण्डे", nameEn: "Dr. Hemraj Pandey", titleNp: "सुदूरपश्चिम क्लिनिकल सम्पर्क", titleEn: "Sudurpashchim Clinical Liaison", instNp: "सेती प्रादेशिक अस्पताल", instEn: "Seti Provincial Hospital" }
   ];
 
-  const medicalAdvisors = [
-    { name: "Prof. Dr. Bishesh Poudyal", title: "Chief Clinical Advisor / Hematology", inst: "National Academy of Medical Sciences (Bir Hospital)" },
-    { name: "Prof. Dr. Neebha Ojha", title: "Senior Consultant Hematologist", inst: "Tribhuvan University Teaching Hospital (TUTH)" },
-    { name: "Dr. Anupama Karki", title: "Pediatric Hematologist / Oncologist", inst: "Kanti Children's Hospital" },
-    { name: "Dr. Badri Chapagain", title: "Provincial Medical Coordinator", inst: "Bheri Hospital Nepalgunj" },
-    { name: "Dr. Hemraj Pandey", title: "Sudurpashchim Clinical Liaison", inst: "Seti Provincial Hospital" }
-  ];
-
-  const provincialOffices = [
+  const fallbackOffices = [
     { prov: "Koshi Province", city: "Dharan / Biratnagar", contact: "+977-25-525555", center: "BPKIHS Dharan", lead: "Dr. B. Karki (Coordinator)" },
     { prov: "Madhesh Province", city: "Janakpurdham", contact: "+977-41-520133", center: "Janakpur Provincial Hospital", lead: "Mr. R. Yadav (Coordinator)" },
     { prov: "Bagmati Province", city: "Kathmandu (Head Office)", contact: "+977-1-4221119", center: "Bir Hospital & TUTH", lead: "NHS Central Secretariat" },
@@ -101,89 +121,97 @@ export default function AboutPage() {
           })}
         </div>
 
-        {/* Tab 1: Overview & Vision */}
+        {/* Tab 1: Institutional Overview */}
         {activeTab === "overview" && (
-          <div className="pt-8 space-y-10">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary flex items-center justify-center font-black">
-                  <Compass className="w-5 h-5" />
+          <EditableContentWrapper label="भिजन र मिसन सम्पादन गर्नुहोस्" adminUrl="/admin?tab=site-content">
+            <div className="pt-8 space-y-12">
+              
+              {/* Vision & Mission Cards */}
+              <div id="vision" className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="p-8 rounded-3xl bg-primary-50/50 border border-primary-200/80 shadow-sm space-y-4 relative overflow-hidden">
+                  <div className="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-md">
+                    <Compass className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-extrabold text-primary-950">
+                    {t("vision.title")}
+                  </h3>
+                  <p className="text-sm text-slate-700 leading-relaxed">
+                    {isNepali ? (visionMission?.visionNp || t("vision.text")) : (visionMission?.visionEn || t("vision.text"))}
+                  </p>
                 </div>
-                <h3 className="font-bold text-base text-slate-900">
-                  {isNepali ? "दूरदृष्टि (Vision)" : "Our Vision"}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  {isNepali
-                    ? "नेपालका सम्पूर्ण हेमोफिलिया तथा रक्त विकार भएका व्यक्तिहरूले पूर्ण स्वास्थ्य, मर्यादा, समान अधिकार र सक्रिय जीवन बाँच्न पाउने समाजको निर्माण।"
-                    : "A future where every individual with a bleeding disorder in Nepal enjoys accessible treatment, physical dignity, social equality, and full life potential."}
-                </p>
+
+                <div className="p-8 rounded-3xl bg-teal-50/50 border border-teal-200/80 shadow-sm space-y-4 relative overflow-hidden">
+                  <div className="w-12 h-12 rounded-2xl bg-teal-700 text-white flex items-center justify-center shadow-md">
+                    <Target className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-extrabold text-teal-950">
+                    {t("mission.title")}
+                  </h3>
+                  <p className="text-sm text-slate-700 leading-relaxed">
+                    {isNepali ? (visionMission?.missionNp || t("mission.text")) : (visionMission?.missionEn || t("mission.text"))}
+                  </p>
+                </div>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-accent-50 text-accent flex items-center justify-center font-black">
-                  <Target className="w-5 h-5" />
+              {/* Core Institutional Objectives */}
+              <div className="space-y-6">
+                <div className="border-b border-slate-200 pb-3">
+                  <h3 className="text-lg sm:text-xl font-bold text-primary-900">
+                    {isNepali ? "संस्थागत मुख्य उद्देश्यहरू" : "Key Strategic Objectives of NHS"}
+                  </h3>
                 </div>
-                <h3 className="font-bold text-base text-slate-900">
-                  {isNepali ? "ध्येय (Mission)" : "Our Mission"}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  {isNepali
-                    ? "निःशुल्क फ्याक्टर प्रतिस्थापन, विकेन्द्रीकृत प्रयोगशाला परीक्षण, फिजियोथेरापी, मनोसामाजिक सहयोग र नीतिगत पैरवीमार्फत जीवनस्तर उकास्ने।"
-                    : "To decentralize specialized coagulation diagnosis, guarantee national factor supply, provide comprehensive psychosocial care, and advocate for universal health coverage."}
-                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {[
+                    {
+                      num: "01",
+                      title: isNepali ? "निःशुल्क फ्याक्टर आपूर्ति" : "Universal Factor Access",
+                      desc: isNepali ? "नेपालका सबै बिरामीलाई जीवनरक्षक क्लोटिङ फ्याक्टर निःशुल्क र नियमित उपलब्ध गराउन सरकारसँग पैरवी।" : "Advocating for government budget allocation to ensure free and continuous clotting factor replacement therapy."
+                    },
+                    {
+                      num: "02",
+                      title: isNepali ? "सटीक प्रयोगशाला निदान" : "Decentralized Diagnostics",
+                      desc: isNepali ? "काठमाडौं बाहिरका प्रादेशिक अस्पतालहरूमा कोगुलेसन फ्याक्टर परीक्षण प्रयोगशाला विस्तार।" : "Equipping regional medical laboratories with factor assay capabilities for early and accurate bleeding diagnosis."
+                    },
+                    {
+                      num: "03",
+                      title: isNepali ? "व्यापक पुनर्स्थापना तथा हेरचाह" : "Comprehensive Care & Physio",
+                      desc: isNepali ? "जोर्नी अपांगता रोक्न नियमित फिजियोथेरापी, मनोसामाजिक परामर्श तथा घरेलु प्राथमिक उपचार तालिम।" : "Providing specialized physiotherapy, joint preservation clinics, and home-treatment empowerment workshops."
+                    },
+                    {
+                      num: "04",
+                      title: isNepali ? "राष्ट्रिय बिरामी दर्ता (Registry)" : "National Patient Registry",
+                      desc: isNepali ? "नेपालभरका अनुमानित ५,००० हेमोफिलिया बिरामीहरूलाई पहिचान गरी डिजिटल हेल्थ ट्र्याकिङमा समेट्ने।" : "Maintaining a secure, nationwide digital registry to map epidemiology, factor consumption, and clinical outcomes."
+                    }
+                  ].map((obj, i) => (
+                    <div key={i} className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
+                      <span className="text-2xl font-black text-primary/30 block font-mono">{obj.num}</span>
+                      <h4 className="font-bold text-base text-slate-900">{obj.title}</h4>
+                      <p className="text-xs text-slate-600 leading-relaxed">{obj.desc}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-3">
-                <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-black">
-                  <Award className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold text-base text-slate-900">
-                  {isNepali ? "मूल्यमान्यता (Core Values)" : "Core Values"}
-                </h3>
-                <ul className="text-xs sm:text-sm text-slate-600 space-y-1.5">
-                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-teal-600" /> Patient-Centered Dignity</li>
-                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-teal-600" /> Medical Credibility & Ethics</li>
-                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-teal-600" /> Financial Transparency</li>
-                  <li className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-teal-600" /> Inclusivity Across 7 Provinces</li>
-                </ul>
-              </div>
             </div>
-
-            <div className="bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200 space-y-4">
-              <h3 className="text-lg font-bold text-primary-900">
-                {isNepali ? "रणनीतिक उद्देश्यहरू (२०२४-२०३०)" : "Strategic Objectives (2024-2030)"}
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs sm:text-sm text-slate-700">
-                <div className="flex items-start gap-3 p-3 bg-white rounded-xl border border-slate-200">
-                  <span className="font-bold text-primary">1.</span>
-                  <span><strong>Universal Factor Access:</strong> Advocate for permanent government budget allocation to provide free Factor VIII and IX across provincial hospitals.</span>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-white rounded-xl border border-slate-200">
-                  <span className="font-bold text-primary">2.</span>
-                  <span><strong>Diagnostic Decentralization:</strong> Equip all 7 provincial teaching laboratories with automated aPTT/PT assays and factor quantification capabilities.</span>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-white rounded-xl border border-slate-200">
-                  <span className="font-bold text-primary">3.</span>
-                  <span><strong>Preventing Disability:</strong> Expand joint health screening and physiotherapy rehabilitation clinics to minimize chronic hemophilic arthropathy.</span>
-                </div>
-                <div className="flex items-start gap-3 p-3 bg-white rounded-xl border border-slate-200">
-                  <span className="font-bold text-primary">4.</span>
-                  <span><strong>Child & Youth Empowerment:</strong> Support educational continuity for children with bleeding disorders through school accommodation frameworks.</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          </EditableContentWrapper>
         )}
 
-        {/* Tab 2: History */}
+        {/* Tab 2: History & Milestones */}
         {activeTab === "history" && (
-          <div className="pt-8 space-y-8 max-w-4xl">
-            <h2 className="text-xl sm:text-2xl font-bold text-primary-900">
-              {isNepali ? "नेपालमा हेमोफिलिया हेरचाह र एन.एच.एस.को इतिहास" : "History of Hemophilia Care & NHS in Nepal"}
-            </h2>
+          <div id="history" className="pt-8 max-w-4xl space-y-8">
+            <div className="space-y-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-primary-900">
+                {isNepali ? "नेपालमा हेमोफिलिया आन्दोलनको ३ दशक" : "Three Decades of NHS: Chronology & Milestones"}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                {isNepali
+                  ? "सन् १९९२ मा सीमित बिरामी परिवारबाट सुरु भएको नेपाल हेमोफिलिया सोसाइटी आज ७ वटै प्रदेशमा सेवा सञ्जाल भएको राष्ट्रिय संस्था बनेको छ।"
+                  : "From zero available factor concentrates in the 1990s to an accredited national network delivering 184,000+ factor units annually."}
+              </p>
+            </div>
 
-            <div className="border-l-2 border-primary-200 pl-6 space-y-8 relative">
-              
+            <div className="space-y-8 border-l-2 border-primary-200 pl-6 ml-3">
               <div className="relative">
                 <div className="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-primary border-4 border-white shadow" />
                 <span className="text-xs font-bold text-primary block">1992</span>
@@ -228,136 +256,129 @@ export default function AboutPage() {
         {activeTab === "leadership" && (
           <div className="pt-8 space-y-12">
             
-            {/* Executive Committee */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-primary-900 flex items-center gap-2">
-                <Users className="w-5 h-5 text-primary" />
-                <span>{isNepali ? "केन्द्रीय कार्यसमिति" : "Central Executive Committee"}</span>
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {boardMembers.map((m, idx) => (
-                  <div key={idx} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
-                    <div className="w-10 h-10 rounded-full bg-primary-100 text-primary font-black flex items-center justify-center text-sm">
-                      {m.name.charAt(0)}
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-slate-900">{m.name}</h4>
-                      <p className="text-xs font-semibold text-accent">{m.role}</p>
-                      <p className="text-[11px] text-slate-500 mt-1">{m.org} • {m.exp}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            {/* Dynamic Central Executive Committee */}
+            <div id="leadership">
+              <CommitteeSection showTitle={true} />
             </div>
 
             {/* Medical Advisory Council */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-bold text-primary-900 flex items-center gap-2">
-                <Stethoscope className="w-5 h-5 text-teal-600" />
-                <span>{isNepali ? "चिकित्सा सल्लाहकार परिषद" : "Medical Advisory Council"}</span>
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {medicalAdvisors.map((doc, idx) => (
-                  <div key={idx} className="p-5 rounded-2xl bg-teal-50/50 border border-teal-200/60 shadow-sm space-y-1.5">
-                    <h4 className="font-bold text-sm text-slate-900">{doc.name}</h4>
-                    <p className="text-xs font-semibold text-teal-800">{doc.title}</p>
-                    <p className="text-[11px] text-slate-600">{doc.inst}</p>
-                  </div>
-                ))}
+            <EditableContentWrapper label="मेडिकल सल्लाहकार सम्पादन गर्नुहोस्" adminUrl="/admin?tab=cms&sub=advisors">
+              <div id="advisors" className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-bold text-primary-900 flex items-center gap-2">
+                    <Stethoscope className="w-5 h-5 text-teal-600" />
+                    <span>{isNepali ? "चिकित्सा सल्लाहकार परिषद" : "Medical Advisory Council"}</span>
+                  </h3>
+                  <span className="text-xs font-semibold text-slate-500">
+                    {(advisors && advisors.length > 0 ? advisors.length : fallbackAdvisors.length)} सल्लाहकार चिकित्सकहरू
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {(advisors && advisors.length > 0 ? advisors : fallbackAdvisors).map((doc: any, idx: number) => (
+                    <div key={idx} className="p-5 rounded-2xl bg-teal-50/50 border border-teal-200/60 shadow-sm space-y-2 hover:shadow-md transition-shadow">
+                      <div className="flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full overflow-hidden bg-white border border-teal-200 shrink-0">
+                          <img src={doc.photo || "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&q=80"} alt={doc.nameEn || doc.name} className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-sm text-slate-900">{isNepali ? (doc.nameNp || doc.name) : (doc.nameEn || doc.name)}</h4>
+                          <p className="text-xs font-semibold text-teal-800">{isNepali ? (doc.titleNp || doc.title) : (doc.titleEn || doc.title)}</p>
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-slate-600 pt-1 border-t border-teal-100">{isNepali ? (doc.institutionNp || doc.inst) : (doc.institutionEn || doc.inst)}</p>
+                      {doc.bioNp && <p className="text-[11px] text-slate-500 line-clamp-2">{isNepali ? doc.bioNp : doc.bioEn}</p>}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+            </EditableContentWrapper>
 
           </div>
         )}
 
         {/* Tab 4: 7 Provincial Chapters */}
         {activeTab === "provinces" && (
-          <div className="pt-8 space-y-6">
-            <div className="max-w-2xl space-y-2">
+          <EditableContentWrapper label="प्रादेशिक शाखाहरू सम्पादन गर्नुहोस्" adminUrl="/admin?tab=cms&sub=chapters">
+            <div id="provinces" className="pt-8 space-y-6">
+              <div className="max-w-2xl space-y-2">
+                <h2 className="text-xl sm:text-2xl font-bold text-primary-900">
+                  {isNepali ? "७ वटै प्रदेश शाखाहरू र सम्पर्क" : "NHS 7 Provincial Chapters & Coordination Hubs"}
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600">
+                  {isNepali
+                    ? "प्रत्येक प्रदेशमा स्थानीय समन्वय समिति, उपचार केन्द्र सम्पर्क र बिरामी सहयोग डेस्क सञ्चालनमा छन्।"
+                    : "Dedicated provincial coordinators provide emergency hospital liaison, factor distribution, and localized family support."}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {(chapters && chapters.length > 0 ? chapters : fallbackOffices).map((p: any, idx: number) => (
+                  <div key={idx} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2.5 hover:shadow-md transition-shadow">
+                    <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <span className="font-bold text-sm text-primary-900">
+                        {isNepali ? (p.provinceNameNp || p.prov) : (p.provinceNameEn || p.prov)}
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 font-bold">
+                        {isNepali ? (p.cityNp || p.city) : (p.cityEn || p.city)}
+                      </span>
+                    </div>
+                    <div className="text-xs text-slate-600 space-y-1.5">
+                      <div>🏥 <strong>अस्पताल:</strong> {isNepali ? (p.partnerHospitalNp || p.center) : (p.partnerHospitalEn || p.center)}</div>
+                      <div>👤 <strong>संयोजक:</strong> {isNepali ? (p.coordinatorNameNp || p.lead) : (p.coordinatorNameEn || p.lead)}</div>
+                      <div>📞 <strong>फोन:</strong> <a href={`tel:${(p.phone || p.contact).replace(/[^0-9+]/g, "")}`} className="text-primary font-mono font-semibold hover:underline">{p.phone || p.contact}</a></div>
+                      {p.email && <div>✉️ <strong>इमेल:</strong> <a href={`mailto:${p.email}`} className="text-slate-500 font-mono text-[11px] hover:underline">{p.email}</a></div>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </EditableContentWrapper>
+        )}
+
+        {/* Tab 5: Governance & Ethics */}
+        {activeTab === "governance" && (
+          <div className="pt-8 max-w-4xl space-y-8">
+            <div className="space-y-2">
               <h2 className="text-xl sm:text-2xl font-bold text-primary-900">
-                {isNepali ? "७ वटै प्रदेश शाखाहरू र सम्पर्क" : "NHS 7 Provincial Chapters & Coordination Hubs"}
+                {isNepali ? "संस्थागत सुशासन, आर्थिक पारदर्शिता र दर्ता" : "Institutional Governance, Legal Status & Ethics"}
               </h2>
               <p className="text-xs sm:text-sm text-slate-600">
                 {isNepali
-                  ? "प्रत्येक प्रदेशमा स्थानीय समन्वय समिति, उपचार केन्द्र सम्पर्क र बिरामी सहयोग डेस्क सञ्चालनमा छन्।"
-                  : "Dedicated provincial coordinators provide emergency hospital liaison, factor distribution, and localized family support."}
+                  ? "नेपाल हेमोफिलिया सोसाइटी प्रचलित कानुनअनुसार दर्ता भई नियमित वार्षिक लेखापरीक्षण (Audit) गराउने लोकतान्त्रिक संस्था हो।"
+                  : "Adhering to the highest standards of NGO governance, independent statutory audits, and patient confidentiality."}
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {provincialOffices.map((p, idx) => (
-                <div key={idx} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-sm text-primary-900">{p.prov}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-primary-50 text-primary font-semibold">Active</span>
-                  </div>
-                  <div className="text-xs text-slate-600 space-y-1">
-                    <div>📍 <strong>City:</strong> {p.city}</div>
-                    <div>🏥 <strong>Hospital Hub:</strong> {p.center}</div>
-                    <div>👤 <strong>Lead:</strong> {p.lead}</div>
-                    <div>📞 <strong>Hotline:</strong> <a href={`tel:${p.contact}`} className="text-accent font-semibold">{p.contact}</a></div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Tab 5: Governance & Policies */}
-        {activeTab === "governance" && (
-          <div className="pt-8 space-y-8 max-w-4xl">
-            <h2 className="text-xl sm:text-2xl font-bold text-primary-900">
-              {isNepali ? "सुशासन, आचारसंहिता तथा पारदर्शिता" : "Governance, Safeguarding & Institutional Policies"}
-            </h2>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
-                <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                <h4 className="font-bold text-sm text-slate-900">Patient Data Privacy & HIPAA Alignment</h4>
-                <p className="text-xs text-slate-600">
-                  Strict zero-public PII rule. All medical records, factor registries, and consultations are encrypted and strictly access-controlled.
-                </p>
+              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
+                <ShieldCheck className="w-8 h-8 text-primary" />
+                <h4 className="font-bold text-base text-slate-900">कानूनी दर्ता विवरण</h4>
+                <ul className="text-xs text-slate-600 space-y-1.5 pt-1">
+                  <li>• <strong>जिल्ला प्रशासन कार्यालय काठमाडौं:</strong> दर्ता नं. २४५/२०४९</li>
+                  <li>• <strong>समाज कल्याण परिषद (SWC):</strong> आवद्धता नं. १२९०</li>
+                  <li>• <strong>स्थायी लेखा नम्बर (PAN):</strong> ३००१२३४५६</li>
+                </ul>
               </div>
 
-              <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
-                <FileText className="w-5 h-5 text-primary" />
-                <h4 className="font-bold text-sm text-slate-900">Financial Audit & Tax Transparency</h4>
-                <p className="text-xs text-slate-600">
-                  Audited annual financial statements submitted annually to Social Welfare Council (SWC) and Inland Revenue Department (IRD).
+              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
+                <FileText className="w-8 h-8 text-emerald-600" />
+                <h4 className="font-bold text-base text-slate-900">पारदर्शिता तथा वार्षिक प्रतिवेदन</h4>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  संस्थाका वार्षिक सामाजिक लेखापरीक्षण तथा बाह्य चार्टर्ड एकाउन्टेन्ट प्रतिवेदनहरू सार्वजनिक गरिन्छ।
                 </p>
+                <div className="pt-2">
+                  <Link href="/transparency" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                    <span>पारदर्शिता पोर्टल हेर्नुहोस्</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
               </div>
-
-              <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
-                <HeartHandshake className="w-5 h-5 text-accent" />
-                <h4 className="font-bold text-sm text-slate-900">Child Safeguarding & Vulnerable Adults</h4>
-                <p className="text-xs text-slate-600">
-                  Mandatory background verification and ethics training for all staff and volunteers engaging in pediatric care camps.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
-                <Award className="w-5 h-5 text-amber-600" />
-                <h4 className="font-bold text-sm text-slate-900">Anti-Corruption & Procurement Code</h4>
-                <p className="text-xs text-slate-600">
-                  Competitive bidding and strict non-profit compliance for all equipment, factor cold chain, and medical supplies.
-                </p>
-              </div>
-            </div>
-
-            <div className="pt-4">
-              <Link
-                href="/transparency"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-xs sm:text-sm shadow transition-colors"
-              >
-                <span>View Audited Financial Statements & SWC Filings</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
             </div>
           </div>
         )}
 
       </div>
-
     </div>
   );
 }
