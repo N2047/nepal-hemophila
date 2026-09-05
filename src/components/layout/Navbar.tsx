@@ -86,16 +86,16 @@ export function Navbar() {
                 </div>
 
                 <div className="flex flex-col">
-                  {/* Name: सुरुको भागमा लोगो सहित नेपाल हेमोफिलिया सोसाइटी */}
-                  <div className="font-black text-base sm:text-xl lg:text-2xl text-slate-900 dark:text-white leading-tight group-hover:text-primary transition-colors tracking-tight">
+                  {/* Name: नेपाल हेमोफिलिया सोसाइटी - रातो कलर */}
+                  <div className="font-black text-base sm:text-xl lg:text-2xl text-red-600 dark:text-red-500 leading-tight group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors tracking-tight">
                     {isNepali ? "नेपाल हेमोफिलिया सोसाइटी" : "Nepal Hemophilia Society"}
                   </div>
-                  {/* Enter हान: अनि अनामनगर काठमाडौं -नेपाल */}
-                  <div className="text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 leading-snug flex items-center gap-1.5 mt-0.5">
-                    <MapPin className="w-3.5 h-3.5 text-primary shrink-0" />
+                  {/* अनामनगर काठमाडौं समेत रातो कलर */}
+                  <div className="text-xs sm:text-sm font-bold text-red-600 dark:text-red-400 leading-snug flex items-center gap-1.5 mt-0.5">
+                    <MapPin className="w-3.5 h-3.5 text-red-600 dark:text-red-400 shrink-0" />
                     <span>{isNepali ? "अनामनगर, काठमाडौं - नेपाल" : "Anamnagar, Kathmandu - Nepal"}</span>
-                    <span className="text-slate-300 dark:text-slate-600 hidden md:inline">•</span>
-                    <span className="text-[11px] font-normal text-slate-500 hidden md:inline">
+                    <span className="text-red-300 dark:text-red-700 hidden md:inline">•</span>
+                    <span className="text-[11px] font-semibold text-red-700/80 dark:text-red-400/80 hidden md:inline">
                       {isNepali ? "राष्ट्रिय बिरामी संस्था (स्था. १९९२)" : "National Patient Organization (Est. 1992)"}
                     </span>
                   </div>
@@ -117,37 +117,37 @@ export function Navbar() {
                   <kbd className="hidden md:inline-block text-[10px] bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 px-1.5 py-0.5 rounded text-slate-500">Ctrl K</kbd>
                 </button>
 
-                {/* 3-Line Menu / Settings Features Button (शर्च बटम छेउमा ३ वटा धर्का) */}
+                {/* 3-Line Menu / Settings Features Button - हरियो ब्याकग्राउन्ड (Green Background) */}
                 <button
                   id="features-dropdown-trigger"
                   onClick={() => setMenuDropdownOpen(!menuDropdownOpen)}
                   className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border transition-all text-xs font-extrabold shadow-sm ${
                     menuDropdownOpen
-                      ? "bg-red-700 text-white border-red-800 ring-2 ring-red-500/30"
-                      : "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 border-slate-300 dark:border-slate-700 hover:border-slate-400"
+                      ? "bg-emerald-700 hover:bg-emerald-800 text-white border-emerald-800 ring-2 ring-emerald-500/30 shadow-md"
+                      : "bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700 shadow-xs hover:shadow"
                   }`}
                   title={isNepali ? "मेनु तथा सबै फिचरहरू (३ धर्का)" : "Menu & All Features (3 lines)"}
                   aria-label={isNepali ? "मेनु तथा सबै फिचरहरू खोल्नुहोस्" : "Toggle all features dropdown menu"}
                   aria-expanded={menuDropdownOpen}
                 >
                   {menuDropdownOpen ? (
-                    <X className="w-4 h-4 text-current shrink-0" />
+                    <X className="w-4 h-4 text-white shrink-0" />
                   ) : (
-                    <Menu className="w-4 h-4 text-current shrink-0" />
+                    <Menu className="w-4 h-4 text-white shrink-0" />
                   )}
-                  <span className="font-extrabold">
+                  <span className="font-extrabold text-white">
                     {isNepali ? "मेनु / फिचरहरू" : "Menu / Features"}
                   </span>
                 </button>
 
-                {/* Admin CMS / Portal Quick Access Button if Authenticated */}
+                {/* Admin CMS / Portal Quick Access Button - पहेलो ब्याकग्राउन्ड (Yellow Background) */}
                 {isAuthenticated && (
                   <Link
                     href={isAdminOrStaff ? "/admin" : role === "PATIENT" ? "/portal/patient" : "/portal/member"}
-                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-primary-50 dark:bg-primary-950/60 text-primary-900 dark:text-primary-200 hover:bg-primary-100 font-bold text-xs border border-primary-200 dark:border-primary-800 shadow-xs transition-colors"
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-black text-xs border border-yellow-500 shadow-xs hover:shadow transition-colors"
                   >
-                    <LayoutDashboard className="w-3.5 h-3.5 text-primary" />
-                    <span>{isAdminOrStaff ? "Admin CMS" : "My Portal"}</span>
+                    <LayoutDashboard className="w-3.5 h-3.5 text-slate-950" />
+                    <span className="text-slate-950">{isAdminOrStaff ? "Admin CMS" : "My Portal"}</span>
                   </Link>
                 )}
 
@@ -425,14 +425,14 @@ export function Navbar() {
                       </Link>
                       {isAuthenticated && (
                         <Link
-                          href={role === "PATIENT" ? "/portal/patient" : "/portal/member"}
+                          href={isAdminOrStaff ? "/admin" : role === "PATIENT" ? "/portal/patient" : "/portal/member"}
                           onClick={() => setMenuDropdownOpen(false)}
-                          className="p-2 rounded-xl bg-primary-50 dark:bg-primary-950/50 text-primary-900 dark:text-primary-200 transition-colors group flex items-start gap-2 font-bold"
+                          className="p-2 rounded-xl bg-yellow-400 hover:bg-yellow-500 text-slate-950 transition-colors group flex items-start gap-2 font-black border border-yellow-500 shadow-xs"
                         >
-                          <LayoutDashboard className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+                          <LayoutDashboard className="w-3.5 h-3.5 text-slate-950 shrink-0 mt-0.5" />
                           <div>
-                            <div>{isNepali ? "बिरामी पोर्टल" : "Patient Portal"}</div>
-                            <div className="text-[11px] font-normal text-slate-500">{isNepali ? "उपचार इतिहास र डोज लग" : "Infusion history & log"}</div>
+                            <div className="text-slate-950">{isAdminOrStaff ? "Admin CMS" : isNepali ? "मेरो पोर्टल" : "My Portal"}</div>
+                            <div className="text-[11px] font-medium text-slate-800">{isAdminOrStaff ? "व्यवस्थापन प्यानल" : isNepali ? "उपचार इतिहास र डोज लग" : "Infusion history & log"}</div>
                           </div>
                         </Link>
                       )}
