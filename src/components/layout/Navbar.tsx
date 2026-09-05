@@ -22,7 +22,10 @@ import {
   BookOpen,
   PieChart,
   Bot,
-  Building2
+  Building2,
+  Compass,
+  History,
+  ShieldCheck
 } from "lucide-react";
 import { GlobalSearchModal } from "@/components/common/GlobalSearchModal";
 import { EmergencyModal } from "@/components/common/EmergencyModal";
@@ -229,17 +232,33 @@ export function Navbar() {
                       </span>
                     </div>
                     <div className="flex flex-col space-y-1 text-xs">
+                      {/* १. संस्थागत विवरण */}
                       <Link
-                        href="/about"
+                        href="/about#overview"
                         onClick={() => setMenuDropdownOpen(false)}
                         className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
                       >
-                        <Building2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                        <Compass className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
                         <div>
-                          <div className="font-bold">{isNepali ? "हाम्रो परिचय र इतिहास" : "Our Story & History"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "स्थापना, भिजन र मिसन" : "Establishment & mission"}</div>
+                          <div className="font-bold">{isNepali ? "संस्थागत विवरण" : "Overview & Vision"}</div>
+                          <div className="text-[11px] text-slate-500">{isNepali ? "भिजन, मिसन र उद्देश्य" : "Vision, mission & objectives"}</div>
                         </div>
                       </Link>
+
+                      {/* २. इतिहास */}
+                      <Link
+                        href="/about#history"
+                        onClick={() => setMenuDropdownOpen(false)}
+                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
+                      >
+                        <History className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-bold">{isNepali ? "इतिहास" : "History in Nepal"}</div>
+                          <div className="text-[11px] text-slate-500">{isNepali ? "१९९२ देखिको इतिहास" : "Milestones since 1992"}</div>
+                        </div>
+                      </Link>
+
+                      {/* ३. नेतृत्व तथा सल्लाहकार */}
                       <Link
                         href="/about#leadership"
                         onClick={() => setMenuDropdownOpen(false)}
@@ -247,21 +266,38 @@ export function Navbar() {
                       >
                         <Users className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
                         <div>
-                          <div className="font-bold">{isNepali ? "कार्यसमिति र नेतृत्व" : "Board & Leadership"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "केन्द्रीय समिति" : "Executive committee"}</div>
+                          <div className="font-bold">{isNepali ? "नेतृत्व तथा सल्लाहकार" : "Leadership & Advisors"}</div>
+                          <div className="text-[11px] text-slate-500">{isNepali ? "कार्यसमिति र सल्लाहकारहरू" : "Board & medical advisors"}</div>
                         </div>
                       </Link>
+
+                      {/* ४. ७ प्रदेश शाखाहरू */}
                       <Link
-                        href="/about#chapters"
+                        href="/about#provinces"
                         onClick={() => setMenuDropdownOpen(false)}
                         className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
                       >
                         <MapPin className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
                         <div>
-                          <div className="font-bold">{isNepali ? "प्रादेशिक शाखाहरू" : "Provincial Chapters"}</div>
-                          <div className="text-[11px] text-slate-500">{isNepali ? "७ वटै प्रदेशका शाखाहरू" : "7 provincial presence"}</div>
+                          <div className="font-bold">{isNepali ? "७ प्रदेश शाखाहरू" : "7 Provincial Chapters"}</div>
+                          <div className="text-[11px] text-slate-500">{isNepali ? "प्रदेश स्तरीय सम्पर्क" : "7 provincial presence"}</div>
                         </div>
                       </Link>
+
+                      {/* ५. सुशासन र नीतिहरू */}
+                      <Link
+                        href="/about#governance"
+                        onClick={() => setMenuDropdownOpen(false)}
+                        className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
+                      >
+                        <ShieldCheck className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                        <div>
+                          <div className="font-bold">{isNepali ? "सुशासन र नीतिहरू" : "Governance & Ethics"}</div>
+                          <div className="text-[11px] text-slate-500">{isNepali ? "आचारसंहिता र नीतिहरू" : "Ethics & operational policies"}</div>
+                        </div>
+                      </Link>
+
+                      {/* ६. पारदर्शिता प्रतिवेदन */}
                       <Link
                         href="/transparency"
                         onClick={() => setMenuDropdownOpen(false)}
@@ -273,6 +309,8 @@ export function Navbar() {
                           <div className="text-[11px] text-slate-500">{isNepali ? "लेखापरीक्षण र विवरण" : "Audited financials"}</div>
                         </div>
                       </Link>
+
+                      {/* ७. सदस्यता आवेदन */}
                       {features.onlineMembershipForm && (
                         <Link
                           href="/membership"
@@ -282,16 +320,18 @@ export function Navbar() {
                           <Sparkles className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
                           <div>
                             <div className="font-bold">{isNepali ? "सदस्यता आवेदन" : "Membership"}</div>
-                            <div className="text-[11px] text-slate-500">{isNepali ? "अनलाइन आवेदन फारम" : "Online member form"}</div>
+                            <div className="text-[11px] text-slate-500">{isNepali ? "अनलाइन फारम" : "Online member form"}</div>
                           </div>
                         </Link>
                       )}
+
+                      {/* ८. सम्पर्क तथा ठेगाना */}
                       <Link
                         href="/contact"
                         onClick={() => setMenuDropdownOpen(false)}
                         className="p-2 rounded-xl hover:bg-red-50/80 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 hover:text-red-700 transition-colors group flex items-start gap-2"
                       >
-                        <MapPin className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
+                        <Building2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-red-700 shrink-0 mt-0.5" />
                         <div>
                           <div className="font-bold">{isNepali ? "सम्पर्क तथा ठेगाना" : "Contact & Office"}</div>
                           <div className="text-[11px] text-slate-500">{isNepali ? "अनामनगर, काठमाडौं" : "Anamnagar, Kathmandu"}</div>

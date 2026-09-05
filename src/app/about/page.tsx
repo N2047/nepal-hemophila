@@ -36,15 +36,24 @@ export default function AboutPage() {
   React.useEffect(() => {
     const handleHash = () => {
       if (typeof window !== "undefined") {
-        const hash = window.location.hash.replace("#", "");
-        if (hash === "leadership" || hash === "board" || hash === "committee") {
-          setActiveTab("leadership");
+        const hash = window.location.hash.replace("#", "").toLowerCase();
+        let targetTab: "overview" | "history" | "leadership" | "provinces" | "governance" | null = null;
+        if (hash === "overview" || hash === "vision") {
+          targetTab = "overview";
         } else if (hash === "history") {
-          setActiveTab("history");
-        } else if (hash === "provinces") {
-          setActiveTab("provinces");
-        } else if (hash === "governance") {
-          setActiveTab("governance");
+          targetTab = "history";
+        } else if (hash === "leadership" || hash === "board" || hash === "committee") {
+          targetTab = "leadership";
+        } else if (hash === "provinces" || hash === "chapters") {
+          targetTab = "provinces";
+        } else if (hash === "governance" || hash === "ethics") {
+          targetTab = "governance";
+        }
+        if (targetTab) {
+          setActiveTab(targetTab);
+          setTimeout(() => {
+            document.getElementById("about-tabs-container")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          }, 80);
         }
       }
     };
@@ -95,7 +104,7 @@ export default function AboutPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap items-center gap-2 pb-4 border-b border-slate-200">
+        <div id="about-tabs-container" className="flex flex-wrap items-center gap-2 pb-4 border-b border-slate-200">
           {[
             { id: "overview", label: isNepali ? "संस्थागत विवरण" : "Overview & Vision", icon: Compass },
             { id: "history", label: isNepali ? "इतिहास" : "History in Nepal", icon: History },
