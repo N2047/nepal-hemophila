@@ -288,8 +288,8 @@ export function AccessibilityDrawer() {
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 max-w-[240px]">
                     {isNepali 
-                      ? "ON गरेपछि वेबसाइटको जुनसुकै फिचर वा पाठ छान्दा स्वतः आवाजमा पढिन्छ।" 
-                      : "When ON, any selected feature, button, or highlighted text is automatically read aloud."}
+                      ? "ON गरेपछि माउसको कर्सरले वेबसाइटको कुनै फिचर वा पाठ छुँदा, वा किबोर्डको Next ले सेलेक्ट गर्दा स्वतः आवाजमा पढिन्छ।" 
+                      : "When ON, hovering with mouse or selecting with keyboard Next reads the feature or text aloud."}
                   </p>
                 </div>
               </div>

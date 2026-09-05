@@ -493,61 +493,104 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   };
 
   // Global Auto-Reader when Audio Mode is ON:
-  // Reads any selected text (mouseup) or any focused/clicked feature (button, link, heading, card)
+  // 1. Mouse hover: Reads any feature or text touched/hovered by the mouse cursor
+  // 2. Keyboard & Next: Reads any feature or item focused/selected via keyboard or Next
+  // 3. Text Selection: Reads any text highlighted by mouse or keyboard (Shift + Arrows)
   useEffect(() => {
     if (typeof window === "undefined") return;
 
+    let hoverTimer: NodeJS.Timeout;
     let selectionTimer: NodeJS.Timeout;
-    const handleMouseUpOrSelect = () => {
+    let lastSpokenText = "";
+
+    // 1. Mouse Hover / Touch on any feature or text
+    const handleMouseOver = (e: MouseEvent) => {
+      if (!audioModeRef.current) return;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+
+      // Ignore accessibility drawer itself to avoid noise while clicking settings
+      if (target.closest("#accessibility-panel") || target.closest("#floating-accessibility-btn")) return;
+      if (target.closest("#audio-mode-toggle") || target.closest("[role='switch']")) return;
+
+      // Skip if text is actively being selected
+      if (window.getSelection()?.toString().trim()) return;
+
+      // Find nearest semantic readable element
+      const readable = target.closest<HTMLElement>(
+        "button, a, [role='button'], [role='menuitem'], [role='alert'], h1, h2, h3, h4, h5, h6, p, li, blockquote, .quick-access-card, td, th"
+      ) || target;
+
+      const text = readable.getAttribute("aria-label") || readable.innerText || readable.textContent || "";
+      const trimmed = text.trim();
+
+      if (trimmed.length > 1 && trimmed.length < 500 && trimmed !== lastSpokenText) {
+        clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(() => {
+          lastSpokenText = trimmed;
+          speakText(trimmed);
+        }, 160);
+      }
+    };
+
+    // 2. Text Selection (Mouse drag or Keyboard Shift+Arrow selection)
+    const handleSelectionChange = () => {
       if (!audioModeRef.current) return;
       clearTimeout(selectionTimer);
       selectionTimer = setTimeout(() => {
         const sel = window.getSelection()?.toString().trim();
-        if (sel && sel.length > 1) {
+        if (sel && sel.length > 1 && sel !== lastSpokenText) {
+          lastSpokenText = sel;
           speakText(sel);
         }
-      }, 200);
+      }, 250);
     };
 
+    // 3. Keyboard Focus & Click (Next, Arrow keys, Tab, Enter)
     const handleFocusOrClick = (e: Event) => {
       if (!audioModeRef.current) return;
       const target = e.target as HTMLElement | null;
       if (!target) return;
 
-      // Ignore audio toggle button itself and prevent duplicate fires
+      // Ignore audio toggle button itself
       if (target.closest("#audio-mode-toggle") || target.closest("[role='switch']")) return;
 
-      // When focusing an input, read its label/placeholder, but don't read every keystroke
+      // If focusing an input, read its label/placeholder, but don't read every keystroke
       if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
         if (e.type === "focusin") {
           const label = target.getAttribute("aria-label") || target.getAttribute("placeholder") || "इनपुट बक्स";
+          lastSpokenText = label;
           speakText(label);
         }
         return;
       }
 
-      // If user selected text with mouse drag, let selection handler read it
+      // If user selected text, let the selection listener handle it
       if (window.getSelection()?.toString().trim()) return;
 
       // Find nearest semantic readable element
       const readable = target.closest<HTMLElement>(
-        "button, a, [role='button'], [role='menuitem'], [role='alert'], h1, h2, h3, h4, .quick-access-card, li"
+        "button, a, [role='button'], [role='menuitem'], [role='alert'], h1, h2, h3, h4, h5, h6, .quick-access-card, li"
       ) || target;
 
       const text = readable.getAttribute("aria-label") || readable.innerText || readable.textContent || "";
       const trimmed = text.trim();
-      if (trimmed.length > 1 && trimmed.length < 350) {
+      if (trimmed.length > 1 && trimmed.length < 400 && trimmed !== lastSpokenText) {
+        lastSpokenText = trimmed;
         speakText(trimmed);
       }
     };
 
-    document.addEventListener("mouseup", handleMouseUpOrSelect);
+    document.addEventListener("mouseover", handleMouseOver);
+    document.addEventListener("selectionchange", handleSelectionChange);
     document.addEventListener("focusin", handleFocusOrClick);
     document.addEventListener("click", handleFocusOrClick);
 
     return () => {
+      clearTimeout(hoverTimer);
       clearTimeout(selectionTimer);
-      document.removeEventListener("mouseup", handleMouseUpOrSelect);
+      document.removeEventListener("mouseover", handleMouseOver);
+      document.removeEventListener("selectionchange", handleSelectionChange);
       document.removeEventListener("focusin", handleFocusOrClick);
       document.removeEventListener("click", handleFocusOrClick);
     };
