@@ -34,9 +34,9 @@ export default function LoginPage() {
     {
       roleName: "Super Admin (पूर्ण अधिकार)",
       role: "SUPER_ADMIN",
-      name: "Dr. Mukunda Sharma",
-      email: "admin@hemophilia.org.np",
-      password: "Admin@NHS2026#Nepal",
+      name: "NepalHemo",
+      email: "NepalHemo",
+      password: "NHS123",
       scope: "Full CMS, User Roles, Audits & Database",
       icon: "👑"
     },

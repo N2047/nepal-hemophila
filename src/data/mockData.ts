@@ -16,9 +16,9 @@ import {
 export const initialUsers: User[] = [
   {
     id: "usr-superadmin",
-    name: "Dr. Mukunda Sharma",
-    email: "admin@hemophilia.org.np",
-    password: "Admin@NHS2026#Nepal",
+    name: "NepalHemo",
+    email: "NepalHemo",
+    password: "NHS123",
     role: "SUPER_ADMIN",
     province: "Bagmati",
     hospitalAffiliation: "NHS Central Secretariat",
