@@ -43,12 +43,16 @@ export function AccessibilityDrawer() {
     toggleReducedMotion,
     underlineLinks,
     toggleUnderlineLinks,
+    navLevel,
+    currentFeatureName,
     currentTextIndex,
     totalTextBlocks,
     highlightCurrentText,
     toggleHighlightText,
     goToNextText,
     goToPreviousText,
+    drillIntoFeature,
+    exitToFeatures,
     isSpeaking,
     isPaused,
     speakStatus,
@@ -325,43 +329,84 @@ export function AccessibilityDrawer() {
             </div>
           </div>
 
-          {/* 6. Text Navigation — Next / Previous & Highlight (Requirements #8 & #9) */}
+          {/* 6. Hierarchical Feature & Content Navigation (1-Click Select vs 2-Click Drill-In) */}
           <div className="bg-slate-50 dark:bg-slate-800/60 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
                 <Highlighter className="w-4 h-4 text-primary dark:text-teal-400" />
-                <span>{isNepali ? "पाठ नेभिगेसन (Text Navigation)" : "Text Block Navigation"}</span>
+                <span>{isNepali ? "पहुँचयुक्त नेभिगेसन (Accessible Navigation)" : "Accessible Navigation"}</span>
               </span>
-              {totalTextBlocks > 0 && (
-                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-600">
-                  {currentTextIndex + 1} / {totalTextBlocks}
-                </span>
-              )}
+              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full border bg-white dark:bg-slate-700 text-primary dark:text-teal-400 border-primary/30">
+                {navLevel === "features"
+                  ? (isNepali ? "१-क्लिक: मुख्य फिचर तह" : "Level 1: Main Features")
+                  : (isNepali ? "२-क्लिक: भित्री विवरण तह" : "Level 2: Inside Feature")}
+              </span>
             </div>
+
+            {/* Current Feature Name if available */}
+            {currentFeatureName && (
+              <div className="text-xs px-3 py-1.5 rounded-lg bg-teal-50 dark:bg-teal-950/40 text-teal-800 dark:text-teal-300 border border-teal-200 dark:border-teal-800 font-medium">
+                {isNepali ? `सक्रिय फिचर: ${currentFeatureName}` : `Active: ${currentFeatureName}`}
+              </div>
+            )}
+
+            {/* Explanatory rule */}
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
+              {isNepali 
+                ? "१ पटक क्लिक गरेर Next गर्दा अर्को फिचर चयन हुन्छ। २ पटक क्लिक गर्दा वा तलको 'फिचर भित्र जानुहोस्' थिच्दा त्यो फिचरका भित्री विवरणहरू चयन हुन्छन्।"
+                : "Single click/Next selects sibling features. Double-click or 'Drill In' enters and explores internal content."}
+            </p>
 
             <div className="grid grid-cols-2 gap-2">
               <button
                 onClick={goToPreviousText}
                 className="min-h-[44px] py-2.5 px-4 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                aria-label={isNepali ? "अघिल्लो पाठ ब्लक" : "Previous text block"}
+                aria-label={isNepali ? "अघिल्लो फिचर / पाठ ब्लक" : "Previous item"}
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>◀ {isNepali ? "अघिल्लो पाठ" : "Previous Text"}</span>
+                <span>◀ {isNepali ? "अघिल्लो" : "Previous"}</span>
               </button>
 
               <button
                 onClick={goToNextText}
                 className="min-h-[44px] py-2.5 px-4 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                aria-label={isNepali ? "पछिल्लो पाठ ब्लक" : "Next text block"}
+                aria-label={isNepali ? "पछिल्लो फिचर / पाठ ब्लक" : "Next item"}
               >
-                <span>{isNepali ? "पछिल्लो पाठ" : "Next Text"} ▶</span>
+                <span>{isNepali ? "पछिल्लो" : "Next"} ▶</span>
                 <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Hierarchical Drill-in and Exit buttons */}
+            <div className="grid grid-cols-2 gap-2 pt-1">
+              <button
+                onClick={drillIntoFeature}
+                className={`min-h-[40px] py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition-colors ${
+                  navLevel === "content"
+                    ? "bg-teal-700 text-white border-teal-800 shadow-sm"
+                    : "bg-teal-50 dark:bg-teal-950/40 text-teal-800 dark:text-teal-300 border-teal-300 dark:border-teal-800 hover:bg-teal-100 dark:hover:bg-teal-900/60"
+                }`}
+                aria-label={isNepali ? "२ पटक क्लिक: फिचर भित्रका कन्टेन्ट सेलेक्ट गर्नुहोस्" : "Drill into feature contents"}
+              >
+                <span>⤵️ {isNepali ? "फिचर भित्र (२ क्लिक)" : "Drill In (2 Clicks)"}</span>
+              </button>
+
+              <button
+                onClick={exitToFeatures}
+                className={`min-h-[40px] py-2 px-3 rounded-xl border font-bold text-xs flex items-center justify-center gap-1.5 transition-colors ${
+                  navLevel === "features"
+                    ? "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-600 cursor-default"
+                    : "bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/60"
+                }`}
+                aria-label={isNepali ? "मुख्य फिचर तहमा फर्कनुहोस्" : "Exit to top-level features"}
+              >
+                <span>⤴️ {isNepali ? "फिचरमा फर्क" : "Back to Features"}</span>
               </button>
             </div>
 
             <div className="pt-2 flex items-center justify-between border-t border-slate-200 dark:border-slate-700">
               <span className="text-xs text-slate-600 dark:text-slate-400">
-                {isNepali ? "पाठ चिन्ह लगाउने (Highlight Current Text)" : "Highlight active text block"}
+                {isNepali ? "सक्रिय वस्तु चिन्ह लगाउने (Highlight Active)" : "Highlight active item"}
               </span>
               <button
                 onClick={toggleHighlightText}

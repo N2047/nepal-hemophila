@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect, useRef, useCallb
 
 export type FontSize = "normal" | "medium" | "large";
 export type ThemeMode = "light" | "dark";
+export type NavLevel = "features" | "content";
 
 interface AccessibilityContextType {
   // Themes & Modes
@@ -25,13 +26,17 @@ interface AccessibilityContextType {
   underlineLinks: boolean;
   toggleUnderlineLinks: () => void;
 
-  // Text Navigation & Highlighting
+  // Hierarchical Text & Feature Navigation
+  navLevel: NavLevel;
   currentTextIndex: number;
   totalTextBlocks: number;
+  currentFeatureName: string;
   highlightCurrentText: boolean;
   toggleHighlightText: () => void;
   goToNextText: () => void;
   goToPreviousText: () => void;
+  drillIntoFeature: () => void;
+  exitToFeatures: () => void;
 
   // Text-to-Speech (TTS)
   isSpeaking: boolean;
@@ -60,9 +65,11 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   const [isDyslexicFont, setIsDyslexicFont] = useState<boolean>(false);
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState<boolean>(false);
 
-  // Text Navigation & Highlighting
+  // Hierarchical Navigation: Level 1 ("features") vs Level 2 ("content" inside feature)
+  const [navLevel, setNavLevel] = useState<NavLevel>("features");
   const [currentTextIndex, setCurrentTextIndex] = useState<number>(-1);
   const [totalTextBlocks, setTotalTextBlocks] = useState<number>(0);
+  const [currentFeatureName, setCurrentFeatureName] = useState<string>("");
   const [highlightCurrentText, setHighlightCurrentText] = useState<boolean>(true);
 
   // Text to Speech
@@ -70,7 +77,8 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [speakStatus, setSpeakStatus] = useState<string>("");
 
-  const currentElementsRef = useRef<HTMLElement[]>([]);
+  const featureElementsRef = useRef<HTMLElement[]>([]);
+  const contentElementsRef = useRef<HTMLElement[]>([]);
 
   // 1. Initial LocalStorage Load
   useEffect(() => {
@@ -93,7 +101,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
 
       applyDomAttributes(savedTheme, savedContrast, savedSize, savedMotion, savedUnderline, savedDyslexic);
     } catch {
-      // Graceful fallback for privacy mode
+      // Graceful fallback
     }
   }, []);
 
@@ -108,7 +116,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   ) => {
     const root = document.documentElement;
 
-    // Theme (Dark / Light)
     if (t === "dark") {
       root.setAttribute("data-theme", "dark");
       root.classList.add("dark");
@@ -117,31 +124,26 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       root.classList.remove("dark");
     }
 
-    // High Contrast
     if (contrast) {
       root.setAttribute("data-contrast", "high");
     } else {
       root.removeAttribute("data-contrast");
     }
 
-    // Font Sizing
     root.setAttribute("data-font-size", size);
 
-    // Reduced Motion
     if (motion) {
       root.setAttribute("data-reduced-motion", "true");
     } else {
       root.removeAttribute("data-reduced-motion");
     }
 
-    // Underline Links
     if (underline) {
       root.setAttribute("data-underline-links", "true");
     } else {
       root.removeAttribute("data-underline-links");
     }
 
-    // Dyslexia Font
     if (dyslexic) {
       root.setAttribute("data-dyslexic", "true");
     } else {
@@ -153,7 +155,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   const toggleDarkMode = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
-    // When dark mode is toggled, high contrast is deactivated to prevent conflict
     setHighContrast(false);
     localStorage.setItem("nhs_theme", nextTheme);
     localStorage.setItem("nhs_contrast", "false");
@@ -171,7 +172,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   const toggleHighContrast = () => {
     const next = !highContrast;
     setHighContrast(next);
-    // When High Contrast is turned on, theme is normalized to contrast
     localStorage.setItem("nhs_contrast", String(next));
     applyDomAttributes(theme, next, fontSize, reducedMotion, underlineLinks, isDyslexicFont);
   };
@@ -203,77 +203,183 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     applyDomAttributes(theme, highContrast, fontSize, reducedMotion, underlineLinks, next);
   };
 
-  // 4. Text Navigation Scanner
-  const scanReadableElements = useCallback((): HTMLElement[] => {
+  // 4. Hierarchical Scanner: Level 1 (Features/Sections) vs Level 2 (Internal Children)
+  const scanFeatures = useCallback((): HTMLElement[] => {
     if (typeof document === "undefined") return [];
     const main = document.getElementById("main-content") || document.body;
-    const candidates = main.querySelectorAll<HTMLElement>(
-      "h1, h2, h3, h4, p, [role='alert'], blockquote, li"
-    );
-
-    const validElements: HTMLElement[] = [];
-    candidates.forEach((el) => {
-      // Must have readable text (> 6 characters), visible in DOM, not inside utility controls
-      if (
+    
+    // Top-level sections, articles, or major cards
+    const candidates = Array.from(main.querySelectorAll<HTMLElement>("section, article, .quick-access-card, header nav"));
+    const valid = candidates.filter((el) => {
+      return (
         el.offsetParent !== null &&
-        el.textContent &&
-        el.textContent.trim().length > 6 &&
-        !el.closest("nav") &&
         !el.closest("[role='dialog']") &&
-        !el.closest("#accessibility-panel")
-      ) {
-        validElements.push(el);
-      }
+        !el.closest("#accessibility-panel") &&
+        el.innerText &&
+        el.innerText.trim().length > 10
+      );
     });
 
-    currentElementsRef.current = validElements;
-    setTotalTextBlocks(validElements.length);
-    return validElements;
+    featureElementsRef.current = valid;
+    return valid;
   }, []);
 
+  const scanContentInFeature = useCallback((featureEl: HTMLElement): HTMLElement[] => {
+    if (!featureEl) return [];
+    const candidates = Array.from(featureEl.querySelectorAll<HTMLElement>(
+      "h1, h2, h3, h4, p, a, button, [role='alert'], li"
+    ));
+
+    const valid = candidates.filter((el) => {
+      return (
+        el.offsetParent !== null &&
+        el.textContent &&
+        el.textContent.trim().length > 3 &&
+        !el.closest("[role='dialog']") &&
+        !el.closest("#accessibility-panel")
+      );
+    });
+
+    contentElementsRef.current = valid;
+    return valid;
+  }, []);
+
+  // Safe Highlight: DOES NOT VIOLENTLY SCROLL THE FULL PAGE!
   const highlightElement = (el: HTMLElement) => {
-    // Remove existing highlights
     document.querySelectorAll(".accessibility-active-text").forEach((node) => {
       node.classList.remove("accessibility-active-text");
     });
 
     if (highlightCurrentText && el) {
       el.classList.add("accessibility-active-text");
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      
+      // Focus without browser full-page jump
+      el.setAttribute("tabindex", "-1");
+      el.focus({ preventScroll: true });
+
+      // Check if element is already comfortably in viewport
+      const rect = el.getBoundingClientRect();
+      const isVisible = rect.top >= 100 && rect.bottom <= (window.innerHeight - 80);
+      
+      // Only scroll gently if outside viewport
+      if (!isVisible) {
+        el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
     }
   };
 
-  const goToNextText = () => {
-    const elements = currentElementsRef.current.length > 0 ? currentElementsRef.current : scanReadableElements();
-    if (elements.length === 0) return;
+  // Level 1: Navigate Between Top-Level Features
+  const goToNextFeature = () => {
+    const features = featureElementsRef.current.length > 0 ? featureElementsRef.current : scanFeatures();
+    if (features.length === 0) return;
 
     let nextIndex = currentTextIndex + 1;
-    if (nextIndex >= elements.length) {
-      nextIndex = 0; // Loop back
-    }
+    if (nextIndex >= features.length) nextIndex = 0;
 
     setCurrentTextIndex(nextIndex);
-    const target = elements[nextIndex];
+    setTotalTextBlocks(features.length);
+    const target = features[nextIndex];
+    if (target) {
+      const name = target.querySelector("h1, h2, h3")?.textContent?.trim() || `फिचर ${nextIndex + 1}`;
+      setCurrentFeatureName(name);
+      highlightElement(target);
+      setSpeakStatus(`फिचर ${nextIndex + 1} / ${features.length}: ${name.slice(0, 35)}`);
+    }
+  };
+
+  const goToPreviousFeature = () => {
+    const features = featureElementsRef.current.length > 0 ? featureElementsRef.current : scanFeatures();
+    if (features.length === 0) return;
+
+    let prevIndex = currentTextIndex - 1;
+    if (prevIndex < 0) prevIndex = features.length - 1;
+
+    setCurrentTextIndex(prevIndex);
+    setTotalTextBlocks(features.length);
+    const target = features[prevIndex];
+    if (target) {
+      const name = target.querySelector("h1, h2, h3")?.textContent?.trim() || `फिचर ${prevIndex + 1}`;
+      setCurrentFeatureName(name);
+      highlightElement(target);
+      setSpeakStatus(`फिचर ${prevIndex + 1} / ${features.length}: ${name.slice(0, 35)}`);
+    }
+  };
+
+  // Level 2: Navigate Content INSIDE a Feature
+  const goToNextChild = () => {
+    const children = contentElementsRef.current;
+    if (children.length === 0) return;
+
+    let nextIndex = currentTextIndex + 1;
+    if (nextIndex >= children.length) nextIndex = 0;
+
+    setCurrentTextIndex(nextIndex);
+    setTotalTextBlocks(children.length);
+    const target = children[nextIndex];
     if (target) {
       highlightElement(target);
-      setSpeakStatus(`Text block ${nextIndex + 1} of ${elements.length}`);
+      setSpeakStatus(`सामग्री ${nextIndex + 1} / ${children.length}: ${(target.textContent || "").slice(0, 30)}`);
+    }
+  };
+
+  const goToPreviousChild = () => {
+    const children = contentElementsRef.current;
+    if (children.length === 0) return;
+
+    let prevIndex = currentTextIndex - 1;
+    if (prevIndex < 0) prevIndex = children.length - 1;
+
+    setCurrentTextIndex(prevIndex);
+    setTotalTextBlocks(children.length);
+    const target = children[prevIndex];
+    if (target) {
+      highlightElement(target);
+      setSpeakStatus(`सामग्री ${prevIndex + 1} / ${children.length}: ${(target.textContent || "").slice(0, 30)}`);
+    }
+  };
+
+  // Public Next / Previous Dispatcher
+  const goToNextText = () => {
+    if (navLevel === "features") {
+      goToNextFeature();
+    } else {
+      goToNextChild();
     }
   };
 
   const goToPreviousText = () => {
-    const elements = currentElementsRef.current.length > 0 ? currentElementsRef.current : scanReadableElements();
-    if (elements.length === 0) return;
-
-    let prevIndex = currentTextIndex - 1;
-    if (prevIndex < 0) {
-      prevIndex = elements.length - 1;
+    if (navLevel === "features") {
+      goToPreviousFeature();
+    } else {
+      goToPreviousChild();
     }
+  };
 
-    setCurrentTextIndex(prevIndex);
-    const target = elements[prevIndex];
-    if (target) {
-      highlightElement(target);
-      setSpeakStatus(`Text block ${prevIndex + 1} of ${elements.length}`);
+  // 2nd Click / Enter: Drill down into feature contents!
+  const drillIntoFeature = () => {
+    const features = featureElementsRef.current.length > 0 ? featureElementsRef.current : scanFeatures();
+    const currentFeat = features[currentTextIndex >= 0 ? currentTextIndex : 0];
+    if (!currentFeat) return;
+
+    const children = scanContentInFeature(currentFeat);
+    if (children.length > 0) {
+      setNavLevel("content");
+      setCurrentTextIndex(0);
+      setTotalTextBlocks(children.length);
+      highlightElement(children[0]);
+      setSpeakStatus(`फिचर भित्र प्रवेश गरियो: १ / ${children.length} सामग्री चयन`);
+    }
+  };
+
+  // Exit back to Features Level
+  const exitToFeatures = () => {
+    setNavLevel("features");
+    const features = scanFeatures();
+    setTotalTextBlocks(features.length);
+    if (features.length > 0) {
+      setCurrentTextIndex(0);
+      highlightElement(features[0]);
+      setSpeakStatus("मुख्य फिचर तहमा फर्कियो");
     }
   };
 
@@ -284,8 +390,11 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       document.querySelectorAll(".accessibility-active-text").forEach((node) => {
         node.classList.remove("accessibility-active-text");
       });
-    } else if (currentTextIndex >= 0 && currentElementsRef.current[currentTextIndex]) {
-      highlightElement(currentElementsRef.current[currentTextIndex]);
+    } else {
+      const target = navLevel === "features" 
+        ? featureElementsRef.current[currentTextIndex]
+        : contentElementsRef.current[currentTextIndex];
+      if (target) highlightElement(target);
     }
   };
 
@@ -325,10 +434,8 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       return;
     }
 
-    // Stop any ongoing speech
     window.speechSynthesis.cancel();
 
-    // Check if user has selected any text on screen
     let textToRead = "";
     const userSelection = window.getSelection()?.toString().trim();
 
@@ -336,21 +443,16 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       textToRead = userSelection;
       setSpeakStatus("चयन गरिएको पाठ पढ्दैछ / Reading selected text...");
     } else {
-      // Use current highlighted block or scan elements
-      let targetEl: HTMLElement | null = null;
-      const elements = currentElementsRef.current.length > 0 ? currentElementsRef.current : scanReadableElements();
-
-      if (currentTextIndex >= 0 && elements[currentTextIndex]) {
-        targetEl = elements[currentTextIndex];
-      } else if (elements.length > 0) {
-        setCurrentTextIndex(0);
-        targetEl = elements[0];
-        highlightElement(elements[0]);
-      }
-
-      if (targetEl) {
-        textToRead = targetEl.textContent || "";
+      const activeEl = document.querySelector<HTMLElement>(".accessibility-active-text");
+      if (activeEl) {
+        textToRead = activeEl.innerText || activeEl.textContent || "";
         setSpeakStatus(`पाठ पढ्दैछ: "${textToRead.slice(0, 30)}..." / Reading...`);
+      } else {
+        const features = scanFeatures();
+        if (features.length > 0) {
+          textToRead = features[0].innerText || "";
+          highlightElement(features[0]);
+        }
       }
     }
 
@@ -360,8 +462,6 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     }
 
     const utterance = new SpeechSynthesisUtterance(textToRead);
-
-    // Language Detection: Check for Devanagari script
     const hasDevanagari = /[\u0900-\u097F]/.test(textToRead);
     const voices = window.speechSynthesis.getVoices();
 
@@ -370,20 +470,16 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
       const nepaliVoice = voices.find(
         (v) => v.lang.includes("ne") || v.name.toLowerCase().includes("nepali")
       );
-      if (nepaliVoice) {
-        utterance.voice = nepaliVoice;
-      }
+      if (nepaliVoice) utterance.voice = nepaliVoice;
     } else {
       utterance.lang = "en-US";
       const englishVoice = voices.find(
-        (v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("US"))
+        (v) => v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("US"))
       );
-      if (englishVoice) {
-        utterance.voice = englishVoice;
-      }
+      if (englishVoice) utterance.voice = englishVoice;
     }
 
-    utterance.rate = 0.95; // Slightly slower for clarity and cognitive accessibility
+    utterance.rate = 0.95;
     utterance.pitch = 1.0;
 
     utterance.onstart = () => {
@@ -406,7 +502,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     window.speechSynthesis.speak(utterance);
   };
 
-  // 6. Reset All Accessibility Settings
+  // 6. Reset All Settings
   const resetAccessibility = () => {
     stopTTS();
     setTheme("light");
@@ -416,6 +512,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     setUnderlineLinks(false);
     setIsDyslexicFont(false);
     setCurrentTextIndex(-1);
+    setNavLevel("features");
     setHighlightCurrentText(true);
 
     document.querySelectorAll(".accessibility-active-text").forEach((node) => {
@@ -430,7 +527,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
     localStorage.removeItem("nhs_dyslexic");
 
     applyDomAttributes("light", false, "normal", false, false, false);
-    setSpeakStatus("सबै पहुँच सेटिङहरू पूर्वनिर्धारित अवस्थामा फर्काइयो / All accessibility settings reset");
+    setSpeakStatus("सबै पहुँच सेटिङहरू पूर्वनिर्धारित अवस्थामा फर्काइयो");
   };
 
   return (
@@ -449,12 +546,16 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
         toggleReducedMotion,
         underlineLinks,
         toggleUnderlineLinks,
+        navLevel,
         currentTextIndex,
         totalTextBlocks,
+        currentFeatureName,
         highlightCurrentText,
         toggleHighlightText,
         goToNextText,
         goToPreviousText,
+        drillIntoFeature,
+        exitToFeatures,
         isSpeaking,
         isPaused,
         speakStatus,

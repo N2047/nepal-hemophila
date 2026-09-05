@@ -87,17 +87,43 @@ export function Navbar() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links with Mega-Menus */}
-            <nav className="hidden lg:flex items-center space-x-1 font-bold text-xs text-slate-700">
+            {/* Desktop Navigation Links with Accessible Hierarchical Menus */}
+            <nav 
+              className="hidden lg:flex items-center space-x-1 font-bold text-xs text-slate-700"
+              aria-label={isNepali ? "मुख्य मेनु" : "Main Navigation"}
+            >
               
-              {/* 1. About Us */}
+              {/* 1. About Us (हाम्रो बारेमा) */}
               <div 
                 className="relative"
                 onMouseEnter={() => setActiveMegaMenu("about")}
               >
                 <button
-                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors ${
-                    activeMegaMenu === "about" ? "text-primary bg-slate-100" : ""
+                  id="nav-btn-about"
+                  onClick={() => {
+                    if (activeMegaMenu !== "about") {
+                      setActiveMegaMenu("about");
+                    } else {
+                      document.getElementById("nav-about-sub-0")?.focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActiveMegaMenu("about");
+                      setTimeout(() => document.getElementById("nav-about-sub-0")?.focus(), 50);
+                    } else if (e.key === "ArrowRight") {
+                      e.preventDefault();
+                      document.getElementById("nav-btn-hemo")?.focus();
+                    } else if (e.key === "Escape") {
+                      e.preventDefault();
+                      closeMegaMenu();
+                    }
+                  }}
+                  aria-haspopup="true"
+                  aria-expanded={activeMegaMenu === "about"}
+                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
+                    activeMegaMenu === "about" ? "text-primary bg-slate-100 ring-2 ring-primary/40" : ""
                   }`}
                 >
                   <span>{t("nav.about")}</span>
@@ -106,29 +132,150 @@ export function Navbar() {
 
                 {activeMegaMenu === "about" && (
                   <div 
-                    className="absolute top-full left-0 w-80 bg-white rounded-xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-slate-800"
+                    role="menu"
+                    aria-label={t("nav.about")}
+                    className="absolute top-full left-0 w-80 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-3 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-slate-800 dark:text-slate-200"
                     onMouseLeave={closeMegaMenu}
                   >
                     <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-3 py-1">
-                      {isNepali ? "संस्थागत परिचय" : "Institutional Structure"}
+                      {isNepali ? "संस्थागत परिचय (फिचरहरू)" : "Institutional Structure (Features)"}
                     </div>
                     <div className="space-y-0.5">
-                      <Link href="/about" onClick={closeMegaMenu} className="block px-3 py-2 rounded-lg hover:bg-primary-50 text-slate-800 hover:text-primary text-xs font-semibold">
+                      <Link 
+                        id="nav-about-sub-0"
+                        role="menuitem"
+                        href="/about" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-1")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-btn-about")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-about")?.focus();
+                          }
+                        }}
+                        className="block px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 hover:text-primary dark:hover:text-teal-300 text-xs font-semibold focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700 focus:text-primary dark:focus:text-white"
+                      >
                         {t("nav.aboutSub.overview")}
                       </Link>
-                      <Link href="/about#vision" onClick={closeMegaMenu} className="block px-3 py-2 rounded-lg hover:bg-primary-50 text-slate-700 hover:text-primary text-xs">
+
+                      <Link 
+                        id="nav-about-sub-1"
+                        role="menuitem"
+                        href="/about#vision" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-2")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-0")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-about")?.focus();
+                          }
+                        }}
+                        className="block px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-teal-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.aboutSub.visionMission")}
                       </Link>
-                      <Link href="/about#history" onClick={closeMegaMenu} className="block px-3 py-2 rounded-lg hover:bg-primary-50 text-slate-700 hover:text-primary text-xs">
+
+                      <Link 
+                        id="nav-about-sub-2"
+                        role="menuitem"
+                        href="/about#history" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-3")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-1")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-about")?.focus();
+                          }
+                        }}
+                        className="block px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-teal-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.aboutSub.history")}
                       </Link>
-                      <Link href="/about#leadership" onClick={closeMegaMenu} className="block px-3 py-2 rounded-lg hover:bg-primary-50 text-slate-700 hover:text-primary text-xs">
+
+                      <Link 
+                        id="nav-about-sub-3"
+                        role="menuitem"
+                        href="/about#leadership" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-4")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-2")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-about")?.focus();
+                          }
+                        }}
+                        className="block px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-teal-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.aboutSub.board")} & {t("nav.aboutSub.advisors")}
                       </Link>
-                      <Link href="/about#provinces" onClick={closeMegaMenu} className="block px-3 py-2 rounded-lg hover:bg-primary-50 text-slate-700 hover:text-primary text-xs">
+
+                      <Link 
+                        id="nav-about-sub-4"
+                        role="menuitem"
+                        href="/about#provinces" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-5")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-3")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-about")?.focus();
+                          }
+                        }}
+                        className="block px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-teal-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.aboutSub.provinces")}
                       </Link>
-                      <Link href="/transparency" onClick={closeMegaMenu} className="block px-3 py-2 rounded-lg hover:bg-primary-50 text-slate-700 hover:text-primary text-xs font-medium text-emerald-700">
+
+                      <Link 
+                        id="nav-about-sub-5"
+                        role="menuitem"
+                        href="/transparency" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-0")?.focus(); // loop to top
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-about-sub-4")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-about")?.focus();
+                          }
+                        }}
+                        className="block px-3 py-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 hover:text-primary dark:hover:text-teal-300 text-xs font-medium text-emerald-700 dark:text-emerald-400 focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.aboutSub.annualReports")} (Audit & Governance)
                       </Link>
                     </div>
@@ -136,14 +283,40 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* 2. Hemophilia Knowledge */}
+              {/* 2. Hemophilia Knowledge (हेमोफिलिया) */}
               <div 
                 className="relative"
                 onMouseEnter={() => setActiveMegaMenu("hemo")}
               >
                 <button
-                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors ${
-                    activeMegaMenu === "hemo" ? "text-primary bg-slate-100" : ""
+                  id="nav-btn-hemo"
+                  onClick={() => {
+                    if (activeMegaMenu !== "hemo") {
+                      setActiveMegaMenu("hemo");
+                    } else {
+                      document.getElementById("nav-hemo-sub-0")?.focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActiveMegaMenu("hemo");
+                      setTimeout(() => document.getElementById("nav-hemo-sub-0")?.focus(), 50);
+                    } else if (e.key === "ArrowRight") {
+                      e.preventDefault();
+                      document.getElementById("nav-btn-services")?.focus();
+                    } else if (e.key === "ArrowLeft") {
+                      e.preventDefault();
+                      document.getElementById("nav-btn-about")?.focus();
+                    } else if (e.key === "Escape") {
+                      e.preventDefault();
+                      closeMegaMenu();
+                    }
+                  }}
+                  aria-haspopup="true"
+                  aria-expanded={activeMegaMenu === "hemo"}
+                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
+                    activeMegaMenu === "hemo" ? "text-primary bg-slate-100 ring-2 ring-primary/40" : ""
                   }`}
                 >
                   <span>{t("nav.hemophilia")}</span>
@@ -152,26 +325,127 @@ export function Navbar() {
 
                 {activeMegaMenu === "hemo" && (
                   <div 
-                    className="absolute top-full -left-20 w-[460px] bg-white rounded-xl shadow-2xl border border-slate-200 p-4 z-50 grid grid-cols-2 gap-3 animate-in fade-in duration-150 text-slate-800"
+                    role="menu"
+                    aria-label={t("nav.hemophilia")}
+                    className="absolute top-full -left-20 w-[460px] bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-4 z-50 grid grid-cols-2 gap-3 animate-in fade-in duration-150 text-slate-800 dark:text-slate-200"
                     onMouseLeave={closeMegaMenu}
                   >
                     <div>
                       <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
                         {isNepali ? "रक्त विकार आधारभूत" : "Condition Guides"}
                       </div>
-                      <Link href="/hemophilia" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-800 font-semibold text-xs">
+                      <Link 
+                        id="nav-hemo-sub-0"
+                        role="menuitem"
+                        href="/hemophilia" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-1")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 font-semibold text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.whatIs")}
                       </Link>
-                      <Link href="/hemophilia#types" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs">
+
+                      <Link 
+                        id="nav-hemo-sub-1"
+                        role="menuitem"
+                        href="/hemophilia#types" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-2")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-0")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.types")}
                       </Link>
-                      <Link href="/hemophilia#vwd" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs">
+
+                      <Link 
+                        id="nav-hemo-sub-2"
+                        role="menuitem"
+                        href="/hemophilia#vwd" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-3")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-1")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.vwd")}
                       </Link>
-                      <Link href="/hemophilia#symptoms" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs">
+
+                      <Link 
+                        id="nav-hemo-sub-3"
+                        role="menuitem"
+                        href="/hemophilia#symptoms" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-4")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-2")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.symptoms")}
                       </Link>
-                      <Link href="/hemophilia#faq" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs font-medium text-primary">
+
+                      <Link 
+                        id="nav-hemo-sub-4"
+                        role="menuitem"
+                        href="/hemophilia#faq" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-5")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-3")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-medium text-primary dark:text-teal-400 focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.faq")}
                       </Link>
                     </div>
@@ -180,19 +454,118 @@ export function Navbar() {
                       <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2 py-1">
                         {isNepali ? "उपचार तथा हेरचाह" : "Care & Treatment"}
                       </div>
-                      <Link href="/emergency" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs">
+                      <Link 
+                        id="nav-hemo-sub-5"
+                        role="menuitem"
+                        href="/emergency" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-6")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-4")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded bg-red-50 dark:bg-red-950/50 hover:bg-red-100 text-red-700 dark:text-red-300 font-bold text-xs focus:outline-none focus:ring-2 focus:ring-red-500"
+                      >
                         🚨 {t("nav.hemoSub.emergencyCare")}
                       </Link>
-                      <Link href="/hemophilia#treatment" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs">
+
+                      <Link 
+                        id="nav-hemo-sub-6"
+                        role="menuitem"
+                        href="/hemophilia#treatment" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-7")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-5")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.treatment")}
                       </Link>
-                      <Link href="/hemophilia#joint-health" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs">
+
+                      <Link 
+                        id="nav-hemo-sub-7"
+                        role="menuitem"
+                        href="/hemophilia#joint-health" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-8")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-6")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.jointHealth")}
                       </Link>
-                      <Link href="/hemophilia#women" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs">
+
+                      <Link 
+                        id="nav-hemo-sub-8"
+                        role="menuitem"
+                        href="/hemophilia#women" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-9")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-7")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.womenGirls")}
                       </Link>
-                      <Link href="/hemophilia#children" onClick={closeMegaMenu} className="block px-2.5 py-1.5 rounded hover:bg-primary-50 text-slate-700 text-xs">
+
+                      <Link 
+                        id="nav-hemo-sub-9"
+                        role="menuitem"
+                        href="/hemophilia#children" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-0")?.focus(); // loop back
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-hemo-sub-8")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-hemo")?.focus();
+                          }
+                        }}
+                        className="block px-2.5 py-1.5 rounded hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.hemoSub.children")}
                       </Link>
                     </div>
@@ -200,14 +573,40 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* 3. Patient & Family Services */}
+              {/* 3. Patient & Family Services (सेवा तथा सहयोग) */}
               <div 
                 className="relative"
                 onMouseEnter={() => setActiveMegaMenu("services")}
               >
                 <button
-                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors ${
-                    activeMegaMenu === "services" ? "text-primary bg-slate-100" : ""
+                  id="nav-btn-services"
+                  onClick={() => {
+                    if (activeMegaMenu !== "services") {
+                      setActiveMegaMenu("services");
+                    } else {
+                      document.getElementById("nav-serv-sub-0")?.focus();
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setActiveMegaMenu("services");
+                      setTimeout(() => document.getElementById("nav-serv-sub-0")?.focus(), 50);
+                    } else if (e.key === "ArrowRight") {
+                      e.preventDefault();
+                      document.getElementById("nav-link-hcp")?.focus();
+                    } else if (e.key === "ArrowLeft") {
+                      e.preventDefault();
+                      document.getElementById("nav-btn-hemo")?.focus();
+                    } else if (e.key === "Escape") {
+                      e.preventDefault();
+                      closeMegaMenu();
+                    }
+                  }}
+                  aria-haspopup="true"
+                  aria-expanded={activeMegaMenu === "services"}
+                  className={`px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 flex items-center gap-1 transition-colors focus:outline-none focus:ring-2 focus:ring-primary ${
+                    activeMegaMenu === "services" ? "text-primary bg-slate-100 ring-2 ring-primary/40" : ""
                   }`}
                 >
                   <span>{t("nav.services")}</span>
@@ -216,62 +615,181 @@ export function Navbar() {
 
                 {activeMegaMenu === "services" && (
                   <div 
-                    className="absolute top-full -left-10 w-96 bg-white rounded-xl shadow-2xl border border-slate-200 p-3 z-50 animate-in fade-in duration-150 text-slate-800"
+                    role="menu"
+                    aria-label={t("nav.services")}
+                    className="absolute top-full -left-10 w-96 bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-700 p-3 z-50 animate-in fade-in duration-150 text-slate-800 dark:text-slate-200"
                     onMouseLeave={closeMegaMenu}
                   >
                     <div className="space-y-1">
-                      <Link href="/services/get-support" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg bg-red-50 hover:bg-red-100 text-red-800 font-semibold text-xs">
+                      <Link 
+                        id="nav-serv-sub-0"
+                        role="menuitem"
+                        href="/services/get-support" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-serv-sub-1")?.focus();
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            document.getElementById("nav-btn-services")?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-services")?.focus();
+                          }
+                        }}
+                        className="flex items-center gap-2.5 p-2 rounded-lg bg-red-50 dark:bg-red-950/50 hover:bg-red-100 text-red-800 dark:text-red-200 font-semibold text-xs focus:outline-none focus:ring-2 focus:ring-red-500"
+                      >
                         <ShieldAlert className="w-4 h-4 text-red-600" />
                         <div>
                           <div>{t("nav.servicesSub.getSupport")}</div>
-                          <div className="text-[10px] text-red-600 font-normal">Urgent medical & factor help request</div>
+                          <div className="text-[10px] text-red-600 dark:text-red-400 font-normal">Urgent medical & factor help request</div>
                         </div>
                       </Link>
 
                       {features.aiChatbot && (
-                        <Link href="/chat" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-primary-900 font-semibold text-xs">
-                          <Bot className="w-4 h-4 text-primary" />
+                        <Link 
+                          id="nav-serv-sub-1"
+                          role="menuitem"
+                          href="/chat" 
+                          onClick={closeMegaMenu} 
+                          onKeyDown={(e) => {
+                            if (e.key === "ArrowDown") {
+                              e.preventDefault();
+                              document.getElementById("nav-serv-sub-2")?.focus();
+                            } else if (e.key === "ArrowUp") {
+                              e.preventDefault();
+                              document.getElementById("nav-serv-sub-0")?.focus();
+                            } else if (e.key === "Escape") {
+                              e.preventDefault();
+                              closeMegaMenu();
+                              document.getElementById("nav-btn-services")?.focus();
+                            }
+                          }}
+                          className="flex items-center gap-2.5 p-2 rounded-lg bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 text-primary-900 dark:text-blue-200 font-semibold text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                        >
+                          <Bot className="w-4 h-4 text-primary dark:text-teal-400" />
                           <div>
                             <div className="flex items-center gap-1.5">
                               <span>{isNepali ? "AI च्याट बोर्ड (n8n)" : "AI Helpdesk Chat (n8n)"}</span>
                               <span className="text-[9px] px-1 bg-primary text-white rounded font-bold">24/7</span>
                             </div>
-                            <div className="text-[10px] text-slate-500 font-normal">AI Agent & Emergency Assistant</div>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">AI Agent & Emergency Assistant</div>
                           </div>
                         </Link>
                       )}
 
                       {features.treatmentCentresLocator && (
-                        <Link href="/treatment-centres" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
-                          <MapPin className="w-4 h-4 text-primary" />
+                        <Link 
+                          id="nav-serv-sub-2"
+                          role="menuitem"
+                          href="/treatment-centres" 
+                          onClick={closeMegaMenu} 
+                          onKeyDown={(e) => {
+                            if (e.key === "ArrowDown") {
+                              e.preventDefault();
+                              document.getElementById("nav-serv-sub-3")?.focus();
+                            } else if (e.key === "ArrowUp") {
+                              e.preventDefault();
+                              const prev = document.getElementById("nav-serv-sub-1") || document.getElementById("nav-serv-sub-0");
+                              prev?.focus();
+                            } else if (e.key === "Escape") {
+                              e.preventDefault();
+                              closeMegaMenu();
+                              document.getElementById("nav-btn-services")?.focus();
+                            }
+                          }}
+                          className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                        >
+                          <MapPin className="w-4 h-4 text-primary dark:text-teal-400" />
                           <div>
                             <div>{t("nav.servicesSub.treatmentCentres")}</div>
-                            <div className="text-[10px] text-slate-500 font-normal">Hospitals across all 7 provinces</div>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">Hospitals across all 7 provinces</div>
                           </div>
                         </Link>
                       )}
 
                       {features.factorAvailabilityTracker && (
-                        <Link href="/factor-availability" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
+                        <Link 
+                          id="nav-serv-sub-3"
+                          role="menuitem"
+                          href="/factor-availability" 
+                          onClick={closeMegaMenu} 
+                          onKeyDown={(e) => {
+                            if (e.key === "ArrowDown") {
+                              e.preventDefault();
+                              const next = document.getElementById("nav-serv-sub-4") || document.getElementById("nav-serv-sub-5");
+                              next?.focus();
+                            } else if (e.key === "ArrowUp") {
+                              e.preventDefault();
+                              document.getElementById("nav-serv-sub-2")?.focus();
+                            } else if (e.key === "Escape") {
+                              e.preventDefault();
+                              closeMegaMenu();
+                              document.getElementById("nav-btn-services")?.focus();
+                            }
+                          }}
+                          className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                        >
                           <Activity className="w-4 h-4 text-accent" />
                           <div>
                             <div>{t("nav.servicesSub.factorTracker")}</div>
-                            <div className="text-[10px] text-slate-500 font-normal">Live hospital inventory status</div>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">Live hospital inventory status</div>
                           </div>
                         </Link>
                       )}
 
                       {features.onlineMembershipForm && (
-                        <Link href="/membership" onClick={closeMegaMenu} className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 text-slate-800 text-xs font-semibold">
+                        <Link 
+                          id="nav-serv-sub-4"
+                          role="menuitem"
+                          href="/membership" 
+                          onClick={closeMegaMenu} 
+                          onKeyDown={(e) => {
+                            if (e.key === "ArrowDown") {
+                              e.preventDefault();
+                              document.getElementById("nav-serv-sub-5")?.focus();
+                            } else if (e.key === "ArrowUp") {
+                              e.preventDefault();
+                              document.getElementById("nav-serv-sub-3")?.focus();
+                            } else if (e.key === "Escape") {
+                              e.preventDefault();
+                              closeMegaMenu();
+                              document.getElementById("nav-btn-services")?.focus();
+                            }
+                          }}
+                          className="flex items-center gap-2.5 p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                        >
                           <Users className="w-4 h-4 text-teal-600" />
                           <div>
                             <div>{t("nav.servicesSub.membership")}</div>
-                            <div className="text-[10px] text-slate-500 font-normal">Online application & status tracker</div>
+                            <div className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">Online application & status tracker</div>
                           </div>
                         </Link>
                       )}
 
-                      <Link href="/services#physio-counselling" onClick={closeMegaMenu} className="block px-3 py-1.5 rounded-lg hover:bg-slate-100 text-slate-700 text-xs">
+                      <Link 
+                        id="nav-serv-sub-5"
+                        role="menuitem"
+                        href="/services" 
+                        onClick={closeMegaMenu} 
+                        onKeyDown={(e) => {
+                          if (e.key === "ArrowDown") {
+                            e.preventDefault();
+                            document.getElementById("nav-serv-sub-0")?.focus(); // loop back
+                          } else if (e.key === "ArrowUp") {
+                            e.preventDefault();
+                            const prev = document.getElementById("nav-serv-sub-4") || document.getElementById("nav-serv-sub-3");
+                            prev?.focus();
+                          } else if (e.key === "Escape") {
+                            e.preventDefault();
+                            closeMegaMenu();
+                            document.getElementById("nav-btn-services")?.focus();
+                          }
+                        }}
+                        className="block px-3 py-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs focus:outline-none focus:bg-primary-100 dark:focus:bg-slate-700"
+                      >
                         {t("nav.servicesSub.physioSupport")} & {t("nav.servicesSub.counselling")}
                       </Link>
                     </div>
@@ -281,36 +799,73 @@ export function Navbar() {
 
               {/* 4. Healthcare Professionals */}
               <Link 
+                id="nav-link-hcp"
                 href="/healthcare-professionals" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowRight") {
+                    e.preventDefault();
+                    document.getElementById("nav-link-registry")?.focus();
+                  } else if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    document.getElementById("nav-btn-services")?.focus();
+                  }
+                }}
+                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {t("nav.healthcarePros")}
               </Link>
 
               {/* 5. Data & Research */}
               <Link 
+                id="nav-link-registry"
                 href="/data-research" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowRight") {
+                    e.preventDefault();
+                    document.getElementById("nav-link-resources")?.focus();
+                  } else if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    document.getElementById("nav-link-hcp")?.focus();
+                  }
+                }}
+                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {t("nav.registry")}
               </Link>
 
               {/* 6. Resources & E-Learning */}
               <Link 
+                id="nav-link-resources"
                 href="/resources" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowRight") {
+                    e.preventDefault();
+                    document.getElementById("nav-link-news")?.focus();
+                  } else if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    document.getElementById("nav-link-registry")?.focus();
+                  }
+                }}
+                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {t("nav.resources")}
               </Link>
 
               {/* 7. News & Events */}
               <Link 
+                id="nav-link-news"
                 href="/news" 
                 onClick={closeMegaMenu}
-                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors"
+                onKeyDown={(e) => {
+                  if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    document.getElementById("nav-link-resources")?.focus();
+                  }
+                }}
+                className="px-3 py-2 rounded-lg hover:text-primary hover:bg-slate-100/80 transition-colors focus:outline-none focus:ring-2 focus:ring-primary"
               >
                 {t("nav.news")}
               </Link>
