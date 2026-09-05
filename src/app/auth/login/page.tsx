@@ -16,7 +16,9 @@ import {
   Building2,
   AlertCircle,
   Copy,
-  Check
+  Check,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import Link from "next/link";
 
@@ -25,8 +27,9 @@ export default function LoginPage() {
   const { isNepali } = useLanguage();
   const { loginWithCredentials, availableUsers } = useAuth();
 
-  const [email, setEmail] = useState("admin@hemophilia.org.np");
-  const [password, setPassword] = useState("Admin@NHS2026#Nepal");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
@@ -208,13 +211,20 @@ export default function LoginPage() {
                 <div className="relative">
                   <KeyRound className="w-4 h-4 text-slate-400 absolute left-3 top-3.5" />
                   <input
-                    type="text"
+                    type={showPassword ? "text" : "password"}
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password..."
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-mono focus:outline-none focus:border-primary"
+                    placeholder="••••••••"
+                    className="w-full pl-9 pr-10 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-mono focus:outline-none focus:border-primary"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-slate-400 hover:text-slate-700"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
@@ -242,11 +252,11 @@ export default function LoginPage() {
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 <h3 className="font-bold text-base text-slate-900">
-                  {isNepali ? "आधिकारिक प्रयोगकर्ता खाता तथा पासवर्ड सूची" : "Official System Accounts & Passwords Reference"}
+                  {isNepali ? "आधिकारिक प्रयोगकर्ता खाता सूची" : "Official System Accounts Directory"}
                 </h3>
               </div>
               <p className="text-xs text-slate-500 mt-0.5">
-                Click <strong>"Auto-Fill"</strong> on any role to immediately populate credentials and test:
+                Click <strong>"Auto-Fill"</strong> on any role to securely populate account and sign in:
               </p>
             </div>
             <span className="text-xs font-bold px-2.5 py-1 bg-primary-50 text-primary rounded-lg border border-primary-200 self-start sm:self-auto">
@@ -260,7 +270,7 @@ export default function LoginPage() {
                 <tr>
                   <th className="py-3 px-3">Role & Official Name</th>
                   <th className="py-3 px-3">Login Email / ID</th>
-                  <th className="py-3 px-3">Official Password</th>
+                  <th className="py-3 px-3">Password Status</th>
                   <th className="py-3 px-3">Access Scope</th>
                   <th className="py-3 px-3 text-right">Action</th>
                 </tr>
@@ -278,8 +288,8 @@ export default function LoginPage() {
                       </div>
                     </td>
                     <td className="py-3 px-3 font-mono text-primary font-bold">{acc.email}</td>
-                    <td className="py-3 px-3 font-mono text-slate-700 font-semibold bg-slate-50/80 px-2 rounded">
-                      {acc.password}
+                    <td className="py-3 px-3 font-mono text-slate-400 font-bold tracking-widest bg-slate-50/80 px-2 rounded">
+                      ••••••••
                     </td>
                     <td className="py-3 px-3 text-slate-600 text-[11px]">{acc.scope}</td>
                     <td className="py-3 px-3 text-right">

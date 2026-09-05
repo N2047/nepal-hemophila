@@ -94,8 +94,8 @@ export default function AdminDashboardPage() {
 
   // Super Admin Password Gate & Credential State
   const [adminUnlocked, setAdminUnlocked] = useState<boolean>(false);
-  const [adminIdInput, setAdminIdInput] = useState<string>("NepalHemo");
-  const [adminPasswordInput, setAdminPasswordInput] = useState<string>("NHS123");
+  const [adminIdInput, setAdminIdInput] = useState<string>("");
+  const [adminPasswordInput, setAdminPasswordInput] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [loginError, setLoginError] = useState<string>("");
 
@@ -123,7 +123,7 @@ export default function AdminDashboardPage() {
       setAdminUnlocked(true);
       setLoginError("");
     } else {
-      setLoginError("अमान्य लगइन विवरण! कृपया सही Admin ID (NepalHemo) र Password (NHS123) प्रविष्ट गर्नुहोस्।");
+      setLoginError("अमान्य लगइन विवरण! कृपया आफ्नो सही Admin ID र Password प्रविष्ट गर्नुहोस्।");
     }
   };
 
@@ -206,25 +206,22 @@ export default function AdminDashboardPage() {
                 required
                 value={adminIdInput}
                 onChange={(e) => setAdminIdInput(e.target.value)}
-                placeholder="NepalHemo"
+                placeholder="प्रणाली आइडी राख्नुहोस्"
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border-2 border-slate-300 text-black font-extrabold text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
               />
             </div>
 
             <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-xs font-black text-black block">
-                  Password (पासवर्ड) *
-                </label>
-                <span className="text-[11px] font-mono text-black font-bold">डिफल्ट: NHS123</span>
-              </div>
+              <label className="text-xs font-black text-black block">
+                Password (पासवर्ड) *
+              </label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   value={adminPasswordInput}
                   onChange={(e) => setAdminPasswordInput(e.target.value)}
-                  placeholder="NHS123"
+                  placeholder="••••••••"
                   className="w-full pl-3.5 pr-10 py-2.5 rounded-xl bg-slate-50 border-2 border-slate-300 text-black font-mono font-extrabold text-sm focus:outline-none focus:border-amber-500 focus:bg-white transition-colors"
                 />
                 <button
@@ -247,16 +244,6 @@ export default function AdminDashboardPage() {
           </form>
 
           <div className="pt-2 border-t border-slate-200 flex flex-col gap-2 text-center">
-            <button
-              type="button"
-              onClick={() => {
-                setAdminIdInput("NepalHemo");
-                setAdminPasswordInput("NHS123");
-              }}
-              className="text-xs text-slate-700 hover:text-black font-bold hover:underline"
-            >
-              💡 डिफल्ट विवरण भर्नुहोस्: ID: NepalHemo | Password: NHS123
-            </button>
             <Link
               href="/"
               className="text-xs font-black text-primary hover:underline flex items-center justify-center gap-1 pt-1"
@@ -294,12 +281,12 @@ export default function AdminDashboardPage() {
               <div className="flex items-center gap-2 bg-amber-50 border-2 border-amber-400 px-3 py-1 rounded-xl shadow-xs">
                 <span className="text-black font-black text-xs sm:text-sm">Password:</span>
                 <input
-                  type="text"
-                  value={adminPasswordInput}
+                  type="password"
+                  value={adminPasswordInput || "NHS123"}
                   onChange={(e) => setAdminPasswordInput(e.target.value)}
-                  className="bg-white border-2 border-black rounded-lg px-2.5 py-0.5 text-black font-mono font-black text-sm w-32 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-inner"
-                  placeholder="NHS123"
-                  title="Super Admin Password"
+                  className="bg-white border-2 border-black rounded-lg px-2.5 py-0.5 text-black font-mono font-black text-sm w-28 tracking-widest focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-inner"
+                  placeholder="••••••••"
+                  title="Super Admin Password (Masked)"
                 />
               </div>
             </div>
