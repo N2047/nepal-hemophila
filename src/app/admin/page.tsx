@@ -286,18 +286,21 @@ export default function AdminDashboardPage() {
             <h1 className="text-2xl sm:text-3xl font-black text-black tracking-tight">
               Institutional Administration Dashboard
             </h1>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1 text-sm text-black">
-              <div className="flex items-center gap-1.5 bg-slate-100 border border-slate-300 px-3 py-1 rounded-lg">
-                <span className="text-black font-semibold text-xs sm:text-sm">Logged in as:</span>
-                <strong className="text-black font-black text-xs sm:text-sm">NepalHemo</strong>
-              </div>
-              <div className="flex items-center gap-1.5 bg-amber-50 border border-amber-300 px-3 py-1 rounded-lg">
-                <span className="text-black font-semibold text-xs sm:text-sm">Password:</span>
-                <strong className="text-black font-mono font-black text-xs sm:text-sm tracking-wide">NHS123</strong>
-              </div>
-              <div className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-300 px-3 py-1 rounded-lg">
-                <span className="text-black font-semibold text-xs sm:text-sm">Role:</span>
-                <span className="text-black font-black text-xs uppercase px-2 py-0.5 rounded bg-emerald-200 border border-emerald-400">SUPER_ADMIN</span>
+            <div className="flex flex-wrap items-center gap-3 pt-2 text-sm text-black">
+              <span className="text-black font-extrabold text-sm sm:text-base">
+                Logged in as: <strong className="text-black font-black underline underline-offset-4">NepalHemo</strong>
+              </span>
+              <span className="text-black font-bold hidden sm:inline">•</span>
+              <div className="flex items-center gap-2 bg-amber-50 border-2 border-amber-400 px-3 py-1 rounded-xl shadow-xs">
+                <span className="text-black font-black text-xs sm:text-sm">Password:</span>
+                <input
+                  type="text"
+                  value={adminPasswordInput}
+                  onChange={(e) => setAdminPasswordInput(e.target.value)}
+                  className="bg-white border-2 border-black rounded-lg px-2.5 py-0.5 text-black font-mono font-black text-sm w-32 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-inner"
+                  placeholder="NHS123"
+                  title="Super Admin Password"
+                />
               </div>
             </div>
           </div>
