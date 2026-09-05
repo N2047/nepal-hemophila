@@ -317,161 +317,161 @@ export default function HomePage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           
-          {/* Card 1: Get Patient Support */}
+          {/* Card 1: Get Patient Support (Urgent Medical Crimson) */}
           <Link
             href="/services/get-support"
-            className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-red-400 hover:shadow-xl transition-all group relative overflow-hidden"
+            className="p-5 rounded-2xl bg-gradient-to-br from-red-600 via-rose-600 to-red-700 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-red-500"
           >
-            <div className="w-10 h-10 rounded-xl bg-red-50 text-accent flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <ShieldAlert className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <ShieldAlert className="w-5 h-5 text-white" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-accent transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "बिरामी सहयोग अनुरोध" : "Get Patient Support"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-red-100 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "आकस्मिक फ्याक्टर, औषधि वा परामर्श सहयोग फारम" : "Request urgent factor or specialized care"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-accent gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "अनुरोध गर्नुहोस्" : "Request Support"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 
-          {/* Card 2: Find Treatment Centre */}
+          {/* Card 2: Find Treatment Centre (Hospital Sapphire Blue) */}
           <Link
             href="/treatment-centres"
-            className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-primary-400 hover:shadow-xl transition-all group"
+            className="p-5 rounded-2xl bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-blue-500"
           >
-            <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <MapPin className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <MapPin className="w-5 h-5 text-white" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-primary transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "उपचार केन्द्र खोज्नुहोस्" : "Find Treatment Centre"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-blue-100 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "नेपालका सातै प्रदेशका अस्पताल तथा विशेषज्ञ सूची" : "Directory across all 7 provinces"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-primary gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "केन्द्रहरू हेर्नुहोस्" : "View Directory"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 
-          {/* Card 3: Factor Information */}
+          {/* Card 3: Factor Information (Clinical Clotting Teal) */}
           <Link
             href="/factor-availability"
-            className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-red-400 hover:shadow-xl transition-all group"
+            className="p-5 rounded-2xl bg-gradient-to-br from-teal-600 via-teal-700 to-emerald-800 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-teal-500"
           >
-            <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <Activity className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <Activity className="w-5 h-5 text-white" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-accent transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "फ्याक्टर उपलब्धता" : "Factor Information"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-teal-100 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "अस्पतालअनुसार फ्याक्टर ८ र ९ को मौज्दात स्थिति" : "Live hospital inventory status"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-accent gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "तालिका हेर्नुहोस्" : "Check Stock"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 
-          {/* Card 4: Medical Resources */}
+          {/* Card 4: Medical Resources (Knowledge Ochre & Amber) */}
           <Link
             href="/resources"
-            className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-amber-400 hover:shadow-xl transition-all group"
+            className="p-5 rounded-2xl bg-gradient-to-br from-amber-500 via-amber-600 to-orange-700 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-amber-400"
           >
-            <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <BookOpen className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/25 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <BookOpen className="w-5 h-5 text-white" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-amber-700 transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "चिकित्सा तथा स्रोत सामग्री" : "Medical Resources"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-amber-100 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "क्लिनिकल निर्देशिका, ब्रोसर तथा अनुसन्धान प्रतिवेदन" : "Clinical guidelines, posters & papers"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-amber-700 gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "पुस्तकालय खोल्नुहोस्" : "Browse Library"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 
-          {/* Card 5: Emergency Support */}
+          {/* Card 5: Emergency Support (24/7 Siren Ruby Red) */}
           <button
             onClick={() => setEmergencyModalOpen(true)}
-            className="text-left p-5 rounded-2xl bg-white border border-slate-200 hover:border-red-400 hover:shadow-xl transition-all group"
+            className="text-left p-5 rounded-2xl bg-gradient-to-br from-rose-700 via-red-800 to-red-950 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-rose-600"
           >
-            <div className="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <PhoneCall className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <PhoneCall className="w-5 h-5 text-white animate-pulse" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-accent transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "आकस्मिक हटलाइनहरू" : "Emergency Support"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-rose-100 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "२४/७ अस्पताल हटलाइन तथा प्राथमिक उपचार विधि" : "Direct on-call duty hematologists"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-accent gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "सम्पर्क हेर्नुहोस्" : "View Hotlines"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </button>
 
-          {/* Card 6: Membership Application */}
+          {/* Card 6: Membership Application (Community Royal Violet) */}
           <Link
             href="/membership"
-            className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-teal-400 hover:shadow-xl transition-all group"
+            className="p-5 rounded-2xl bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-900 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-violet-500"
           >
-            <div className="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <Users className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <Users className="w-5 h-5 text-white" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-teal-700 transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "अनलाइन सदस्यता आवेदन" : "Membership"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-purple-100 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "एन.एच.एस. सदस्यता दर्ता तथा डिजिटल परिचयपत्र" : "Apply online & track application status"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-teal-700 gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "आवेदन फारम" : "Apply Online"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 
-          {/* Card 7: Donate */}
+          {/* Card 7: Donate (Hope & Philanthropy Emerald Green) */}
           <Link
             href="/donate"
-            className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-400 hover:shadow-xl transition-all group"
+            className="p-5 rounded-2xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-900 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-emerald-500"
           >
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <Heart className="w-5 h-5 fill-emerald-600" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <Heart className="w-5 h-5 text-white fill-white" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-emerald-700 transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "सहयोग / दान गर्नुहोस्" : "Donate to Save Lives"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-emerald-100 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "eSewa, Khalti, QR तथा बैंकमार्फत सहयोग गर्नुहोस्" : "Support emergency factor & child care"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-emerald-700 gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "दान गर्नुहोस्" : "Donate Now"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
 
-          {/* Card 8: Contact NHS */}
+          {/* Card 8: Contact NHS (Executive Midnight Slate) */}
           <Link
             href="/contact"
-            className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-primary-400 hover:shadow-xl transition-all group"
+            className="p-5 rounded-2xl bg-gradient-to-br from-slate-700 via-slate-800 to-slate-950 text-white shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-200 group relative overflow-hidden border border-slate-600"
           >
-            <div className="w-10 h-10 rounded-xl bg-primary-50 text-primary flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-              <Building2 className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center mb-3 group-hover:scale-110 transition-transform backdrop-blur-xs shadow-inner">
+              <Building2 className="w-5 h-5 text-white" />
             </div>
-            <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-primary transition-colors">
+            <h3 className="font-black text-sm sm:text-base text-white tracking-tight drop-shadow-xs">
               {isNepali ? "सम्पर्क तथा शाखाहरू" : "Contact NHS"}
             </h3>
-            <p className="text-xs text-slate-500 mt-1">
+            <p className="text-xs text-slate-200 mt-1.5 leading-relaxed font-medium">
               {isNepali ? "केन्द्रीय सचिवालय तथा ७ वटै प्रदेश कार्यालयहरू" : "Central secretariat & provincial chapters"}
             </p>
-            <div className="mt-4 flex items-center text-xs font-semibold text-primary gap-1">
+            <div className="mt-4 flex items-center text-xs font-black text-white gap-1 group-hover:gap-2 transition-all">
               <span>{isNepali ? "सम्पर्क विवरण" : "Get In Touch"}</span>
               <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
