@@ -482,7 +482,7 @@ export default function HomePage() {
 
 
       {/* 4. ABOUT NHS INSTITUTIONAL SUMMARY (Requirement #13) */}
-      <section className="bg-slate-100 py-16 sm:py-20 border-y border-slate-200">
+      <section className="bg-slate-50 py-16 sm:py-20 border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             
@@ -799,7 +799,7 @@ export default function HomePage() {
 
       {/* 7. PATIENT & COMMUNITY STORIES (Controlled by Super Admin CMS) */}
       {features.communityStoriesSection && (
-        <section className="bg-slate-100 py-16 sm:py-20 border-y border-slate-200">
+        <section className="bg-sky-50/50 py-16 sm:py-20 border-y border-sky-100/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">

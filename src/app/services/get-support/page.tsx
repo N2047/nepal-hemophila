@@ -52,17 +52,17 @@ export default function GetSupportPage() {
   return (
     <div className="space-y-12 pb-16">
       
-      {/* Header Banner */}
-      <section className="bg-gradient-crimson text-white py-14 px-4 sm:px-6">
+      {/* Header Banner: Soft healthcare light blue/teal per medical guideline */}
+      <section className="bg-gradient-to-r from-sky-50 via-teal-50 to-blue-50 border-b border-sky-100 py-14 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-xs font-black tracking-wider uppercase">
-            <ShieldAlert className="w-4 h-4" />
-            <span>{isNepali ? "बिरामी सहायता डेस्क" : "Patient Care & Assistance Intake"}</span>
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-100/80 border border-teal-300/60 text-xs font-bold text-teal-900 tracking-wider">
+            <ShieldAlert className="w-4 h-4 text-teal-700" />
+            <span>{isNepali ? "बिरामी तथा परिवार सहायता डेस्क" : "Patient Care & Family Assistance Intake"}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-primary-900">
             {isNepali ? "सहयोग तथा आपतकालीन अनुरोध फारम" : "Request Medical & Patient Support"}
           </h1>
-          <p className="text-sm sm:text-base text-red-100 max-w-3xl leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-700 max-w-3xl leading-relaxed font-medium">
             {isNepali
               ? "आकस्मिक फ्याक्टर आवश्यकता, अस्पताल समन्वय, फिजियोथेरापी, वा सरकारी अपाङ्गता परिचयपत्र प्राप्तिका लागि तुरुन्त अनुरोध पेश गर्नुहोस्।"
               : "Submit a confidential support ticket for emergency clotting factor, clinical referral, rehabilitation, or disability advocacy."}

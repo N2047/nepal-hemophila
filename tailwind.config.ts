@@ -24,6 +24,19 @@ const config: Config = {
           900: "#030D17",
           950: "#020810",
         },
+        secondary: {
+          DEFAULT: "#0D9488", // Healthcare Teal
+          light: "#14B8A6",
+          dark: "#0F766E",
+          50: "#F0FDFA",
+          100: "#CCFBF1",
+          200: "#99F6E4",
+          500: "#0D9488",
+          600: "#0D9488",
+          700: "#0F766E",
+          800: "#115E59",
+          900: "#134E4A",
+        },
         accent: {
           DEFAULT: "#DC2626", // Blood/Hemophilia crimson red
           light: "#EF4444",

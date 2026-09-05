@@ -34,7 +34,7 @@ export function Footer() {
   };
 
   return (
-    <footer className="bg-primary-950 text-slate-300 pt-16 pb-20 lg:pb-12 border-t-4 border-accent">
+    <footer className="bg-primary-950 text-slate-300 pt-16 pb-20 lg:pb-12 border-t-4 border-primary-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         
         {/* Newsletter & Emergency Banner in Footer */}

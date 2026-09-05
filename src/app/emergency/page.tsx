@@ -27,8 +27,8 @@ export default function EmergencyPage() {
   return (
     <div className="space-y-12 pb-16">
       
-      {/* Red Emergency Header Banner */}
-      <section className="bg-red-600 text-white py-14 px-4 sm:px-6 relative overflow-hidden">
+      {/* Dignified Deep Red Emergency Header Banner */}
+      <section className="bg-gradient-to-br from-red-950 via-red-900 to-rose-950 text-white py-14 px-4 sm:px-6 relative overflow-hidden border-b-4 border-red-600 shadow-md">
         <div className="max-w-7xl mx-auto space-y-4 relative z-10">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 text-white text-xs font-black uppercase tracking-wider emergency-pulse">
             <ShieldAlert className="w-4 h-4" />
