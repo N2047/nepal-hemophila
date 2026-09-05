@@ -214,7 +214,9 @@ export function Footer() {
           <div className="flex flex-wrap items-center justify-center gap-4 text-[11px]">
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms of Use</Link>
-            <Link href="/accessibility-statement" className="hover:text-white transition-colors">WCAG Accessibility</Link>
+            <Link href="/accessibility-statement" className="hover:text-white transition-colors font-bold text-amber-300">
+              ♿ {isNepali ? "पहुँचयुक्तता (Accessibility)" : "WCAG 2.2 Accessibility"}
+            </Link>
             <Link href="/sitemap" className="hover:text-white transition-colors">Sitemap</Link>
           </div>
         </div>

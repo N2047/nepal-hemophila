@@ -15,6 +15,7 @@ import { MobileActionBar } from "@/components/layout/MobileActionBar";
 import { Footer } from "@/components/layout/Footer";
 import { FloatingChatWidget } from "@/components/chat/FloatingChatWidget";
 import { AdminFloatingBar } from "@/components/common/AdminFloatingBar";
+import { FloatingAccessibilityButton } from "@/components/common/FloatingAccessibilityButton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -106,7 +107,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans antialiased selection:bg-accent selection:text-white">
+      <body className="min-h-screen flex flex-col bg-slate-50 dark:bg-[#070D18] text-slate-900 dark:text-slate-100 font-sans antialiased selection:bg-accent selection:text-white">
+        {/* WCAG 2.2 Level AA Skip to Main Content Link */}
+        <a href="#main-content" className="skip-link">
+          Skip to main content / मुख्य सामग्रीमा जानुहोस्
+        </a>
+
         <AuthProvider>
           <LanguageProvider>
             <AccessibilityProvider>
@@ -117,7 +123,8 @@ export default function RootLayout({
                       <TopUtilityBar />
                       <Navbar />
                       <AccessibilityDrawer />
-                      <main id="main-content" className="flex-1">
+                      <FloatingAccessibilityButton />
+                      <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">
                         {children}
                       </main>
                       <Footer />
